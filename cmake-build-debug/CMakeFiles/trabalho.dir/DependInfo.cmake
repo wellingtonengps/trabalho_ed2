@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/cygdrive/c/Users/patri/OneDrive/Desktop/Projects/trabalho_ed2/main.cpp" "/cygdrive/c/Users/patri/OneDrive/Desktop/Projects/trabalho_ed2/cmake-build-debug/CMakeFiles/trabalho.dir/main.cpp.o"
+  "D:/Repositorio_local/DCC012/trabalho_ed2/Review.cpp" "D:/Repositorio_local/DCC012/trabalho_ed2/cmake-build-debug/CMakeFiles/trabalho.dir/Review.cpp.obj"
+  "D:/Repositorio_local/DCC012/trabalho_ed2/main.cpp" "D:/Repositorio_local/DCC012/trabalho_ed2/cmake-build-debug/CMakeFiles/trabalho.dir/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
