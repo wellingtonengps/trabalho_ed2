@@ -5,6 +5,48 @@
 
 using namespace std;
 
+
+Review* readLine(string line){
+    Review* review = new Review();
+    bool ignoraVirgula = false;
+    int campoAtual =0;
+    string value;
+
+    for(int i=0; i<line.length(); i++){
+
+
+        if(line[i]=='\"'){
+            ignoraVirgula=!ignoraVirgula;
+        }
+        else if(line[i]==',' && ignoraVirgula==false){
+             cout << '\n';
+
+             if(campoAtual==0){
+                 review->setReviewId(value);
+             }else if(campoAtual==1){
+                 review->setReviewText(value);
+             } else if(campoAtual==2){
+                 review->setUpvotes(stoi(value));
+             } else if(campoAtual==3){
+                 review->setAppVersion(value);
+             } else if(campoAtual==4){
+                 review->setPostedDate(value);
+             }
+
+             value.clear();
+             campoAtual++;
+        }else{
+            cout<< line[i] ;
+            value+=line[i];
+        }
+
+    }
+    cout << endl;
+    review->setPostedDate(value);
+    return  review;
+
+}
+
 void read(string path){
     ifstream inputFile;
     string linha;
@@ -27,6 +69,8 @@ void read(string path){
 
 }
 
+
+
 int main(int argc, char ** argv) {
     std::cout << "Trabalho ED2" << std::endl;
     string input_file;
@@ -36,7 +80,7 @@ int main(int argc, char ** argv) {
 
     }else{
         cout << "Erro: era esperado caminho do arquivo de entrada."<<endl;
-        return 0;
+        //return 0;
     }
 
     read("../data.csv");
