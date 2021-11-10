@@ -67,23 +67,80 @@ void conferir(string path) {
 void readBin(string path) {
 
     ifstream arq;
-    char dados[1000];
+    char dados[2621];
+    char* review_id = new char[90];
+    char* review_text = new char[2500];
+    char* upvotes = new char[6];
+    char* version = new char[9];
+    char* date = new char[20];
 
     arq.open(path, ios::binary);
+    int recordSize = 2625*sizeof(char);
 
     if (!arq) {
         return;
     }
+
+    arq.seekg(0, arq.end);
+    int length = arq.tellg();
+    arq.seekg(0, arq.beg);
+    int currentPos=0;
+
+    for(int i=1; recordSize*(i-1) < length; i++){
+        arq.read(review_id,90);
+        currentPos+=90*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(review_text,2500);
+        currentPos+=2500*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(upvotes,6);
+        currentPos+=6*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(version,9);
+        currentPos+=9*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(date,20);
+        currentPos+=20*sizeof(char);
+        arq.seekg(currentPos);
+
+
+        cout << review_id;
+        cout << endl;
+
+        cout << review_text;
+        cout <<endl;
+
+        cout << upvotes;
+        cout <<endl;
+
+        cout << version;
+        cout <<endl;
+
+        cout << date;
+        cout << endl;
+        cout << endl;
+
+        //arq.seekg(recordSize*i);
+    }
+
     //char teste[2] = {'a', 'b'};
 
-    arq.read(dados,1000);
+    //arq.read(dados,2621);
     arq.close();
 
-    std::cout.write (dados, 1000);
+    //std::cout.write (dados, 2621);
 
       //  cout << teste;
 
-
+    delete [] review_id;
+    delete [] review_text;
+    delete [] upvotes;
+    delete [] version;
+    delete [] date;
 }
 
 void readCharacteres(string path) {
@@ -97,6 +154,7 @@ void readCharacteres(string path) {
 
     arq = fopen(path.c_str(), "r");
 
+
     if (arq != NULL && arqOut) {
         bool ignoraVirgula = false;
         int campoAtual = 0;
@@ -105,52 +163,46 @@ void readCharacteres(string path) {
 
 
         while ((c = fgetc(arq)) != EOF) {
-           // cout << c;
 
             if (c == '\"') {
                 ignoraVirgula = !ignoraVirgula;
-            } else if ((c == ',' || c=='\n') && ignoraVirgula == false) {
-              //  cout << '\n';
+            } else if ((c == ',' || c == '\n') && ignoraVirgula == false){
+                value += '\0';
 
-                if (campoAtual == 0) {
-                    // review->setReviewId(value);
-                    //arqOut.write(value.c_str(),sizeof(char)*89);
-                    arqOut.write(value.c_str(),sizeof(char)*89);
-                    cout << " - " <<value <<"\n" ;
-                    campoAtual++;
-                } else if (campoAtual == 1) {
-                    // review->setReviewText(value);
-                    cout << " - " <<value <<"\n" ;
-                    campoAtual++;
+            if (campoAtual == 0) {
+                arqOut.write(value.c_str(), sizeof(char) * 90);
+                cout << " - " << value << "\n";
+                campoAtual++;
+            } else if (campoAtual == 1) {
+                arqOut.write(value.c_str(), sizeof(char) * 2500);
+                cout << " - " << value << "\n";
+                campoAtual++;
 
-                } else if (campoAtual == 2) {
-                    //  review->setUpvotes(stoi(value));
-                    cout << " - " <<value <<"\n" ;
-                    campoAtual++;
+            } else if (campoAtual == 2) {
 
-                } else if (campoAtual == 3) {
-                    //  review->setAppVersion(value);
-                    cout << " - " <<value <<"\n" ;
-                    campoAtual++;
+                arqOut.write(value.c_str(), sizeof(char) * 6);
+                cout << " - " << value << "\n";
+                campoAtual++;
 
-                } else if (campoAtual == 4) {
-                    // review->setPostedDate(value);
-                    cout << " - " <<value <<"\n" ;
-                    campoAtual = 0;
-                    cout<< "";
-                }
+            } else if (campoAtual == 3) {
+                //  review->setAppVersion(value);
+                arqOut.write(value.c_str(), sizeof(char) * 9);
+                cout << " - " << value << "\n";
+                campoAtual++;
 
-                value.clear();
-                /*if(campoAtual <4){
-                     campoAtual++;
-                }else{
-                    campoAtual = 0;
-                }*/
+            } else if (campoAtual == 4) {
+                // review->setPostedDate(value);
+                arqOut.write(value.c_str(), sizeof(char) * 20);
+                cout << " - " << value << "\n";
+                campoAtual = 0;
+                cout << "";
+            }
 
-            } else {
-                //cout<< c;
+            value.clear();
+
+
+        } else {
                 value += c;
-                //value.clear();
             }
         }
         arqOut.close();
@@ -187,13 +239,13 @@ void read(string path) {
 
 
 int main(int argc, char **argv) {
-    std::cout << "Trabalho ED2" << std::endl;
+    //std::cout << "Trabalho ED2" << std::endl;
     string input_file;
 
     //conferir("../tiktok_app_reviews.csv");
 
-    //readBin("../data.bin");
-    readCharacteres("../data.csv");
+    readBin("../data.bin");
+    //readCharacteres("../data2.csv");
 
     return 0;
 
