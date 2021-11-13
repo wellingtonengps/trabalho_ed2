@@ -5,8 +5,19 @@
 #include <stdio.h>
 #include "Review.h"
 
-using namespace std;
+int REVIEW_TEXT_LENGTH = 10;
 
+int REVIEW_ID_LENGTH = 90;
+
+int REVIEW_UPVOTES_LENGTH = 6;
+
+int REVIEW_VERSION_LENGTH = 9;
+
+int REVIEW_DATE_LENGTH = 20;
+
+int RECORD_LENGTH = REVIEW_TEXT_LENGTH + REVIEW_ID_LENGTH + REVIEW_UPVOTES_LENGTH + REVIEW_VERSION_LENGTH + REVIEW_DATE_LENGTH;
+
+using namespace std;
 
 Review *readLine(string line) {
     Review *review = new Review();
@@ -64,18 +75,95 @@ void conferir(string path) {
     }
 }
 
+void readLegacy(string path) {
+    ifstream inputFile;
+    string linha;
+    inputFile.open(path, ios::in);
+    Review *review;
+
+    if (!inputFile) {
+        return;
+    }
+
+
+    getline(inputFile, linha);
+    while (!inputFile.eof()) {
+        getline(inputFile, linha);
+        review = readLine(linha);
+        cout << linha << endl;
+        delete review;
+    }
+
+    inputFile.close();
+
+}
+
+/////////////*************************************
+
+char dados[100000];
+int nextChar=0;
+int maxBlockSize = 100000;
+int currentBlock =0;
+int fileSize;
+ifstream arqI;
+
+
+void initFile(string path){
+    nextChar=0;
+    currentBlock=0;
+    arqI.open(path, ios::binary);
+    arqI.seekg(0, arqI.end);
+    fileSize = arqI.tellg();
+    arqI.seekg(0, arqI.beg);
+}
+
+void bufferFile(){
+    char dados[maxBlockSize];
+    //ifstream arq;
+
+   // arq.open(path, ios::binary);
+    if (!arqI) {
+        return;
+    }
+
+
+    arqI.read(dados, maxBlockSize);
+    arqI.seekg(maxBlockSize*currentBlock);
+    cout.write (dados, maxBlockSize);
+
+    arqI.close();
+}
+
+char getNextChar(){
+    char c = dados[nextChar];
+
+    if(nextChar== maxBlockSize-1){
+        bufferFile();
+        currentBlock++;
+    } else{
+        nextChar++;
+    }
+    return c;
+}
+
+
+
+
+/////////////*************************************
+
 void readBin(string path) {
 
+
     ifstream arq;
-    char dados[2621];
-    char* review_id = new char[90];
-    char* review_text = new char[2500];
-    char* upvotes = new char[6];
-    char* version = new char[9];
-    char* date = new char[20];
+    //char* dados = new char[2621];
+    char* review_id = new char[REVIEW_ID_LENGTH];
+    char* review_text = new char[REVIEW_TEXT_LENGTH];
+    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
+    char* version = new char[REVIEW_VERSION_LENGTH];
+    char* date = new char[REVIEW_DATE_LENGTH];
 
     arq.open(path, ios::binary);
-    int recordSize = 2625*sizeof(char);
+    int recordSize = RECORD_LENGTH*sizeof(char);
 
     if (!arq) {
         return;
@@ -87,24 +175,24 @@ void readBin(string path) {
     int currentPos=0;
 
     for(int i=1; recordSize*(i-1) < length; i++){
-        arq.read(review_id,90);
-        currentPos+=90*sizeof(char);
+        arq.read(review_id,REVIEW_ID_LENGTH);
+        currentPos+=REVIEW_ID_LENGTH*sizeof(char);
         arq.seekg(currentPos);
 
-        arq.read(review_text,2500);
-        currentPos+=2500*sizeof(char);
+        arq.read(review_text,REVIEW_TEXT_LENGTH);
+        currentPos+=REVIEW_TEXT_LENGTH*sizeof(char);
         arq.seekg(currentPos);
 
-        arq.read(upvotes,6);
-        currentPos+=6*sizeof(char);
+        arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
+        currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
         arq.seekg(currentPos);
 
-        arq.read(version,9);
-        currentPos+=9*sizeof(char);
+        arq.read(version,REVIEW_VERSION_LENGTH);
+        currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
         arq.seekg(currentPos);
 
-        arq.read(date,20);
-        currentPos+=20*sizeof(char);
+        arq.read(date,REVIEW_DATE_LENGTH);
+        currentPos+=REVIEW_DATE_LENGTH*sizeof(char);
         arq.seekg(currentPos);
 
 
@@ -136,6 +224,7 @@ void readBin(string path) {
 
       //  cout << teste;
 
+    //delete [] dados;
     delete [] review_id;
     delete [] review_text;
     delete [] upvotes;
@@ -143,14 +232,14 @@ void readBin(string path) {
     delete [] date;
 }
 
-void readCharacteres(string path) {
+void read(string path) {
 
     FILE *arq;
     char c;
 
     ofstream arqOut;
 
-    arqOut.open("../data.bin", ios::binary);
+    arqOut.open("../teste2.bin", ios::binary);
 
     arq = fopen(path.c_str(), "r");
 
@@ -170,32 +259,32 @@ void readCharacteres(string path) {
                 value += '\0';
 
             if (campoAtual == 0) {
-                arqOut.write(value.c_str(), sizeof(char) * 90);
-                cout << " - " << value << "\n";
+                arqOut.write(value.c_str(), sizeof(char) * REVIEW_ID_LENGTH);
+                //cout << " - " << value << "\n";
                 campoAtual++;
             } else if (campoAtual == 1) {
-                arqOut.write(value.c_str(), sizeof(char) * 2500);
-                cout << " - " << value << "\n";
+                arqOut.write(value.c_str(), sizeof(char) * REVIEW_TEXT_LENGTH);
+                //cout << " - " << value << "\n";
                 campoAtual++;
 
             } else if (campoAtual == 2) {
 
-                arqOut.write(value.c_str(), sizeof(char) * 6);
-                cout << " - " << value << "\n";
+                arqOut.write(value.c_str(), sizeof(char) * REVIEW_UPVOTES_LENGTH);
+                //cout << " - " << value << "\n";
                 campoAtual++;
 
             } else if (campoAtual == 3) {
                 //  review->setAppVersion(value);
-                arqOut.write(value.c_str(), sizeof(char) * 9);
-                cout << " - " << value << "\n";
+                arqOut.write(value.c_str(), sizeof(char) * REVIEW_VERSION_LENGTH);
+                //cout << " - " << value << "\n";
                 campoAtual++;
 
             } else if (campoAtual == 4) {
                 // review->setPostedDate(value);
-                arqOut.write(value.c_str(), sizeof(char) * 20);
-                cout << " - " << value << "\n";
+                arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+                //cout << " - " << value << "\n";
                 campoAtual = 0;
-                cout << "";
+                //cout << "";
             }
 
             value.clear();
@@ -214,28 +303,6 @@ void readCharacteres(string path) {
 
 }
 
-void read(string path) {
-    ifstream inputFile;
-    string linha;
-    inputFile.open(path, ios::in);
-    Review *review;
-
-    if (!inputFile) {
-        return;
-    }
-
-
-    getline(inputFile, linha);
-    while (!inputFile.eof()) {
-        getline(inputFile, linha);
-        review = readLine(linha);
-        cout << linha << endl;
-        delete review;
-    }
-
-    inputFile.close();
-
-}
 
 
 int main(int argc, char **argv) {
@@ -244,8 +311,9 @@ int main(int argc, char **argv) {
 
     //conferir("../tiktok_app_reviews.csv");
 
-    readBin("../data.bin");
-    //readCharacteres("../data2.csv");
+    readBin("../teste2.bin");
+    //read("../tiktok_app_reviews.csv");
+   // read("../data.csv");
 
     return 0;
 
