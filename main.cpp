@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "Review.h"
 
-int REVIEW_TEXT_LENGTH = 10;
+int REVIEW_TEXT_LENGTH = 1000;
 
 int REVIEW_ID_LENGTH = 90;
 
@@ -100,17 +100,22 @@ void readLegacy(string path) {
 
 /////////////*************************************
 
-char dados[100000];
+
+
 int nextChar=0;
 int maxBlockSize = 100000;
+char* dados = new char[maxBlockSize];
 int currentBlock =0;
 int fileSize;
+bool endOfFile = false;
 ifstream arqI;
 
 
 void initFile(string path){
     nextChar=0;
     currentBlock=0;
+    endOfFile=false;
+
     arqI.open(path, ios::binary);
     arqI.seekg(0, arqI.end);
     fileSize = arqI.tellg();
@@ -118,31 +123,44 @@ void initFile(string path){
 }
 
 void bufferFile(){
-    char dados[maxBlockSize];
+    //char dados[maxBlockSize];
     //ifstream arq;
 
    // arq.open(path, ios::binary);
     if (!arqI) {
         return;
     }
-
-
-    arqI.read(dados, maxBlockSize);
     arqI.seekg(maxBlockSize*currentBlock);
-    cout.write (dados, maxBlockSize);
+    arqI.read(dados, maxBlockSize);
 
-    arqI.close();
+    //cout.write (dados, maxBlockSize);
+
+    //arqI.close();
 }
 
 char getNextChar(){
+    if(currentBlock==0 && nextChar==0){
+        bufferFile();
+    }
+
     char c = dados[nextChar];
+   // cout << c << "";
 
     if(nextChar== maxBlockSize-1){
-        bufferFile();
         currentBlock++;
+        nextChar=0;
+        bufferFile();
     } else{
         nextChar++;
     }
+
+    if((nextChar+ currentBlock*maxBlockSize)*sizeof(char) >= fileSize){
+        endOfFile=true;
+        arqI.close();
+        delete [] dados;
+        cout << "EOFFFF !!!!!-----"<<endl;
+    }
+
     return c;
 }
 
@@ -232,6 +250,87 @@ void readBin(string path) {
     delete [] date;
 }
 
+
+void readTeste(string path) {
+
+   // FILE *arq;
+    char c;
+
+    ofstream arqOut;
+    arqOut.open("../teste2.bin", ios::binary);
+
+    //arq = fopen(path.c_str(), "r");
+    initFile(path);
+
+
+    if (arqOut) {
+        bool ignoraVirgula = false;
+        int campoAtual = 0;
+        string value;
+        string teste = "ab";
+
+
+        while (!endOfFile) {
+
+            c= getNextChar();
+
+            if (c == '\"') {
+                ignoraVirgula = !ignoraVirgula;
+            } else if ((c == ',' || c == '\n') && ignoraVirgula == false){
+                value += '\0';
+
+                if (campoAtual == 0) {
+                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_ID_LENGTH);
+                    //cout << " - " << value << "\n";
+                    campoAtual++;
+                } else if (campoAtual == 1) {
+                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_TEXT_LENGTH);
+                    //cout << " - " << value << "\n";
+                    campoAtual++;
+
+                } else if (campoAtual == 2) {
+
+                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_UPVOTES_LENGTH);
+                    //cout << " - " << value << "\n";
+                    campoAtual++;
+
+                } else if (campoAtual == 3) {
+                    //  review->setAppVersion(value);
+                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_VERSION_LENGTH);
+                    //cout << " - " << value << "\n";
+                    campoAtual++;
+
+                } else if (campoAtual == 4) {
+                    // review->setPostedDate(value);
+                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+                    //cout << " - " << value << "\n";
+                    campoAtual = 0;
+                    //cout << "";
+                }
+
+                value.clear();
+
+
+            } else {
+                value += c;
+            }
+        }
+
+        value += '\0';
+        arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+        arqOut.close();
+        //fclose(arq);
+    } else {
+        printf("Error ao abrir o arquivo");
+    }
+
+
+}
+
+
+
+
+
 void read(string path) {
 
     FILE *arq;
@@ -294,6 +393,11 @@ void read(string path) {
                 value += c;
             }
         }
+
+        //TODO: gravar o último campo do último registro:
+        // value += '\0';
+        // arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+
         arqOut.close();
         fclose(arq);
     } else {
@@ -311,9 +415,12 @@ int main(int argc, char **argv) {
 
     //conferir("../tiktok_app_reviews.csv");
 
-    readBin("../teste2.bin");
+    //readTeste("../data.csv");
+    readTeste("../tiktok_app_reviews.csv");
+   //readBin("../teste2.bin");
     //read("../tiktok_app_reviews.csv");
-   // read("../data.csv");
+    //read("../data.csv");
+
 
     return 0;
 
