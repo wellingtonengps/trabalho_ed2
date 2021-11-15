@@ -164,6 +164,76 @@ char getNextChar(){
     return c;
 }
 
+void acessarRegistro(int i, string path){
+    ifstream arq;
+
+
+    char* review_id = new char[REVIEW_ID_LENGTH];
+    char* review_text = new char[REVIEW_TEXT_LENGTH];
+    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
+    char* version = new char[REVIEW_VERSION_LENGTH];
+    char* date = new char[REVIEW_DATE_LENGTH];
+
+    arq.open(path, ios::binary);
+
+    int recordSize = RECORD_LENGTH*sizeof(char);
+
+    if (!arq) {
+        return;
+    }
+
+    arq.seekg(RECORD_LENGTH * i);
+    int currentPos= recordSize * i;
+
+
+    for(int i=1; recordSize*(i-1) < RECORD_LENGTH; i++){
+        arq.read(review_id,REVIEW_ID_LENGTH);
+        currentPos+=REVIEW_ID_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(review_text,REVIEW_TEXT_LENGTH);
+        currentPos+=REVIEW_TEXT_LENGTH*sizeof(char) ;
+        arq.seekg(currentPos);
+
+        arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
+        currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(version,REVIEW_VERSION_LENGTH);
+        currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(date,REVIEW_DATE_LENGTH);
+
+
+        cout << review_id;
+        cout << endl;
+
+        cout << review_text;
+        cout <<endl;
+
+        cout << upvotes;
+        cout <<endl;
+
+        cout << version;
+        cout <<endl;
+
+        cout << date;
+        cout << endl;
+        cout << endl;
+    }
+
+    delete [] review_id;
+    delete [] review_text;
+    delete [] upvotes;
+    delete [] version;
+    delete [] date;
+
+
+
+    arq.close();
+}
+
 
 
 
@@ -416,10 +486,11 @@ int main(int argc, char **argv) {
     //conferir("../tiktok_app_reviews.csv");
 
     //readTeste("../data.csv");
-    readTeste("../tiktok_app_reviews.csv");
+    //readTeste("../tiktok_app_reviews.csv");
    //readBin("../teste2.bin");
     //read("../tiktok_app_reviews.csv");
     //read("../data.csv");
+    acessarRegistro(3, "../teste2.bin");
 
 
     return 0;
