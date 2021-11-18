@@ -407,7 +407,7 @@ void read(string path) {
 
     ofstream arqOut;
 
-    arqOut.open("../teste2.bin", ios::binary);
+    arqOut.open("../teste6.bin", ios::binary);
 
     arq = fopen(path.c_str(), "r");
 
@@ -464,8 +464,8 @@ void read(string path) {
         }
 
         //TODO: gravar o último campo do último registro:
-        // value += '\0';
-        // arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+         value += '\0';
+         arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
 
         arqOut.close();
         fclose(arq);
@@ -486,11 +486,13 @@ int main(int argc, char **argv) {
 
     //readTeste("../data.csv");
     //readTeste("../tiktok_app_reviews.csv");
-   //readBin("../teste2.bin");
+    //readBin("../teste2.bin");
     //read("../tiktok_app_reviews.csv");
     //read("../data.csv");
-    acessarRegistro(1, "../teste2.bin");
+    acessarRegistro(1908876, "../teste6.bin"); //1908874
 
+
+    system("pause");
 
     return 0;
 
