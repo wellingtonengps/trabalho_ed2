@@ -5,12 +5,14 @@
 #ifndef MAIN_CPP_REVIEW_H
 #define MAIN_CPP_REVIEW_H
 #include <string>
+#include <memory>
+
 
 using namespace std;
 
 class Review{
     private:
-        string review_id;
+    string review_id;
         string review_text;
         int upvotes;
         string app_version;
@@ -28,6 +30,7 @@ class Review{
         void setUpvotes(int upvotes);
         void setAppVersion(string version);
         void setPostedDate(string date);
+        string toString();
 };
 
 #endif //MAIN_CPP_REVIEW_H

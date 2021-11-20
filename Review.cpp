@@ -49,3 +49,17 @@ void Review::setAppVersion(string version){
 void Review::setPostedDate(string date){
    this->posted_date = date;
 };
+
+string Review::toString() {
+    string reviewString;
+
+    reviewString.append("Id: " + this->getReviewId() + "\n");
+    reviewString.append("Text: " + this->getReviewText() + "\n");
+    reviewString.append("Upvotes: " + to_string(this->getUpvotes()) + "\n");
+    reviewString.append("Version: " + this->getAppVersion() + "\n");
+    reviewString.append("Posted date: " + this->getPostedDate() + "\n");
+
+    cout << endl;
+
+    return reviewString;
+}

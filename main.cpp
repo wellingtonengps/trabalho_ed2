@@ -2,19 +2,20 @@
 #include <string>
 #include <fstream>
 #include <stdlib.h>
+#include <cstdlib>
 #include <stdio.h>
 #include "Review.h"
+#include "FileIO.h"
+#include <memory>
+#include <time.h>
+#include <vector>
 
-int REVIEW_TEXT_LENGTH = 1000;
 
+int REVIEW_TEXT_LENGTH = 400;
 int REVIEW_ID_LENGTH = 90;
-
 int REVIEW_UPVOTES_LENGTH = 6;
-
 int REVIEW_VERSION_LENGTH = 9;
-
 int REVIEW_DATE_LENGTH = 20;
-
 int RECORD_LENGTH = REVIEW_TEXT_LENGTH + REVIEW_ID_LENGTH + REVIEW_UPVOTES_LENGTH + REVIEW_VERSION_LENGTH + REVIEW_DATE_LENGTH;
 
 using namespace std;
@@ -164,6 +165,8 @@ char getNextChar(){
     return c;
 }
 
+
+
 void acessarRegistro(int i, string path){
     ifstream arq;
 
@@ -233,8 +236,113 @@ void acessarRegistro(int i, string path){
     arq.close();
 }
 
+unique_ptr<Review> acessarRegistroTAD(int i, string path){
 
+    //Review *review = new Review();
+    unique_ptr<Review>  review = unique_ptr<Review>(new Review());
 
+    ifstream arq;
+
+    char* review_id = new char[REVIEW_ID_LENGTH];
+    char* review_text = new char[REVIEW_TEXT_LENGTH];
+    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
+    char* version = new char[REVIEW_VERSION_LENGTH];
+    char* date = new char[REVIEW_DATE_LENGTH];
+
+    arq.open(path, ios::binary);
+
+    int recordSize = RECORD_LENGTH*sizeof(char);
+
+    if (arq) {
+        arq.seekg(RECORD_LENGTH * i);
+        int currentPos= recordSize * i;
+
+        arq.read(review_id,REVIEW_ID_LENGTH);
+        currentPos+=REVIEW_ID_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(review_text,REVIEW_TEXT_LENGTH);
+        currentPos+=REVIEW_TEXT_LENGTH*sizeof(char) ;
+        arq.seekg(currentPos);
+
+        arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
+        currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(version,REVIEW_VERSION_LENGTH);
+        currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(date,REVIEW_DATE_LENGTH);
+
+        review->setReviewId(review_id);
+        review->setReviewText(review_text);
+        review->setUpvotes(stoi(upvotes));
+        review->setAppVersion(version);
+        review->setPostedDate(date);
+
+        delete [] review_id;
+        delete [] review_text;
+        delete [] upvotes;
+        delete [] version;
+        delete [] date;
+
+        arq.close();
+
+        return review;
+    }
+    else {
+        cout << "Arquivo nao aberto";
+    }
+}
+
+void testeImportacao(string path){
+
+    vector<unique_ptr<Review>> listaRegistros;
+
+    int option;
+    int numRegistros = 3646476;
+    srand (time(0));
+
+    ofstream saida;
+    saida.open("../saida_teste.txt", ios::out);
+
+    cout << "Tecle 1 - para saida na tela ou 2 - para saida em um arquivo txt: ";
+    cin >> option;
+
+    if(option == 1){
+        for(int i = 0; i < 10; i++){
+            int numRand = rand() % numRegistros;
+            listaRegistros.push_back(acessarRegistroTAD(numRand, path));
+        }
+
+        for(int i = 0; i < listaRegistros.size(); i++){
+            cout << listaRegistros[i]->toString();
+        }
+
+    }
+    else if(option == 2){
+        for(int i = 0; i < 100; i++){
+            int numRand = rand() % numRegistros;
+            listaRegistros.push_back(acessarRegistroTAD(numRand, path));
+        }
+
+        for(int i = 0; i < listaRegistros.size(); i++){
+            saida << listaRegistros[i]->toString();
+            cout << endl;
+        }
+
+        cout << "Arquido saida.txt gerado" << endl;
+    }
+    else {
+        cout << "Opcao invalida";
+    }
+
+    //imprimir no arquivo usando
+    //saida.write("", 123);
+    saida.close();
+
+}
 
 /////////////*************************************
 
@@ -385,8 +493,8 @@ void readTeste(string path) {
             }
         }
 
-        value += '\0';
-        arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+       // value += '\0';
+       // arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
         arqOut.close();
         //fclose(arq);
     } else {
@@ -397,9 +505,6 @@ void readTeste(string path) {
 }
 
 
-
-
-
 void read(string path) {
 
     FILE *arq;
@@ -407,9 +512,10 @@ void read(string path) {
 
     ofstream arqOut;
 
-    arqOut.open("../teste6.bin", ios::binary);
+    arqOut.open("../teste700v2.bin", ios::binary);
 
     arq = fopen(path.c_str(), "r");
+    int numRegistros=0;
 
 
     if (arq != NULL && arqOut) {
@@ -453,6 +559,7 @@ void read(string path) {
                 //cout << " - " << value << "\n";
                 campoAtual = 0;
                 //cout << "";
+                numRegistros++;
             }
 
             value.clear();
@@ -464,9 +571,10 @@ void read(string path) {
         }
 
         //TODO: gravar o último campo do último registro:
-         value += '\0';
-         arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
-
+         //value += '\0';
+         //arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
+         //numRegistros++;
+        cout << "Registros lidos: " << numRegistros << endl;
         arqOut.close();
         fclose(arq);
     } else {
@@ -484,15 +592,23 @@ int main(int argc, char **argv) {
 
     //conferir("../tiktok_app_reviews.csv");
 
+    //FileIO fileIo =  FileIO("../tiktok_app_reviews.csv", 100000);
+    //fileIo.readToBinary("../teste.bin");
+    //fileIo.close();
+
     //readTeste("../data.csv");
     //readTeste("../tiktok_app_reviews.csv");
     //readBin("../teste2.bin");
     //read("../tiktok_app_reviews.csv");
     //read("../data.csv");
-    acessarRegistro(1908876, "../teste6.bin"); //1908874
+    //acessarRegistro(3646476, "../teste2.bin"); //1908874
+
+    //cout << acessarRegistroTAD(3646476, "../teste2.bin")->toString() << endl;
+
+    testeImportacao("../teste2.bin");
 
 
-    system("pause");
+    //system("pause");
 
     return 0;
 
