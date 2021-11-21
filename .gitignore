@@ -1,5 +1,7 @@
 *.csv
 *.bin
+.idea
+CMakeLists.txt
 lixo.cpp
 archive/
 cmake-build-debug/
