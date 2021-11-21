@@ -1,12 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <stdlib.h>
 #include <cstdlib>
-#include <stdio.h>
 #include "Review.h"
-#include "FileIO.h"
-#include <memory>
 #include <time.h>
 #include <vector>
 
@@ -20,87 +16,8 @@ int RECORD_LENGTH = REVIEW_TEXT_LENGTH + REVIEW_ID_LENGTH + REVIEW_UPVOTES_LENGT
 
 using namespace std;
 
-Review *readLine(string line) {
-    Review *review = new Review();
-    bool ignoraVirgula = false;
-    int campoAtual = 0;
-    string value;
 
-    for (int i = 0; i < line.length(); i++) {
-
-
-        if (line[i] == '\"') {
-            ignoraVirgula = !ignoraVirgula;
-        } else if (line[i] == ',' && ignoraVirgula == false) {
-            cout << '\n';
-
-            if (campoAtual == 0) {
-                review->setReviewId(value);
-            } else if (campoAtual == 1) {
-                review->setReviewText(value);
-            } else if (campoAtual == 2) {
-                review->setUpvotes(stoi(value));
-            } else if (campoAtual == 3) {
-                review->setAppVersion(value);
-            } else if (campoAtual == 4) {
-                review->setPostedDate(value);
-            }
-
-            value.clear();
-            campoAtual++;
-        } else {
-            cout << line[i];
-            value += line[i];
-        }
-
-    }
-    cout << endl;
-    review->setPostedDate(value);
-    return review;
-
-}
-
-void conferir(string path) {
-    ifstream inputFile;
-    inputFile.open(path, ios::in);
-    string linha;
-    while (!inputFile.eof()) {
-        getline(inputFile, linha);
-
-        //cout << linha << endl;
-        if (linha[0] != 'g' && linha[1] != 'p' && linha[2] != ':') {
-            cout << "Merda!" << endl;
-            cout << linha << endl;
-        }
-
-    }
-}
-
-void readLegacy(string path) {
-    ifstream inputFile;
-    string linha;
-    inputFile.open(path, ios::in);
-    Review *review;
-
-    if (!inputFile) {
-        return;
-    }
-
-
-    getline(inputFile, linha);
-    while (!inputFile.eof()) {
-        getline(inputFile, linha);
-        review = readLine(linha);
-        cout << linha << endl;
-        delete review;
-    }
-
-    inputFile.close();
-
-}
-
-/////////////*************************************
-
+// *********************Funções de Buffer********************
 
 
 int nextChar=0;
@@ -112,6 +29,7 @@ bool endOfFile = false;
 ifstream arqI;
 
 
+//inicializa arquivo para leitura no buffer
 void initFile(string path){
     nextChar=0;
     currentBlock=0;
@@ -123,30 +41,28 @@ void initFile(string path){
     arqI.seekg(0, arqI.beg);
 }
 
+//armazena bloco do arquivo no buffer
 void bufferFile(){
-    //char dados[maxBlockSize];
-    //ifstream arq;
 
-   // arq.open(path, ios::binary);
     if (!arqI) {
         return;
     }
     arqI.seekg(maxBlockSize*currentBlock);
     arqI.read(dados, maxBlockSize);
-
-    //cout.write (dados, maxBlockSize);
-
-    //arqI.close();
 }
 
+//retorna próximo caracter a ser lido no buffer
 char getNextChar(){
+
+    //armazena primeiro bloco no buffer
     if(currentBlock==0 && nextChar==0){
         bufferFile();
     }
 
     char c = dados[nextChar];
-   // cout << c << "";
 
+    //se no final do bloco, carrega próximo bloco
+    //caso contrário, incrementa contador nextChar
     if(nextChar== maxBlockSize-1){
         currentBlock++;
         nextChar=0;
@@ -155,91 +71,21 @@ char getNextChar(){
         nextChar++;
     }
 
+    //se no final do arquivo, desaloca o buffer e fecha o arquivo
     if((nextChar+ currentBlock*maxBlockSize)*sizeof(char) >= fileSize){
         endOfFile=true;
         arqI.close();
         delete [] dados;
-        cout << "EOFFFF !!!!!-----"<<endl;
     }
 
     return c;
 }
 
+//**********************************************************************
 
+Review* acessarRegistroTAD(int i, string path){
 
-void acessarRegistro(int i, string path){
-    ifstream arq;
-
-
-    char* review_id = new char[REVIEW_ID_LENGTH];
-    char* review_text = new char[REVIEW_TEXT_LENGTH];
-    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
-    char* version = new char[REVIEW_VERSION_LENGTH];
-    char* date = new char[REVIEW_DATE_LENGTH];
-
-    arq.open(path, ios::binary);
-
-    int recordSize = RECORD_LENGTH*sizeof(char);
-
-    if (!arq) {
-        return;
-    }
-
-    arq.seekg(RECORD_LENGTH * i);
-    int currentPos= recordSize * i;
-
-
-    arq.read(review_id,REVIEW_ID_LENGTH);
-    currentPos+=REVIEW_ID_LENGTH*sizeof(char);
-    arq.seekg(currentPos);
-
-    arq.read(review_text,REVIEW_TEXT_LENGTH);
-    currentPos+=REVIEW_TEXT_LENGTH*sizeof(char) ;
-    arq.seekg(currentPos);
-
-    arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
-    currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
-    arq.seekg(currentPos);
-
-    arq.read(version,REVIEW_VERSION_LENGTH);
-    currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
-    arq.seekg(currentPos);
-
-    arq.read(date,REVIEW_DATE_LENGTH);
-
-
-    cout << review_id;
-    cout << endl;
-
-    cout << review_text;
-    cout <<endl;
-
-    cout << upvotes;
-    cout <<endl;
-
-    cout << version;
-    cout <<endl;
-
-    cout << date;
-    cout << endl;
-    cout << endl;
-
-
-    delete [] review_id;
-    delete [] review_text;
-    delete [] upvotes;
-    delete [] version;
-    delete [] date;
-
-
-
-    arq.close();
-}
-
-unique_ptr<Review> acessarRegistroTAD(int i, string path){
-
-    //Review *review = new Review();
-    unique_ptr<Review>  review = unique_ptr<Review>(new Review());
+    Review *review = new Review();
 
     ifstream arq;
 
@@ -276,6 +122,7 @@ unique_ptr<Review> acessarRegistroTAD(int i, string path){
         arq.read(date,REVIEW_DATE_LENGTH);
 
         review->setReviewId(review_id);
+        review_text[399]='\0'; //garantir que a string termina
         review->setReviewText(review_text);
         review->setUpvotes(stoi(upvotes));
         review->setAppVersion(version);
@@ -288,168 +135,93 @@ unique_ptr<Review> acessarRegistroTAD(int i, string path){
         delete [] date;
 
         arq.close();
-
-        return review;
     }
     else {
         cout << "Arquivo nao aberto";
     }
+
+    return review;
 }
 
-void testeImportacao(string path){
+void imprimeListaRegistros(vector<Review*> listaRegistros){
+    for(int i = 0; i < listaRegistros.size(); i++){
+        cout << listaRegistros[i]->toString()<< endl;
+    }
+}
 
-    vector<unique_ptr<Review>> listaRegistros;
-
-    int option;
-    int numRegistros = 3646476;
-    srand (time(0));
+void imprimeListaRegistrosArquivo(vector<Review*> listaRegistros, string output_path){
 
     ofstream saida;
-    saida.open("../saida_teste.txt", ios::out);
+    saida.open(output_path, ios::out);
 
-    cout << "Tecle 1 - para saida na tela ou 2 - para saida em um arquivo txt: ";
-    cin >> option;
-
-    if(option == 1){
-        for(int i = 0; i < 10; i++){
-            int numRand = rand() % numRegistros;
-            listaRegistros.push_back(acessarRegistroTAD(numRand, path));
-        }
-
-        for(int i = 0; i < listaRegistros.size(); i++){
-            cout << listaRegistros[i]->toString();
-        }
-
-    }
-    else if(option == 2){
-        for(int i = 0; i < 100; i++){
-            int numRand = rand() % numRegistros;
-            listaRegistros.push_back(acessarRegistroTAD(numRand, path));
-        }
-
-        for(int i = 0; i < listaRegistros.size(); i++){
-            saida << listaRegistros[i]->toString();
-            cout << endl;
-        }
-
-        cout << "Arquido saida.txt gerado" << endl;
-    }
-    else {
-        cout << "Opcao invalida";
+    if(!saida){
+        cout << "Não foi possível gerar arquivo data.txt contendo lista de registros"<< endl;
+        return;
     }
 
-    //imprimir no arquivo usando
-    //saida.write("", 123);
+    for(int i = 0; i < listaRegistros.size(); i++){
+        saida << listaRegistros[i]->toString()<< "\n";
+    }
     saida.close();
 
 }
 
-/////////////*************************************
+void testeImportacao(string path){
 
-void readBin(string path) {
+    vector<Review*> listaRegistros;
+    int option;
+    int numRegistros = 3646476;
+    srand (time(0));
 
+    cout << "TesteImportacao, digite:\n1 - saida na tela (10 registros)\n2 - saida no arquivo data.txt (100 registros)" << endl;
+    cin >> option;
 
-    ifstream arq;
-    //char* dados = new char[2621];
-    char* review_id = new char[REVIEW_ID_LENGTH];
-    char* review_text = new char[REVIEW_TEXT_LENGTH];
-    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
-    char* version = new char[REVIEW_VERSION_LENGTH];
-    char* date = new char[REVIEW_DATE_LENGTH];
-
-    arq.open(path, ios::binary);
-    int recordSize = RECORD_LENGTH*sizeof(char);
-
-    if (!arq) {
-        return;
+    for(int i = 0; i < (option == 1 ? 10 : 100); i++){
+        int numRand = rand() % numRegistros;
+        listaRegistros.push_back(acessarRegistroTAD(numRand, path));
     }
 
-    arq.seekg(0, arq.end);
-    int length = arq.tellg();
-    arq.seekg(0, arq.beg);
-    int currentPos=0;
+    if(option == 1){
+        imprimeListaRegistros(listaRegistros);
+    }
+    else if(option == 2){
+        imprimeListaRegistrosArquivo(listaRegistros, "data.txt");
 
-    for(int i=1; recordSize*(i-1) < length; i++){
-        arq.read(review_id,REVIEW_ID_LENGTH);
-        currentPos+=REVIEW_ID_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(review_text,REVIEW_TEXT_LENGTH);
-        currentPos+=REVIEW_TEXT_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
-        currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(version,REVIEW_VERSION_LENGTH);
-        currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(date,REVIEW_DATE_LENGTH);
-        currentPos+=REVIEW_DATE_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-
-        cout << review_id;
-        cout << endl;
-
-        cout << review_text;
-        cout <<endl;
-
-        cout << upvotes;
-        cout <<endl;
-
-        cout << version;
-        cout <<endl;
-
-        cout << date;
-        cout << endl;
-        cout << endl;
-
-        //arq.seekg(recordSize*i);
     }
 
-    //char teste[2] = {'a', 'b'};
-
-    //arq.read(dados,2621);
-    arq.close();
-
-    //std::cout.write (dados, 2621);
-
-      //  cout << teste;
-
-    //delete [] dados;
-    delete [] review_id;
-    delete [] review_text;
-    delete [] upvotes;
-    delete [] version;
-    delete [] date;
+    for(int i = 0; i < listaRegistros.size(); i++){
+        delete listaRegistros[i];
+    }
 }
 
+void readCSVToBinary(string path, string binaryOut) {
 
-void readTeste(string path) {
-
-   // FILE *arq;
     char c;
 
     ofstream arqOut;
-    arqOut.open("../teste2.bin", ios::binary);
+    arqOut.open(binaryOut, ios::binary);
 
-    //arq = fopen(path.c_str(), "r");
     initFile(path);
+    bool primeiraLinha=true;
 
 
     if (arqOut) {
         bool ignoraVirgula = false;
         int campoAtual = 0;
         string value;
-        string teste = "ab";
 
-
+        //lê dados do arquivo de entrada caracter por caracter
+        //escrevendo os dados no arquivo de saída
         while (!endOfFile) {
-
             c= getNextChar();
+
+             if(c=='\n' && primeiraLinha){
+                 primeiraLinha=false;
+                 continue;
+             }
+             if(primeiraLinha){
+                 continue;
+             }
 
             if (c == '\"') {
                 ignoraVirgula = !ignoraVirgula;
@@ -458,31 +230,19 @@ void readTeste(string path) {
 
                 if (campoAtual == 0) {
                     arqOut.write(value.c_str(), sizeof(char) * REVIEW_ID_LENGTH);
-                    //cout << " - " << value << "\n";
                     campoAtual++;
-                } else if (campoAtual == 1) {
+                } else if (campoAtual == 1 ) {
                     arqOut.write(value.c_str(), sizeof(char) * REVIEW_TEXT_LENGTH);
-                    //cout << " - " << value << "\n";
                     campoAtual++;
-
-                } else if (campoAtual == 2) {
-
+                } else if (campoAtual == 2 ) {
                     arqOut.write(value.c_str(), sizeof(char) * REVIEW_UPVOTES_LENGTH);
-                    //cout << " - " << value << "\n";
                     campoAtual++;
-
-                } else if (campoAtual == 3) {
-                    //  review->setAppVersion(value);
+                } else if (campoAtual == 3 ) {
                     arqOut.write(value.c_str(), sizeof(char) * REVIEW_VERSION_LENGTH);
-                    //cout << " - " << value << "\n";
                     campoAtual++;
-
-                } else if (campoAtual == 4) {
-                    // review->setPostedDate(value);
+                } else if (campoAtual == 4 ) {
                     arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
-                    //cout << " - " << value << "\n";
                     campoAtual = 0;
-                    //cout << "";
                 }
 
                 value.clear();
@@ -493,135 +253,59 @@ void readTeste(string path) {
             }
         }
 
-       // value += '\0';
-       // arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
         arqOut.close();
-        //fclose(arq);
     } else {
-        printf("Error ao abrir o arquivo");
+        cout << "Error ao abrir o arquivo"<< endl;
     }
-
-
 }
 
+void menu(string input_file_path, string output_file_path){
+    int option;
+    int i;
+    cout << "1 - Funcao acessarRegistro (i)\n2 - Funcao testeImportacao " << endl;
+    cin >> option;
 
-void read(string path) {
+    if(option == 1){
+        cout << "Informe i: ";
+        cin >> i;
+        Review* review = acessarRegistroTAD(i, output_file_path);
+        cout << review->toString();
 
-    FILE *arq;
-    char c;
-
-    ofstream arqOut;
-
-    arqOut.open("../teste700v2.bin", ios::binary);
-
-    arq = fopen(path.c_str(), "r");
-    int numRegistros=0;
-
-
-    if (arq != NULL && arqOut) {
-        bool ignoraVirgula = false;
-        int campoAtual = 0;
-        string value;
-        string teste = "ab";
-
-
-        while ((c = fgetc(arq)) != EOF) {
-
-            if (c == '\"') {
-                ignoraVirgula = !ignoraVirgula;
-            } else if ((c == ',' || c == '\n') && ignoraVirgula == false){
-                value += '\0';
-
-            if (campoAtual == 0) {
-                arqOut.write(value.c_str(), sizeof(char) * REVIEW_ID_LENGTH);
-                //cout << " - " << value << "\n";
-                campoAtual++;
-            } else if (campoAtual == 1) {
-                arqOut.write(value.c_str(), sizeof(char) * REVIEW_TEXT_LENGTH);
-                //cout << " - " << value << "\n";
-                campoAtual++;
-
-            } else if (campoAtual == 2) {
-
-                arqOut.write(value.c_str(), sizeof(char) * REVIEW_UPVOTES_LENGTH);
-                //cout << " - " << value << "\n";
-                campoAtual++;
-
-            } else if (campoAtual == 3) {
-                //  review->setAppVersion(value);
-                arqOut.write(value.c_str(), sizeof(char) * REVIEW_VERSION_LENGTH);
-                //cout << " - " << value << "\n";
-                campoAtual++;
-
-            } else if (campoAtual == 4) {
-                // review->setPostedDate(value);
-                arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
-                //cout << " - " << value << "\n";
-                campoAtual = 0;
-                //cout << "";
-                numRegistros++;
-            }
-
-            value.clear();
-
-
-        } else {
-                value += c;
-            }
-        }
-
-        //TODO: gravar o último campo do último registro:
-         //value += '\0';
-         //arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
-         //numRegistros++;
-        cout << "Registros lidos: " << numRegistros << endl;
-        arqOut.close();
-        fclose(arq);
-    } else {
-        printf("Error ao abrir o arquivo");
+        delete review;
     }
-
-
+    else if(option == 2){
+        testeImportacao(output_file_path);
+    }
+    else {
+        cout << "Opcao invalida" << endl;
+    }
 }
-
-
 
 int main(int argc, char **argv) {
-    //std::cout << "Trabalho ED2" << std::endl;
-    string input_file;
-
-    //conferir("../tiktok_app_reviews.csv");
-
-    //FileIO fileIo =  FileIO("../tiktok_app_reviews.csv", 100000);
-    //fileIo.readToBinary("../teste.bin");
-    //fileIo.close();
-
-    //readTeste("../data.csv");
-    //readTeste("../tiktok_app_reviews.csv");
-    //readBin("../teste2.bin");
-    //read("../tiktok_app_reviews.csv");
-    //read("../data.csv");
-    //acessarRegistro(3646476, "../teste2.bin"); //1908874
-
-    //cout << acessarRegistroTAD(3646476, "../teste2.bin")->toString() << endl;
-
-    testeImportacao("../teste2.bin");
-
-
-    //system("pause");
-
-    return 0;
+    string input_dir;
+    string input_file_path;
+    string output_file_path;
 
     if (argc == 2) {
-        input_file = argv[1];
+        input_dir = argv[1];
+        input_file_path = input_dir + "/tiktok_app_reviews.csv";
+        output_file_path = input_dir + "/data.bin";
 
     } else {
         cout << "Erro: era esperado caminho do arquivo de entrada." << endl;
-        //return 0;
+        return 0;
     }
 
-    read("../data.csv");
+    ifstream binFile(output_file_path);
+    if(binFile.fail()){
+        cout << "Binario nao encontrado. Gerando arquivo binario..." << endl;
+        readCSVToBinary(input_file_path, output_file_path);
 
+        menu(input_file_path, output_file_path);
+    }else{
+       // testeImportacao(output_file_path);
+        menu(input_file_path, output_file_path);
+    }
 
     return 0;
 }

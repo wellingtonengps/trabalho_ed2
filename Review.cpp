@@ -59,7 +59,5 @@ string Review::toString() {
     reviewString.append("Version: " + this->getAppVersion() + "\n");
     reviewString.append("Posted date: " + this->getPostedDate() + "\n");
 
-    cout << endl;
-
     return reviewString;
 }
