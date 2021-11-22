@@ -210,11 +210,12 @@ void readCSVToBinary(string path, string binaryOut) {
         int campoAtual = 0;
         string value;
 
-        //lê dados do arquivo de entrada caracter por caracter
+        //lê dados do arquivo de entrada caractere por caractere
         //escrevendo os dados no arquivo de saída
         while (!endOfFile) {
             c= getNextChar();
 
+            //ignorar a primeira linha do arquivo csv
              if(c=='\n' && primeiraLinha){
                  primeiraLinha=false;
                  continue;
