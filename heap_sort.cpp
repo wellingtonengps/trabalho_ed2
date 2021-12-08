@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <time.h>
+#include <vector>
+#include "Review.h"
+#include "Sorting.h"
 
 using namespace std;
 
@@ -29,18 +32,18 @@ void trocar(int A[], int a, int b){
 }
 
 void maxHeapify(int A[], int i, int n){
-    int left = 2*i;
-    int right = 2*i+1;
+    int left = 2*i+1;
+    int right = 2*i+2;
     int m;
 
-    if(left <= n && A[left] > A[i]){
+    if(left < n && A[left] > A[i]){
         m = left;
     }
     else{
         m=i;
     }
 
-    if(right<=n && A[right] > A[m]){
+    if(right<n && A[right] > A[m]){
         m =right;
     }
 
@@ -54,7 +57,7 @@ void maxHeapify(int A[], int i, int n){
 
 void buildHeap(int V[], int n){
 
-    for(int i=n/2; i>= 1; i--){
+    for(int i=n/2; i>= 0; i--){
         maxHeapify(V, i, n);
     }
 
@@ -71,26 +74,41 @@ void printList(int V[], int size){
 void heapSort(int A[], int n){
     buildHeap(A, n);
 
-    printList(A, n+1);
+    printList(A, n);
     cout <<endl;
-    for(int i=n; i>=2; i--){
-        trocar(A, 1, i);
-        printList(A, n+1);
-        maxHeapify(A, 1, i-1);
-        printList(A, n+1);
+    for(int i=n-1; i>=0; i--){
+        trocar(A, 0, i);
+        printList(A, n);
+        maxHeapify(A, 0, i-1);
+        printList(A, n);
         cout <<endl;
 
     }
 }
 
 
-/*int main(){
+int main(){
     int arraySize = 11;
-    int listSize = arraySize-1;
-    int keys[11]={0, 4, 2, 6, 7, 5, 8, 9, 3, 1, 4};
-    keys[0]=0;
-    printList(keys, arraySize);
-    heapSort(keys,  listSize);
-    printList(keys, arraySize);
+    int listSize = arraySize;
+    int keys[11]={7, 4, 2, 6, 7, 5, 8, 9, 3, 1, 4};
 
-}*/
+    /*printList(keys, arraySize);
+    heapSort(keys,  listSize);
+    printList(keys, arraySize);*/
+
+    vector<Review*> reviews;
+
+    for(int i=0; i<arraySize; i++ ){
+        Review* review = new Review();
+        review->setUpvotes(keys[i]);
+        reviews.push_back(review);
+    }
+
+    Sorting sorting = Sorting();
+    sorting.heapSort(reviews);
+
+    for(int i=0; i<reviews.size(); i++ ){
+        delete reviews[i];
+    }
+
+}
