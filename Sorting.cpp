@@ -1,6 +1,8 @@
 
 #include "Sorting.h"
 #include <iostream>
+#include <algorithm>
+#include <vector>
 
 
 using namespace std;
@@ -82,3 +84,38 @@ void Sorting::heapSort(vector<Review*> &A){
     printList(A);
 
 }
+
+void Sorting::countingSort(vector<Review*> &A){
+    int i;
+    int largest = A[0]->getUpvotes();
+
+    vector<Review*> tmp(A.size());
+
+    for(i = 1; i < A.size(); i++){
+        if(largest < A[i]->getUpvotes()){
+            largest = A[i]->getUpvotes();
+        }
+    }
+
+    vector<int> count(largest+1, 0);
+
+    for(i = 0; i < A.size(); i++){
+        count [A[i]->getUpvotes()]++;
+    }
+
+    for(i = 1; i <= largest; i++){
+        count[i] = count[i-1] + count[i];
+    }
+
+    for(i = A.size()-1; i >= 0; i--){
+        tmp[count[A[i]->getUpvotes()]-1] = A[i];
+        count[A[i]->getUpvotes()]--;
+    }
+
+    for(i = 0; i < A.size(); i++){
+        A[i] = tmp[i];
+    }
+
+    printList(A);
+}
+

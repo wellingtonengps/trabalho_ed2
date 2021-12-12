@@ -7,8 +7,6 @@
 
 using namespace std;
 
-
-
 void initialize(int V[], int size){
     srand (time(0));
 
