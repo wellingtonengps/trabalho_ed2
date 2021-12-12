@@ -15,6 +15,7 @@ class Sorting {
     ~Sorting();
     void heapSort(vector<Review*> &V);
     void countingSort(vector<Review*> &V);
+    void radixSort(vector<Review*> &V);
 };
 
 

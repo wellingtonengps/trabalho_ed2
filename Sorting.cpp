@@ -57,7 +57,7 @@ void buildHeap(vector<Review*> &V, int n){
 
 }
 
-void printList(vector<Review*> A){
+void printList(vector<Review*> &A){
     for(int i=0; i<A.size(); i++){
         cout<< key(A[i]) <<", ";
     }
@@ -70,14 +70,14 @@ void Sorting::heapSort(vector<Review*> &A){
     printList(A);
     buildHeap(A, n);
 
-    printList(A);
-    cout <<endl;
+    //printList(A);
+    //cout <<endl;
     for(int i=n-1; i>=0; i--){
         trocar(A, 0, i);
-        printList(A);
+       // printList(A);
         maxHeapify(A, 0, i-1);
-        printList(A);
-        cout <<endl;
+        //printList(A);
+        //cout <<endl;
 
     }
 
@@ -119,3 +119,6 @@ void Sorting::countingSort(vector<Review*> &A){
     printList(A);
 }
 
+void Sorting::radixSort(vector<Review *> &V) {
+
+}

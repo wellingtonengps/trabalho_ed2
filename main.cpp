@@ -3,8 +3,11 @@
 #include <fstream>
 #include <cstdlib>
 #include "Review.h"
+#include "Sorting.h"
 #include <time.h>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 
 int REVIEW_TEXT_LENGTH = 400;
@@ -15,7 +18,8 @@ int REVIEW_DATE_LENGTH = 20;
 int RECORD_LENGTH = REVIEW_TEXT_LENGTH + REVIEW_ID_LENGTH + REVIEW_UPVOTES_LENGTH + REVIEW_VERSION_LENGTH + REVIEW_DATE_LENGTH;
 
 using namespace std;
-
+using namespace std::chrono;
+using namespace std::this_thread;
 
 // *********************Funções de Buffer********************
 
@@ -194,6 +198,74 @@ void testeImportacao(string path){
     }
 }
 
+vector<Review*> importarAleatorios(string path, int num){
+
+    vector<Review*> listaRegistros;
+    int numRegistros = 3646476;
+    srand (std::chrono::high_resolution_clock::now().time_since_epoch().count());
+
+    for(int i = 0; i < num; i++){
+        int numRand = rand() % numRegistros;
+        listaRegistros.push_back(acessarRegistroTAD(numRand, path));
+    }
+
+    /*for(int i = 0; i < listaRegistros.size(); i++){
+        delete listaRegistros[i];
+    }*/
+    return listaRegistros;
+}
+
+
+string testaFuncao(vector<Review*> &reviews, Sorting sorting){
+    string res = "";
+    high_resolution_clock::time_point inicio = high_resolution_clock::now();
+    sorting.countingSort(reviews);
+    high_resolution_clock::time_point fim = high_resolution_clock::now();
+
+    double time = duration_cast<duration<double>>(fim - inicio).count();
+
+    res += "tempo: " + to_string(time);
+
+
+    return res;
+}
+
+
+void testePerformaceOrdenacao(string path, int num){
+
+    Sorting sorting = Sorting();
+
+    vector<Review*> reviews;
+
+    //10000 - 0
+
+    //50000 - 1
+
+    //100000 - 2
+
+    //500000 - 3
+
+    //1000000 - 4
+
+    int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
+
+    for(int i = 0; i < 3; i++){
+        reviews = importarAleatorios(path, quantidades[num]);
+        cout << testaFuncao(reviews,sorting) << "\n";
+
+        for(int i = 0; i < reviews.size(); i++){
+            delete reviews[i];
+        }
+
+       // sleep_for(seconds(1));
+
+
+    }
+
+
+}
+
+
 void readCSVToBinary(string path, string binaryOut) {
 
     char c;
@@ -282,7 +354,11 @@ void menu(string input_file_path, string output_file_path){
     }
 }
 
-int main(int argc, char **argv) {
+int main(){
+    testePerformaceOrdenacao("data.bin", 0);
+}
+
+int main2(int argc, char **argv) {
     string input_dir;
     string input_file_path;
     string output_file_path;

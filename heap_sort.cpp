@@ -103,7 +103,8 @@ int main(){
     }
 
     Sorting sorting = Sorting();
-    sorting.heapSort(reviews);
+    //sorting.countingSort(reviews);
+    /*sorting.heapSort(reviews);*/
 
     for(int i=0; i<reviews.size(); i++ ){
         delete reviews[i];
