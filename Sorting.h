@@ -21,7 +21,7 @@ public:
     void heapSort(vector<Review*> &V);
     void countingSort(vector<Review*> &V);
     void radixSort(vector<Review*> &V);
-    void quickSort(vector<Review*> &B, int inicio, int final);
+    void quickSort(vector<Review*> &B, int min, int max);
     int getLastAlgorithmComparisonCount();
     int getlastAlgorithmSwapCount();
     void incrementComparisonCount();
