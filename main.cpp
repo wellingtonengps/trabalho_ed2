@@ -223,10 +223,11 @@ string testaFuncao(vector<Review*> &reviews, Sorting sorting){
     high_resolution_clock::time_point fim = high_resolution_clock::now();
 
     double time = duration_cast<duration<double>>(fim - inicio).count();
+    int comparisons = sorting.getLastAlgorithmComparisonCount();
+    int swaps = sorting.getlastAlgorithmSwapCount();
 
-    res += "tempo: " + to_string(time);
-
-
+    res += "tempo: " + to_string(time) + ", trocas: " + swaps + ", comparações: "+ comparisons;
+    
     return res;
 }
 

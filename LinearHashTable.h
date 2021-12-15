@@ -1,0 +1,12 @@
+
+
+#ifndef TRABALHO_LINEARHASHTABLE_H
+#define TRABALHO_LINEARHASHTABLE_H
+
+
+class LinearHashTable {
+
+};
+
+
+#endif //TRABALHO_LINEARHASHTABLE_H

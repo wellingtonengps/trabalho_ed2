@@ -10,12 +10,27 @@
 
 
 class Sorting {
-    public:
+
+private:
+    int lastAlgorithmComparisonCount;
+    int lastAlgorithmSwapCount;
+
+public:
     Sorting();
     ~Sorting();
     void heapSort(vector<Review*> &V);
     void countingSort(vector<Review*> &V);
     void radixSort(vector<Review*> &V);
+    void quickSort(vector<Review*> &B, int inicio, int final);
+    int getLastAlgorithmComparisonCount();
+    int getlastAlgorithmSwapCount();
+    void incrementComparisonCount();
+    void incrementSwapCount();
+    void maxHeapify(vector<Review*> &A, int i, int n);
+    void trocar(vector<Review*> &A, int a, int b);
+    void buildHeap(vector<Review*> &V, int n);
+    int particiona(vector<Review*> &B, int min, int max);
+    void resetCount();
 };
 
 

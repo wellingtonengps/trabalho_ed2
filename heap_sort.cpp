@@ -84,6 +84,14 @@ void heapSort(int A[], int n){
     }
 }
 
+void printListR(vector<Review*> &A){
+    for(int i=0; i<A.size(); i++){
+        cout<< A[i]->getUpvotes() <<", ";
+    }
+
+    cout << endl;
+}
+
 
 int main(){
     int arraySize = 11;
@@ -104,7 +112,9 @@ int main(){
 
     Sorting sorting = Sorting();
     //sorting.countingSort(reviews);
-    /*sorting.heapSort(reviews);*/
+    printListR(reviews);
+    sorting.quickSort(reviews, 0, 10);
+    printListR(reviews);
 
     for(int i=0; i<reviews.size(); i++ ){
         delete reviews[i];

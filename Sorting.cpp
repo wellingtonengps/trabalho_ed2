@@ -8,6 +8,8 @@
 using namespace std;
 
 Sorting::Sorting() {
+    this->lastAlgorithmComparisonCount=0;
+    this->lastAlgorithmSwapCount=0;
 
 }
 
@@ -15,17 +17,32 @@ Sorting::~Sorting() {
 
 }
 
-void trocar(vector<Review*> &A, int a, int b){
+int Sorting::getLastAlgorithmComparisonCount(){
+    return this->lastAlgorithmComparisonCount;
+}
+
+int Sorting::getlastAlgorithmSwapCount() {
+    return this->lastAlgorithmSwapCount;
+}
+
+void Sorting::resetCount(){
+    this->lastAlgorithmComparisonCount=0;
+    this->lastAlgorithmSwapCount=0;
+}
+
+void Sorting::trocar(vector<Review*> &A, int a, int b){
     Review* aux = A[a];
     A[a] = A[b];
     A[b] = aux;
+
+    lastAlgorithmSwapCount++;
 }
 
 int key(Review* r){
     return r->getUpvotes();
 }
 
-void maxHeapify(vector<Review*> &A, int i, int n){
+void Sorting::maxHeapify(vector<Review*> &A, int i, int n){
     int left = 2*i+1;
     int right = 2*i+2;
     int m;
@@ -45,14 +62,16 @@ void maxHeapify(vector<Review*> &A, int i, int n){
         trocar(A, i, m);
         maxHeapify(A,m,n);
     }
+
+    lastAlgorithmComparisonCount+=2;
 }
 
 
 
-void buildHeap(vector<Review*> &V, int n){
+void Sorting::buildHeap(vector<Review*> &V, int n){
 
     for(int i=n/2; i>= 0; i--){
-        maxHeapify(V, i, n);
+       maxHeapify(V, i, n);
     }
 
 }
@@ -66,6 +85,7 @@ void printList(vector<Review*> &A){
 }
 
 void Sorting::heapSort(vector<Review*> &A){
+    resetCount();
     int n = A.size();
     printList(A);
     buildHeap(A, n);
@@ -119,6 +139,46 @@ void Sorting::countingSort(vector<Review*> &A){
     printList(A);
 }
 
-void Sorting::radixSort(vector<Review *> &V) {
+void Sorting::radixSort(vector<Review*> &V) {
+    int max = V[0]->getUpvotes();
 
+    for(int i ;i<max;i++){
+        if(V[i]->getUpvotes()>max){
+            max = V[i]->getUpvotes();
+        }
+
+    }
+    for (int place = 1; max / place > 0; place *= 10)
+        //countingSort(arr, size, place);
+}
+
+int Sorting::particiona(vector<Review*> &B, int min, int max)
+{
+    Review* pivo = B[min + ((max - min)/2)];
+    int i = (min - 1);
+
+    for (int j = min; j <= max - 1; j++)
+    {
+
+        if (key(B[j]) < key(pivo))
+        {
+            i++;
+            trocar(B, i, j);
+        }
+    }
+    trocar(B, i+1, max);
+    return (i + 1);
+}
+
+
+void Sorting::quickSort(vector<Review*> &B, int min, int max)
+{
+    if (min < max)
+    {
+
+        int pivo = particiona(B, min, max);
+
+        quickSort(B, min, pivo - 1);
+        quickSort(B, pivo + 1, max);
+    }
 }
