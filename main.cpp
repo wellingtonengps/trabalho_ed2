@@ -219,7 +219,7 @@ vector<Review*> importarAleatorios(string path, int num){
 string testaFuncao(vector<Review*> &reviews, Sorting sorting){
     string res = "";
     high_resolution_clock::time_point inicio = high_resolution_clock::now();
-    sorting.countingSort(reviews);
+    sorting.heapSort(reviews);
     high_resolution_clock::time_point fim = high_resolution_clock::now();
 
     double time = duration_cast<duration<double>>(fim - inicio).count();
@@ -353,11 +353,13 @@ void menu(string input_file_path, string output_file_path){
     }
 }
 
-int main2(){
+int main(){
     testePerformaceOrdenacao("data.bin", 0);
+
+    return 0;
 }
 
-int main(int argc, char **argv) {
+int main2(int argc, char **argv) {
     string input_dir;
     string input_file_path;
     string output_file_path;

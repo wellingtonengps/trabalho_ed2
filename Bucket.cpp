@@ -4,7 +4,7 @@
 using namespace std;
 
 Bucket::Bucket() {
-    itemList.reserve(10);
+    itemList.reserve(4);
 }
 
 Bucket::~Bucket() {
