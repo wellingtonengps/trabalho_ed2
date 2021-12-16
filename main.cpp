@@ -226,7 +226,7 @@ string testaFuncao(vector<Review*> &reviews, Sorting sorting){
     int comparisons = sorting.getLastAlgorithmComparisonCount();
     int swaps = sorting.getlastAlgorithmSwapCount();
 
-    res += "tempo: " + to_string(time) + ", trocas: " + swaps + ", comparações: "+ comparisons;
+    res += "tempo: " + to_string(time) + ", trocas: " + to_string(swaps) + ", comparações: " + to_string(comparisons);
     
     return res;
 }
@@ -259,8 +259,6 @@ void testePerformaceOrdenacao(string path, int num){
         }
 
        // sleep_for(seconds(1));
-
-
     }
 
 
@@ -355,11 +353,11 @@ void menu(string input_file_path, string output_file_path){
     }
 }
 
-int main(){
+int main2(){
     testePerformaceOrdenacao("data.bin", 0);
 }
 
-int main2(int argc, char **argv) {
+int main(int argc, char **argv) {
     string input_dir;
     string input_file_path;
     string output_file_path;

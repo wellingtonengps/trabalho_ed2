@@ -111,9 +111,12 @@ int main(){
     }
 
     Sorting sorting = Sorting();
-    //sorting.countingSort(reviews);
-    printListR(reviews);
-    sorting.quickSort(reviews, 0, 10);
+    sorting.countingSort(reviews);
+
+    cout << sorting.getLastAlgorithmComparisonCount() << endl;
+    cout << sorting.getlastAlgorithmSwapCount() << endl;
+    //printListR(reviews);
+    //sorting.quickSort(reviews, 0, 10);
     printListR(reviews);
 
     for(int i=0; i<reviews.size(); i++ ){

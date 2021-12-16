@@ -115,28 +115,30 @@ void Sorting::countingSort(vector<Review*> &A){
         if(largest < A[i]->getUpvotes()){
             largest = A[i]->getUpvotes();
         }
+        lastAlgorithmComparisonCount++;
     }
 
     vector<int> count(largest+1, 0);
 
     for(i = 0; i < A.size(); i++){
         count [A[i]->getUpvotes()]++;
+        lastAlgorithmComparisonCount++;
     }
 
     for(i = 1; i <= largest; i++){
         count[i] = count[i-1] + count[i];
+        lastAlgorithmComparisonCount++;
     }
 
     for(i = A.size()-1; i >= 0; i--){
         tmp[count[A[i]->getUpvotes()]-1] = A[i];
         count[A[i]->getUpvotes()]--;
+        lastAlgorithmSwapCount++;
     }
 
     for(i = 0; i < A.size(); i++){
         A[i] = tmp[i];
     }
-
-    printList(A);
 }
 
 void Sorting::radixSort(vector<Review*> &V) {
@@ -148,7 +150,9 @@ void Sorting::radixSort(vector<Review*> &V) {
         }
 
     }
-    for (int place = 1; max / place > 0; place *= 10)
+    for (int place = 1; max / place > 0; place *= 10){
+
+    }
         //countingSort(arr, size, place);
 }
 
