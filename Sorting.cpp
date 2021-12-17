@@ -188,17 +188,19 @@ void Sorting::radixSort(vector<Review*> &V) {
 
 int Sorting::particiona(vector<Review*> &B, int min, int max)
 {
-    Review* pivo = B[min + ((max - min)/2)];
+    Review* pivot = B[max];
     int i = (min - 1);
 
     for (int j = min; j <= max - 1; j++)
     {
-
-        if (key(B[j]) < key(pivo))
+        lastAlgorithmComparisonCount++;
+        if (key(B[j]) < key(pivot))
         {
             i++;
             trocar(B, i, j);
+
         }
+
     }
     trocar(B, i+1, max);
     return (i + 1);
@@ -207,12 +209,20 @@ int Sorting::particiona(vector<Review*> &B, int min, int max)
 
 void Sorting::quickSort(vector<Review*> &B, int min, int max)
 {
+    lastAlgorithmComparisonCount++;
     if (min < max)
     {
 
-        int pivo = particiona(B, min, max);
+        int pivot = particiona(B, min, max);
 
-        quickSort(B, min, pivo - 1);
-        quickSort(B, pivo + 1, max);
+        quickSort(B, min, pivot - 1);
+        quickSort(B, pivot + 1, max);
     }
+
+}
+
+void Sorting::quickSort(vector<Review *> &B) {
+    resetCount();
+    quickSort(B, 0, B.size()-1);
+    printList(B);
 }

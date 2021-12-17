@@ -220,7 +220,7 @@ vector<Review*> importarAleatorios(string path, int num){
 string testaFuncao(vector<Review*> &reviews, Sorting sorting){
     string res = "";
     high_resolution_clock::time_point inicio = high_resolution_clock::now();
-    sorting.heapSort(reviews);
+    sorting.quickSort(reviews);
     high_resolution_clock::time_point fim = high_resolution_clock::now();
 
     double time = duration_cast<duration<double>>(fim - inicio).count();
@@ -246,9 +246,10 @@ void testaTabelaHash(vector<Review*> &reviews){
             linHT.insert(reviews[i]->getAppVersion());
             linHT.printTable();
 
+            cout << "achou? " << linHT.busca(reviews[i]->getAppVersion()) << endl;
         }
-
     }
+
     linHT.printTable();
 }
 
@@ -268,7 +269,7 @@ void testePerformaceOrdenacao(string path, int num){
 
     //1000000 - 4
 
-    int quantidades[5] = {25, 50000, 100000, 500000, 1000000};
+    int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
 
     for(int i = 0; i < 3; i++){
         reviews = importarAleatorios(path, quantidades[num]);
@@ -276,7 +277,7 @@ void testePerformaceOrdenacao(string path, int num){
 
         //******
         if(i==0){
-            testaTabelaHash(reviews);
+          //  testaTabelaHash(reviews);
         }
         //*******
 

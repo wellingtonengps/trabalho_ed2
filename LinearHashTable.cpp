@@ -29,13 +29,13 @@ LinearHashTable::~LinearHashTable() {
 void LinearHashTable::insert(string val) {
 
     int h = hash(val);
-    cout<< "val: "<< val<< " balde: "<<h<<endl;
+   // cout<< "val: "<< val<< " balde: "<<h<<endl;
     bucketList[h]->inserir(val);
     nChaves++;
 
     //cout <<"FC: " << fatorCarga()<<endl;
     if(fatorCarga()>=maxFatorCarga){
-        cout << "FC: "<< fatorCarga() << " >= "<<maxFatorCarga<<endl;
+       // cout << "FC: "<< fatorCarga() << " >= "<<maxFatorCarga<<endl;
         splitBucket();
     }
 
@@ -44,10 +44,23 @@ void LinearHashTable::insert(string val) {
 void LinearHashTable::reinsert(string val) {
 
     int h = hash(val);
-    cout<< "reinserindo val: "<< val<< " balde: "<<h<<endl;
+    //cout<< "reinserindo val: "<< val<< " balde: "<<h<<endl;
     bucketList[h]->inserir(val);
 }
 
+bool LinearHashTable::busca(string val){
+
+    int k = comprimeCaracteres(val);
+    int h = k % (int)(originalBucketCount * (float)pow(2, 0));
+    bool encontrado=false;
+
+    for(int i=1; !encontrado && h<bucketList.size(); i++){
+        encontrado = bucketList[h]->busca(val);
+        h = k % (int)(originalBucketCount * (float)pow(2, i));
+    }
+
+    return encontrado;
+}
 
 
 void LinearHashTable::splitBucket() {
@@ -84,17 +97,25 @@ float LinearHashTable::fatorCarga(){
     return fatorC;
 }
 
+int LinearHashTable::comprimeCaracteres(string val){
+
+    val.erase(remove(val.begin(), val.end(), '.'), val.end());
+    int res = stoi(val);
+    return res;
+}
+
 int LinearHashTable::hash(string val) {
 
    // cout << "val: "<< val<<endl;
-    val.erase(remove(val.begin(), val.end(), '.'), val.end());
+   // val.erase(remove(val.begin(), val.end(), '.'), val.end());
 
-    int k = stoi(val);
+    int k = comprimeCaracteres(val);
     int n = originalBucketCount /** pow(2, g)*/;
 
     int h = k % (int)(n * pow(2, this->g));
 
     if(h<splitPointer){
+        //todo: isso pode dar um número maior q o total de baldes
         h = k % (int)(n * pow(2, this->g+1));
     }
 

@@ -23,6 +23,7 @@ public:
     void countingSort(vector<Review*> &V);
     void radixSort(vector<Review*> &V);
     void quickSort(vector<Review*> &B, int min, int max);
+    void quickSort(vector<Review*> &B);
     int getLastAlgorithmComparisonCount();
     int getlastAlgorithmSwapCount();
     void incrementComparisonCount();

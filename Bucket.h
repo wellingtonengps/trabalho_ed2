@@ -17,7 +17,7 @@ public:
     Bucket(int size);
     ~Bucket();
     void inserir(string val);
-    string busca(string val);
+    bool busca(string val);
     string get(int k);
     int getTotalSize();
 };

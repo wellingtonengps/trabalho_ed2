@@ -33,3 +33,13 @@ string Bucket::get(int k){
        return overflowArea.get(k-tam);
     }
 }
+
+bool Bucket::busca(string val){
+    for(int i = 0; i < this->getTotalSize(); i++){
+        if(val == this->get(i)){
+            return true;
+        }
+    }
+    return false;
+}
+

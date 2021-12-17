@@ -16,6 +16,7 @@ private:
     float maxFatorCarga;
 public:
     LinearHashTable(float maxFatorCarga);
+    bool busca(string val);
     void reinsert(string val);
     ~LinearHashTable();
     void insert(string val);
@@ -23,6 +24,7 @@ public:
     int hash(string val);
     void printTable();
     float fatorCarga();
+    int comprimeCaracteres(string val);
 };
 
 
