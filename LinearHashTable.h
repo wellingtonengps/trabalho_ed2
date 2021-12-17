@@ -7,17 +7,22 @@
 class LinearHashTable {
 
 private:
-    int bucketCount=3;
+    int originalBucketCount=3;
     vector<Bucket*> bucketList;
+    int bucketSize = 4;
     int splitPointer;
     int g;
+    int nChaves;
+    float maxFatorCarga;
 public:
-    LinearHashTable();
+    LinearHashTable(float maxFatorCarga);
+    void reinsert(string val);
     ~LinearHashTable();
     void insert(string val);
     void splitBucket();
     int hash(string val);
-
+    void printTable();
+    float fatorCarga();
 };
 
 

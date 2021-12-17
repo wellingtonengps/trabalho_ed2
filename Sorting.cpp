@@ -141,6 +141,38 @@ void Sorting::countingSort(vector<Review*> &A){
     }
 }
 
+void Sorting::countingSortRadix(vector<Review*> &A){
+    /*int i;
+}
+    int maxNumb = 10;
+    int count[maxNumb];
+
+    vector<Review*> tmp(A.size());
+
+    for (int i = 0; i < maxNumb; ++i)
+        count[i] = 0
+
+    for(i = 1; i < A.size(); i++){
+        count[(A[i]->getUpvotes() / place) % 10]++;
+
+        vector<int> count(largest+1, 0);
+
+        for(i = 0; i < maxNumb; i++){
+            count[i] += count [A[i]->getUpvotes() - 1];
+        }
+
+        for(i = A.size() - 1; i >= 0; i--){
+            tmp[count[(A[i]->getUpvotes() / place)%10 ] -1] = A[i];
+            count[(A[i]->getUpvotes() / place ) % 10]--;
+        }
+
+        for(i = 0; i < A.size(); i++){
+            A[i] = tmp[i];
+        }
+
+        printList(A);*/
+}
+
 void Sorting::radixSort(vector<Review*> &V) {
     int max = V[0]->getUpvotes();
 
@@ -150,10 +182,8 @@ void Sorting::radixSort(vector<Review*> &V) {
         }
 
     }
-    for (int place = 1; max / place > 0; place *= 10){
-
-    }
-        //countingSort(arr, size, place);
+    for (int place = 1; max / place > 0; place *= 10){}
+        //countingSortRadix(V,place);
 }
 
 int Sorting::particiona(vector<Review*> &B, int min, int max)

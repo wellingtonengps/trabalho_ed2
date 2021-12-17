@@ -3,8 +3,9 @@
 
 using namespace std;
 
-Bucket::Bucket() {
-    itemList.reserve(4);
+Bucket::Bucket(int size) {
+    this->tam = size;
+    itemList.reserve(size);
 }
 
 Bucket::~Bucket() {
@@ -12,9 +13,23 @@ Bucket::~Bucket() {
 }
 
 void Bucket::inserir(string val) {
-    if(itemList.size()==this->tam){
+
+    if(itemList.size()>=this->tam){
         overflowArea.insereFinal(val);
     }else{
         itemList.push_back(val);
+    }
+}
+
+int Bucket::getTotalSize() {
+    return itemList.size() + overflowArea.getSize();
+}
+
+string Bucket::get(int k){
+    if(k<tam){
+        return itemList[k];
+    }
+    else{
+       return overflowArea.get(k-tam);
     }
 }

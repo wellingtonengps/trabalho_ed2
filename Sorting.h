@@ -19,6 +19,7 @@ public:
     Sorting();
     ~Sorting();
     void heapSort(vector<Review*> &V);
+    void countingSortRadix(vector<Review*> &V);
     void countingSort(vector<Review*> &V);
     void radixSort(vector<Review*> &V);
     void quickSort(vector<Review*> &B, int min, int max);

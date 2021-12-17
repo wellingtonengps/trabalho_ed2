@@ -20,6 +20,8 @@ public:
     void insereFinal(string val);
     void removeInicio();
     void removeFinal();
+    int getSize();
+
 private:
     Node *primeiro; /// primeiro No da lista
     Node *ultimo; /// ultimo No da lista

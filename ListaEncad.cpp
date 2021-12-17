@@ -139,6 +139,10 @@ void ListaEncad::removeFinal()
         cout << "ERRO: lista vazia!" << endl;
 }
 
+
+int ListaEncad::getSize(){
+    return n;
+}
 /*
 void ListaEncad::imprime(){
 

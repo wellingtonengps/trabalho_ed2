@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include "Review.h"
 #include "Sorting.h"
+#include "LinearHashTable.h"
 #include <time.h>
 #include <vector>
 #include <chrono>
@@ -232,6 +233,25 @@ string testaFuncao(vector<Review*> &reviews, Sorting sorting){
 }
 
 
+void testaTabelaHash(vector<Review*> &reviews){
+
+    imprimeListaRegistros(reviews);
+    LinearHashTable linHT = LinearHashTable(0.7f);
+
+
+    for(int i=0; i<reviews.size(); i++){
+
+        if(!reviews[i]->getAppVersion().empty()){
+            cout << "val: " << reviews[i]->getAppVersion() << endl;
+            linHT.insert(reviews[i]->getAppVersion());
+            linHT.printTable();
+
+        }
+
+    }
+    linHT.printTable();
+}
+
 void testePerformaceOrdenacao(string path, int num){
 
     Sorting sorting = Sorting();
@@ -248,19 +268,23 @@ void testePerformaceOrdenacao(string path, int num){
 
     //1000000 - 4
 
-    int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
+    int quantidades[5] = {25, 50000, 100000, 500000, 1000000};
 
     for(int i = 0; i < 3; i++){
         reviews = importarAleatorios(path, quantidades[num]);
         cout << testaFuncao(reviews,sorting) << "\n";
 
+        //******
+        if(i==0){
+            testaTabelaHash(reviews);
+        }
+        //*******
+
         for(int i = 0; i < reviews.size(); i++){
             delete reviews[i];
         }
-
        // sleep_for(seconds(1));
     }
-
 
 }
 
