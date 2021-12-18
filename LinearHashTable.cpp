@@ -65,7 +65,7 @@ bool LinearHashTable::busca(string val){
 
 void LinearHashTable::splitBucket() {
 
-    if(splitPointer==bucketList.size()/2){
+    if(splitPointer==originalBucketCount*pow(2, g)){
         splitPointer=0;
         g++;
     }

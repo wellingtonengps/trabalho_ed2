@@ -154,6 +154,15 @@ void imprimeListaRegistros(vector<Review*> listaRegistros){
     }
 }
 
+string imprimeListaRegistrosStr(vector<Review*> listaRegistros){
+    string listaStr = "";
+    for(int i = 0; i < listaRegistros.size(); i++){
+       listaStr += listaRegistros[i]->toString() + "\n";
+    }
+
+    return listaStr;
+}
+
 void imprimeListaRegistrosArquivo(vector<Review*> listaRegistros, string output_path){
 
     ofstream saida;
@@ -216,25 +225,49 @@ vector<Review*> importarAleatorios(string path, int num){
     return listaRegistros;
 }
 
+void writeArquivo(string output_path, string data){
 
-string testaFuncao(vector<Review*> &reviews, Sorting sorting){
+    ofstream saida;
+    saida.open(output_path, ios::out);
+    saida << data;
+    saida.close();
+}
+
+string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
     string res = "";
     high_resolution_clock::time_point inicio = high_resolution_clock::now();
-    sorting.quickSort(reviews);
+
+    if(n == 0){
+        res+="quicksort, ";
+        sorting.quickSort(reviews);
+    }
+    else if(n == 1){
+        res+= "countingSort, ";
+        sorting.countingSort(reviews);
+    }
+    else {
+        res+="heapsort, ";
+        sorting.heapSort(reviews);
+    }
+
     high_resolution_clock::time_point fim = high_resolution_clock::now();
 
     double time = duration_cast<duration<double>>(fim - inicio).count();
     int comparisons = sorting.getLastAlgorithmComparisonCount();
     int swaps = sorting.getlastAlgorithmSwapCount();
 
-    res += "tempo: " + to_string(time) + ", trocas: " + to_string(swaps) + ", comparações: " + to_string(comparisons);
+    res += "tempo: " + to_string(time)
+            + ", trocas: " + to_string(swaps)
+            + ", comparações: " + to_string(comparisons)
+            + ", tamanho lista: " + to_string(reviews.size());
     
     return res;
 }
 
 
-void testaTabelaHash(vector<Review*> &reviews){
+void testaTabelaHash(string path){
 
+    vector<Review*> reviews = importarAleatorios(path, 50);
     imprimeListaRegistros(reviews);
     LinearHashTable linHT = LinearHashTable(0.7f);
 
@@ -246,48 +279,106 @@ void testaTabelaHash(vector<Review*> &reviews){
             linHT.insert(reviews[i]->getAppVersion());
             linHT.printTable();
 
-            cout << "achou? " << linHT.busca(reviews[i]->getAppVersion()) << endl;
+            //cout << "achou? " << linHT.busca(reviews[i]->getAppVersion()) << endl;
         }
     }
 
     linHT.printTable();
+
+    for (int i = 0; i < reviews.size(); i++) {
+        delete reviews[i];
+    }
 }
 
-void testePerformaceOrdenacao(string path, int num){
+void simulacaoPerformaceOrdenacao(string path, int num){
 
     Sorting sorting = Sorting();
-
     vector<Review*> reviews;
+    string res;
 
-    //10000 - 0
+    int quantidades[5] = {100, 500, 1000, 2000, 5000};
 
-    //50000 - 1
+    for(int k=0; k<3; k++) {
+        for (int j = 0; j < 5; j++) {
+            int numReviews = quantidades[j];
+            for (int i = 0; i < 3; i++) {
+                reviews = importarAleatorios(path, numReviews);
+               // cout << simulaFuncao(reviews, sorting, k) << "\n";
+                res+= simulaFuncao(reviews, sorting, k) + "\n";
+                //******
+                /*if (i == 0) {
+                    testaTabelaHash(reviews);
+                }*/
+                //*******
 
-    //100000 - 2
-
-    //500000 - 3
-
-    //1000000 - 4
-
-    int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
-
-    for(int i = 0; i < 3; i++){
-        reviews = importarAleatorios(path, quantidades[num]);
-        cout << testaFuncao(reviews,sorting) << "\n";
-
-        //******
-        if(i==0){
-          //  testaTabelaHash(reviews);
+                for (int i = 0; i < reviews.size(); i++) {
+                    delete reviews[i];
+                }
+                // sleep_for(seconds(1));
+            }
         }
-        //*******
 
-        for(int i = 0; i < reviews.size(); i++){
-            delete reviews[i];
-        }
-       // sleep_for(seconds(1));
+        cout << endl;
     }
 
+    writeArquivo("saida.txt", res);
 }
+
+
+
+void deleteVectorItems(vector<Review*> &items){
+    for (int i = 0; i < items.size(); i++) {
+        delete items[i];
+    }
+
+    //items.clear();
+}
+
+void testeOrdenacaoFuncao(vector<Review*> reviews, int func, string path){
+    Sorting sorting = Sorting();
+
+    if(func=0){
+        sorting.quickSort(reviews);
+    }else if(func=1){
+        sorting.heapSort(reviews);
+    }else{
+        sorting.countingSort(reviews);
+    }
+
+    imprimeListaRegistrosArquivo(reviews, path);
+
+
+}
+
+void testeOrdenacao(string path){
+
+    string resultado="";
+
+    Sorting sorting = Sorting();
+    vector<Review*> reviews = importarAleatorios("data.bin", 100);
+
+    vector<Review*> copiaReviews = reviews;
+    sorting.quickSort(copiaReviews);
+    resultado+= "-----------QUICKSORT-----------\n";
+    resultado += imprimeListaRegistrosStr(copiaReviews);
+
+    copiaReviews = reviews;
+    sorting.heapSort(copiaReviews);
+    resultado += "-----------HEAPSORT-----------\n";
+    resultado += imprimeListaRegistrosStr(copiaReviews);
+
+    copiaReviews = reviews;
+    sorting.countingSort(copiaReviews);
+    resultado += "-----------COUNTINGSORT-----------\n";
+    resultado += imprimeListaRegistrosStr(copiaReviews);
+
+    deleteVectorItems(reviews);
+
+    writeArquivo(path, resultado);
+
+}
+
+
 
 
 void readCSVToBinary(string path, string binaryOut) {
@@ -379,7 +470,9 @@ void menu(string input_file_path, string output_file_path){
 }
 
 int main(){
-    testePerformaceOrdenacao("data.bin", 0);
+   // simulacaoPerformaceOrdenacao("data.bin", 0);
+   // testeOrdenacao("teste.txt");
+    testaTabelaHash("data.bin");
 
     return 0;
 }

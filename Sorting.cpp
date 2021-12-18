@@ -87,7 +87,7 @@ void printList(vector<Review*> &A){
 void Sorting::heapSort(vector<Review*> &A){
     resetCount();
     int n = A.size();
-    printList(A);
+    //printList(A);
     buildHeap(A, n);
 
     //printList(A);
@@ -101,7 +101,7 @@ void Sorting::heapSort(vector<Review*> &A){
 
     }
 
-    printList(A);
+    //printList(A);
 
 }
 
@@ -224,5 +224,5 @@ void Sorting::quickSort(vector<Review*> &B, int min, int max)
 void Sorting::quickSort(vector<Review *> &B) {
     resetCount();
     quickSort(B, 0, B.size()-1);
-    printList(B);
+    //printList(B);
 }
