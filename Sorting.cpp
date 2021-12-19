@@ -1,5 +1,6 @@
 
 #include "Sorting.h"
+#include "Cell.h"
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -84,6 +85,16 @@ void printList(vector<Review*> &A){
     cout << endl;
 }
 
+string Sorting::printCellList(vector<Cell*> &A){
+
+    string res = "";
+    for(int i=A.size()-1; i>=0; i--){
+        res+= A[i]->getCellInfo() +" [" + to_string(A[i]->getCount())+ "]" +", ";
+    }
+   res+="\n";
+    return res;
+}
+
 void Sorting::heapSort(vector<Review*> &A){
     resetCount();
     int n = A.size();
@@ -140,6 +151,45 @@ void Sorting::countingSort(vector<Review*> &A){
     for(i = 0; i < A.size(); i++){
         A[i] = tmp[i];
     }
+}
+
+void Sorting::countingSortCells(vector<Cell*> &A){
+    resetCount();
+    int i;
+    int largest = A[0]->getCount();
+
+    vector<Cell*> tmp(A.size());
+
+    for(i = 1; i < A.size(); i++){
+        if(largest < A[i]->getCount()){
+            largest = A[i]->getCount();
+        }
+        lastAlgorithmComparisonCount++;
+    }
+
+    vector<int> count(largest+1, 0);
+
+    for(i = 0; i < A.size(); i++){
+        count [A[i]->getCount()]++;
+        lastAlgorithmComparisonCount++;
+    }
+
+    for(i = 1; i <= largest; i++){
+        count[i] = count[i-1] + count[i];
+        lastAlgorithmComparisonCount++;
+    }
+
+    for(i = A.size()-1; i >= 0; i--){
+        tmp[count[A[i]->getCount()]-1] = A[i];
+        count[A[i]->getCount()]--;
+        lastAlgorithmSwapCount++;
+    }
+
+    for(i = 0; i < A.size(); i++){
+        A[i] = tmp[i];
+    }
+
+    //printList(A);
 }
 
 void Sorting::countingSortRadix(vector<Review*> &A){

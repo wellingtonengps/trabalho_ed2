@@ -5,19 +5,20 @@
 #ifndef TRABALHO_NODE_H
 #define TRABALHO_NODE_H
 #include <string>
+#include "Cell.h"
 
 using namespace std;
 
 class Node {
 private:
-    string info; // valor armazenado no No
+    Cell* info; // valor armazenado no No
     Node *prox; // ponteiro para o proximo No
 public:
     Node() { };
     ~Node() { };
-    string getInfo() { return info; };
+    Cell* getInfo() { return info; };
     Node* getProx() { return prox; };
-    void setInfo(string val) { info = val; };
+    void setInfo(Cell* cell) { info = cell; };
     void setProx(Node *p) { prox = p; };
 };
 

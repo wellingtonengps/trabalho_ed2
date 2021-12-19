@@ -217,6 +217,7 @@ vector<Review*> importarAleatorios(string path, int num){
     for(int i = 0; i < num; i++){
         int numRand = rand() % numRegistros;
         listaRegistros.push_back(acessarRegistroTAD(numRand, path));
+
     }
 
     /*for(int i = 0; i < listaRegistros.size(); i++){
@@ -225,10 +226,10 @@ vector<Review*> importarAleatorios(string path, int num){
     return listaRegistros;
 }
 
-void writeArquivo(string output_path, string data){
+void appendArquivo(string output_path, string data){
 
     ofstream saida;
-    saida.open(output_path, ios::out);
+    saida.open(output_path, ios::app);
     saida << data;
     saida.close();
 }
@@ -239,7 +240,7 @@ string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
 
     if(n == 0){
         res+="quicksort, ";
-        sorting.quickSort(reviews);
+        //sorting.quickSort(reviews);
     }
     else if(n == 1){
         res+= "countingSort, ";
@@ -267,9 +268,11 @@ string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
 
 void testaTabelaHash(string path){
 
-    vector<Review*> reviews = importarAleatorios(path, 200);
+    vector<Review*> reviews = importarAleatorios(path, 100);
     imprimeListaRegistros(reviews);
     LinearHashTable linHT = LinearHashTable(0.7f);
+
+    Sorting sorting =  Sorting();
 
 
     for(int i=0; i<reviews.size(); i++){
@@ -284,10 +287,24 @@ void testaTabelaHash(string path){
     }
 
     linHT.printTable();
+    vector<Cell*> cellVector = linHT.getTableAsVector();
+    sorting.countingSortCells(cellVector);
+
+    appendArquivo("teste.txt", sorting.printCellList(cellVector));
 
     for (int i = 0; i < reviews.size(); i++) {
         delete reviews[i];
     }
+}
+
+vector<Review*> trucateVector(vector<Review*> &v, int n){
+
+    vector<Review*> res;
+    for(int i=0; i< n; i++){
+        res.push_back(v[i]);
+    }
+
+    return res;
 }
 
 void simulacaoPerformaceOrdenacao(string path){
@@ -296,32 +313,31 @@ void simulacaoPerformaceOrdenacao(string path){
     vector<Review*> reviews;
     string res;
 
-    int quantidades[5] = {100, 500, 1000, 2000, 5000};
+    int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
+    reviews = importarAleatorios(path, 1000000);
+
 
     for(int k=0; k<3; k++) {
+
         for (int j = 0; j < 5; j++) {
             int numReviews = quantidades[j];
             for (int i = 0; i < 3; i++) {
-                reviews = importarAleatorios(path, numReviews);
+                //reviews = importarAleatorios(path, numReviews);
                // cout << simulaFuncao(reviews, sorting, k) << "\n";
-                res+= simulaFuncao(reviews, sorting, k) + "\n";
-                //******
-                /*if (i == 0) {
-                    testaTabelaHash(reviews);
-                }*/
-                //*******
+                vector<Review*> reviewsCopia = trucateVector(reviews, numReviews);
+                res+= simulaFuncao(reviewsCopia, sorting, k) + "\n";
 
-                for (int i = 0; i < reviews.size(); i++) {
-                    delete reviews[i];
-                }
                 // sleep_for(seconds(1));
             }
-        }
+       }
 
         cout << endl;
     }
+    for (int i = 0; i < reviews.size(); i++) {
+        delete reviews[i];
+    }
 
-    writeArquivo("saida.txt", res);
+    appendArquivo("saida.txt", res);
 }
 
 
@@ -374,7 +390,7 @@ void testeOrdenacao(string path){
 
     deleteVectorItems(reviews);
 
-    writeArquivo(path, resultado);
+    appendArquivo(path, resultado);
 
 }
 
@@ -470,9 +486,9 @@ void menu(string input_file_path, string output_file_path){
 }
 
 int main(){
-    simulacaoPerformaceOrdenacao("data.bin");
+    //simulacaoPerformaceOrdenacao("data.bin");
    // testeOrdenacao("teste.txt");
-    //testaTabelaHash("data.bin");
+    testaTabelaHash("data.bin");
 
     return 0;
 }

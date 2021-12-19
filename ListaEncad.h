@@ -6,6 +6,7 @@
 #define TRABALHO_LISTAENCAD_H
 #include <string>
 #include "Node.h"
+#include "Cell.h"
 
 using namespace std;
 
@@ -14,14 +15,16 @@ public:
     ListaEncad();
     ~ListaEncad();
     bool busca(string val);
-    string get(int k);
-    void set(int k, string val);
-    void insereInicio(string val);
-    void insereFinal(string val);
-    void removeInicio();
-    void removeFinal();
+    Cell* get(int k);
+    void insereFinal(Cell* cell);
     int getSize();
+    Node* getNode(int k);
 
+
+    //void removeInicio();
+    //void removeFinal();
+    //void set(int k, string val);
+    //void insereInicio(string val);
 private:
     Node *primeiro; /// primeiro No da lista
     Node *ultimo; /// ultimo No da lista

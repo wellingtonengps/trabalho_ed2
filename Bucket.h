@@ -4,6 +4,7 @@
 #include "ListaEncad.h"
 #include <string>
 #include <vector>
+#include "Cell.h"
 
 using namespace std;
 
@@ -11,15 +12,16 @@ class Bucket {
 
 private:
     int tam = 4;
-    vector<string> itemList;
+    vector<Cell*> itemList;
     ListaEncad overflowArea;
 public:
     Bucket(int size);
     ~Bucket();
-    void inserir(string val);
-    bool busca(string val);
-    string get(int k);
+    void inserir(Cell* cell);
+    Cell* busca(string val);
+    Cell* get(int k);
     int getTotalSize();
+    Cell* getRemove(int k);
 };
 
 

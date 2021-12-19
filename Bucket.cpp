@@ -9,15 +9,21 @@ Bucket::Bucket(int size) {
 }
 
 Bucket::~Bucket() {
-
+    Cell *cell;
+    for(int i = 0; i < this->getTotalSize(); i++){
+        cell =  this->get(i);
+        if(cell!=NULL){
+            delete cell;
+        }
+    }
 }
 
-void Bucket::inserir(string val) {
+void Bucket::inserir(Cell* cell) {
 
     if(itemList.size()>=this->tam){
-        overflowArea.insereFinal(val);
+        overflowArea.insereFinal(cell);
     }else{
-        itemList.push_back(val);
+        itemList.push_back(cell);
     }
 }
 
@@ -25,7 +31,7 @@ int Bucket::getTotalSize() {
     return itemList.size() + overflowArea.getSize();
 }
 
-string Bucket::get(int k){
+Cell* Bucket::get(int k){
     if(k<tam){
         return itemList[k];
     }
@@ -34,12 +40,30 @@ string Bucket::get(int k){
     }
 }
 
-bool Bucket::busca(string val){
+Cell* Bucket::getRemove(int k){
+    Cell* cell=NULL;
+
+    if(k<tam){
+        cell = itemList[k];
+        itemList[k]=NULL;
+    }
+    else{
+        Node* node = overflowArea.getNode(k-tam);
+        cell=node->getInfo();
+        node->setInfo(NULL);
+    }
+
+    return cell;
+}
+
+Cell* Bucket::busca(string val){
+    Cell *cell;
     for(int i = 0; i < this->getTotalSize(); i++){
-        if(val == this->get(i)){
-            return true;
+        cell =  this->get(i);
+        if(val == cell->getCellInfo()){
+            return cell;
         }
     }
-    return false;
+    return NULL;
 }
 

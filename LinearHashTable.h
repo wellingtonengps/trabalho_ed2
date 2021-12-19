@@ -3,6 +3,7 @@
 
 #include "Bucket.h"
 #include <vector>
+#include "Cell.h"
 
 class LinearHashTable {
 
@@ -16,8 +17,8 @@ private:
     float maxFatorCarga;
 public:
     LinearHashTable(float maxFatorCarga);
-    bool busca(string val);
-    void reinsert(string val);
+    Cell* busca(string val);
+    void reinsert(Cell* val);
     ~LinearHashTable();
     void insert(string val);
     void splitBucket();
@@ -25,6 +26,7 @@ public:
     void printTable();
     float fatorCarga();
     int comprimeCaracteres(string val);
+    vector<Cell*> getTableAsVector();
 };
 
 

@@ -6,6 +6,7 @@
 #define TRABALHO_SORTING_H
 
 #include "Review.h"
+#include "Cell.h"
 #include <vector>
 
 
@@ -21,6 +22,7 @@ public:
     void heapSort(vector<Review*> &V);
     void countingSortRadix(vector<Review*> &V);
     void countingSort(vector<Review*> &V);
+    void countingSortCells(vector<Cell*> &A);
     void radixSort(vector<Review*> &V);
     void quickSort(vector<Review*> &B, int min, int max);
     void quickSort(vector<Review*> &B);
@@ -33,6 +35,7 @@ public:
     void buildHeap(vector<Review*> &V, int n);
     int particiona(vector<Review*> &B, int min, int max);
     void resetCount();
+    string printCellList(vector<Cell*> &A);
 };
 
 

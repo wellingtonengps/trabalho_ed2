@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include "Cell.h"
 
 using namespace std;
 
@@ -31,12 +32,30 @@ bool ListaEncad::busca(string val)
 {
     Node *p;
     for(p = primeiro; p != NULL; p = p->getProx())
-        if(p->getInfo() == val)
+        if(p->getInfo()->getCellInfo() == val)
             return true;
     return false;
 }
 
-string ListaEncad::get(int k)
+void ListaEncad::insereFinal(Cell* cell)
+{
+    Node* p = new Node();
+    p->setInfo(cell);
+    p->setProx(NULL);
+
+    if(ultimo != NULL) ultimo->setProx(p);
+    ultimo = p;
+
+    n++;
+    if(n == 1) primeiro = p;
+}
+
+int ListaEncad::getSize(){
+    return n;
+}
+
+
+Cell* ListaEncad::get(int k)
 {
     Node *p = primeiro;
     int i = 0;
@@ -54,6 +73,25 @@ string ListaEncad::get(int k)
         return p->getInfo();
 }
 
+Node* ListaEncad::getNode(int k)
+{
+    Node *p = primeiro;
+    int i = 0;
+    while(i < k && p != NULL)
+    {
+        i++;
+        p = p->getProx();
+    }
+    if(p == NULL)
+    {
+        cout << "ERRO: Indice invalido!" << endl;
+        exit(1);
+    }
+    else
+        return p;
+}
+
+/*
 void ListaEncad::set(int k, string val)
 {
     Node *p = primeiro;
@@ -69,7 +107,6 @@ void ListaEncad::set(int k, string val)
         p->setInfo(val);
 }
 
-
 void ListaEncad::insereInicio(string val)
 {
     Node* p = new Node();
@@ -81,22 +118,6 @@ void ListaEncad::insereInicio(string val)
     n++;
     if(n == 1) ultimo = p;
 }
-
-void ListaEncad::insereFinal(string val)
-{
-    Node* p = new Node();
-    p->setInfo(val);
-    p->setProx(NULL);
-
-    if(ultimo != NULL) ultimo->setProx(p);
-    ultimo = p;
-
-    n++;
-    if(n == 1) primeiro = p;
-}
-
-
-
 
 void ListaEncad::removeInicio()
 {
@@ -139,17 +160,12 @@ void ListaEncad::removeFinal()
         cout << "ERRO: lista vazia!" << endl;
 }
 
-
-int ListaEncad::getSize(){
-    return n;
-}
-/*
 void ListaEncad::imprime(){
 
     Node *p = primeiro;
 
     while(p != NULL){
-        cout << p->getInfo() << " ";
+        cout << p->getCellInfo() << " ";
         p = p->getProx();
     }
 
