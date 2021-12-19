@@ -30,15 +30,19 @@ void LinearHashTable::insert(string val) {
 
     int h = hash(val);
    // cout<< "val: "<< val<< " balde: "<<h<<endl;
-    bucketList[h]->inserir(val);
-    nChaves++;
 
-    //cout <<"FC: " << fatorCarga()<<endl;
-    if(fatorCarga()>=maxFatorCarga){
-       // cout << "FC: "<< fatorCarga() << " >= "<<maxFatorCarga<<endl;
-        splitBucket();
-    }
 
+   //verifica se o valor já está inserido, se não, insere
+   if (!busca(val)) {
+       bucketList[h]->inserir(val);
+       nChaves++;
+
+       //cout <<"FC: " << fatorCarga()<<endl;
+       if (fatorCarga() >= maxFatorCarga) {
+           // cout << "FC: "<< fatorCarga() << " >= "<<maxFatorCarga<<endl;
+           splitBucket();
+       }
+   }
 }
 
 void LinearHashTable::reinsert(string val) {

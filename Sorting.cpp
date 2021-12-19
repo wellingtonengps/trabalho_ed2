@@ -106,6 +106,7 @@ void Sorting::heapSort(vector<Review*> &A){
 }
 
 void Sorting::countingSort(vector<Review*> &A){
+    resetCount();
     int i;
     int largest = A[0]->getUpvotes();
 

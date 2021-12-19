@@ -267,7 +267,7 @@ string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
 
 void testaTabelaHash(string path){
 
-    vector<Review*> reviews = importarAleatorios(path, 50);
+    vector<Review*> reviews = importarAleatorios(path, 200);
     imprimeListaRegistros(reviews);
     LinearHashTable linHT = LinearHashTable(0.7f);
 
@@ -275,9 +275,9 @@ void testaTabelaHash(string path){
     for(int i=0; i<reviews.size(); i++){
 
         if(!reviews[i]->getAppVersion().empty()){
-            cout << "val: " << reviews[i]->getAppVersion() << endl;
+            //cout << "val: " << reviews[i]->getAppVersion() << endl;
             linHT.insert(reviews[i]->getAppVersion());
-            linHT.printTable();
+            //linHT.printTable();
 
             //cout << "achou? " << linHT.busca(reviews[i]->getAppVersion()) << endl;
         }
@@ -290,7 +290,7 @@ void testaTabelaHash(string path){
     }
 }
 
-void simulacaoPerformaceOrdenacao(string path, int num){
+void simulacaoPerformaceOrdenacao(string path){
 
     Sorting sorting = Sorting();
     vector<Review*> reviews;
@@ -443,7 +443,7 @@ void readCSVToBinary(string path, string binaryOut) {
 
         arqOut.close();
     } else {
-        cout << "Error ao abrir o arquivo"<< endl;
+        cout << "Erro ao abrir o arquivo"<< endl;
     }
 }
 
@@ -470,9 +470,9 @@ void menu(string input_file_path, string output_file_path){
 }
 
 int main(){
-   // simulacaoPerformaceOrdenacao("data.bin", 0);
+    simulacaoPerformaceOrdenacao("data.bin");
    // testeOrdenacao("teste.txt");
-    testaTabelaHash("data.bin");
+    //testaTabelaHash("data.bin");
 
     return 0;
 }
