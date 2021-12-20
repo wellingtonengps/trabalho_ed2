@@ -164,19 +164,19 @@ void Sorting::countingSortCells(vector<Cell*> &A){
         if(largest < A[i]->getCount()){
             largest = A[i]->getCount();
         }
-        lastAlgorithmComparisonCount++;
+        //lastAlgorithmComparisonCount++;
     }
 
     vector<int> count(largest+1, 0);
 
     for(i = 0; i < A.size(); i++){
         count [A[i]->getCount()]++;
-        lastAlgorithmComparisonCount++;
+       // lastAlgorithmComparisonCount++;
     }
 
     for(i = 1; i <= largest; i++){
         count[i] = count[i-1] + count[i];
-        lastAlgorithmComparisonCount++;
+        //lastAlgorithmComparisonCount++;
     }
 
     for(i = A.size()-1; i >= 0; i--){

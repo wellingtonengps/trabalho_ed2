@@ -485,10 +485,10 @@ void menu(string input_file_path, string output_file_path){
     }
 }
 
-int main(){
+int main2(){
     //simulacaoPerformaceOrdenacao("data.bin");
-   // testeOrdenacao("teste.txt");
-    testaTabelaHash("data.bin");
+    //testeOrdenacao("texte.txt");
+    //testaTabelaHash("data.bin");
 
     return 0;
 }
