@@ -10,7 +10,7 @@ class LinearHashTable {
 private:
     int originalBucketCount=3;
     vector<Bucket*> bucketList;
-    int bucketSize = 4;
+    int bucketSize = 10;
     int splitPointer;
     int g;
     int nChaves;
