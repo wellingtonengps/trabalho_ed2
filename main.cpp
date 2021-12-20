@@ -88,6 +88,67 @@ char getNextChar(){
 
 //**********************************************************************
 
+Review* acessarRegistroTAD(int i, ifstream& arq){
+
+    Review *review = new Review();
+
+   // ifstream arq;
+
+    char* review_id = new char[REVIEW_ID_LENGTH];
+    char* review_text = new char[REVIEW_TEXT_LENGTH];
+    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
+    char* version = new char[REVIEW_VERSION_LENGTH];
+    char* date = new char[REVIEW_DATE_LENGTH];
+
+   // arq.open(path, ios::binary);
+
+    int recordSize = RECORD_LENGTH*sizeof(char);
+
+    if (arq) {
+        arq.seekg(RECORD_LENGTH * i);
+        int currentPos= recordSize * i;
+
+        arq.read(review_id,REVIEW_ID_LENGTH);
+        currentPos+=REVIEW_ID_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(review_text,REVIEW_TEXT_LENGTH);
+        currentPos+=REVIEW_TEXT_LENGTH*sizeof(char) ;
+        arq.seekg(currentPos);
+
+        arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
+        currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(version,REVIEW_VERSION_LENGTH);
+        currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
+        arq.seekg(currentPos);
+
+        arq.read(date,REVIEW_DATE_LENGTH);
+
+        review->setReviewId(review_id);
+        review_text[399]='\0'; //garantir que a string termina
+        review->setReviewText(review_text);
+        review->setUpvotes(stoi(upvotes));
+        review->setAppVersion(version);
+        review->setPostedDate(date);
+
+        delete [] review_id;
+        delete [] review_text;
+        delete [] upvotes;
+        delete [] version;
+        delete [] date;
+
+      //  arq.close();
+    }
+    else {
+        cout << "Arquivo nao aberto";
+    }
+
+    return review;
+}
+
+
 Review* acessarRegistroTAD(int i, string path){
 
     Review *review = new Review();
@@ -147,6 +208,8 @@ Review* acessarRegistroTAD(int i, string path){
 
     return review;
 }
+
+
 
 void imprimeListaRegistros(vector<Review*> listaRegistros){
     for(int i = 0; i < listaRegistros.size(); i++){
@@ -211,14 +274,18 @@ void testeImportacao(string path){
 vector<Review*> importarAleatorios(string path, int num){
 
     vector<Review*> listaRegistros;
+    listaRegistros.reserve(num);
     int numRegistros = 3646476;
     srand (std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    ifstream arq;
+    arq.open(path, ios::binary);
 
     for(int i = 0; i < num; i++){
         int numRand = rand() % numRegistros;
-        listaRegistros.push_back(acessarRegistroTAD(numRand, path));
+        listaRegistros.push_back(acessarRegistroTAD(numRand, arq));
 
     }
+    arq.close();
 
     /*for(int i = 0; i < listaRegistros.size(); i++){
         delete listaRegistros[i];
@@ -300,7 +367,7 @@ void testaTabelaHash(string path){
 vector<Review*> trucateVector(vector<Review*> &v, int n){
 
     vector<Review*> res;
-    for(int i=0; i< n; i++){
+    for(int i=0; i< n && i< v.size(); i++){
         res.push_back(v[i]);
     }
 
@@ -314,8 +381,15 @@ void simulacaoPerformaceOrdenacao(string path){
     string res;
 
     int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
+    high_resolution_clock::time_point inicio = high_resolution_clock::now();
+    cout<<"Importando registros aleatórios..."<<endl;
     reviews = importarAleatorios(path, 1000000);
+    high_resolution_clock::time_point fim = high_resolution_clock::now();
+    double time = duration_cast<duration<double>>(fim - inicio).count();
+    cout << "tempo importacao: "<<time << endl;
 
+    //return;
+    inicio = high_resolution_clock::now();
 
     for(int k=0; k<3; k++) {
 
@@ -333,6 +407,10 @@ void simulacaoPerformaceOrdenacao(string path){
 
         cout << endl;
     }
+    fim = high_resolution_clock::now();
+    time = duration_cast<duration<double>>(fim - inicio).count();
+    cout << "tempo simulação: "<<time << endl;
+
     for (int i = 0; i < reviews.size(); i++) {
         delete reviews[i];
     }
@@ -486,9 +564,9 @@ void menu(string input_file_path, string output_file_path){
 }
 
 int main(){
-    //simulacaoPerformaceOrdenacao("data.bin");
+    simulacaoPerformaceOrdenacao("data.bin");
    // testeOrdenacao("teste.txt");
-    testaTabelaHash("data.bin");
+   // testaTabelaHash("data.bin");
 
     return 0;
 }
