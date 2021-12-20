@@ -563,8 +563,9 @@ void menu(string input_file_path, string output_file_path){
     }
 }
 
+
 int main(){
-    simulacaoPerformaceOrdenacao("data.bin");
+    //simulacaoPerformaceOrdenacao("data.bin");
    // testeOrdenacao("teste.txt");
    // testaTabelaHash("data.bin");
 
