@@ -235,7 +235,7 @@ void appendArquivo(string output_path, string data){
     saida.close();
 }
 
-string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
+double geraMetricasFuncao(vector<Review*> &reviews, Sorting &sorting, int n){
     string res = "";
     high_resolution_clock::time_point inicio = high_resolution_clock::now();
 
@@ -263,13 +263,13 @@ string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
             + ", comparações: " + to_string(comparisons)
             + ", tamanho lista: " + to_string(reviews.size());
     
-    return res;
+    return time;
 }
 
 
-void testaTabelaHash(string result_output_path, string bin_file_path){
+string tabelaHashN(string bin_file_path, int n){
 
-    vector<Review*> reviews = importarAleatorios(bin_file_path, 100);
+    vector<Review*> reviews = importarAleatorios(bin_file_path, n);
     LinearHashTable linHT = LinearHashTable(0.7f);
     Sorting sorting =  Sorting();
 
@@ -279,23 +279,16 @@ void testaTabelaHash(string result_output_path, string bin_file_path){
         }
     }
 
-    cout << "Tabela hash com versoes e respectivas frequencias: "<<endl;
-    linHT.printTable();
-    cout<<endl;
-
     vector<Cell*> cellVector = linHT.getTableAsVector();
     sorting.countingSortCells(cellVector);
     string ordFrequencia = sorting.printCellList(cellVector);
     ordFrequencia= "Versoes ordenadas por frequencia: \n" +ordFrequencia;
 
-    cout <<  ordFrequencia << endl;
-    appendArquivo(result_output_path, ordFrequencia);
-    cout << "Resultado escrito ao final do arquivo "<< result_output_path << endl;
 
     for (int i = 0; i < reviews.size(); i++) {
         delete reviews[i];
     }
-
+    return  ordFrequencia;
 }
 
 vector<Review*> trucateVector(vector<Review*> &v, int n){
@@ -314,8 +307,15 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
     vector<Review*> reviews;
     string res;
 
+
+    ///pega tamanho dos conjuntos de dados do arquivo .dat
     ifstream input;
     input.open(input_dir+"/input.dat", ios::in);
+
+    if(!input){
+        cout << "Nao foi encontrado o arquivo input.dat" << endl;
+        return;
+    }
 
     int quantidades[5];
     string line;
@@ -326,24 +326,49 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
     }
 
     input.close();
+    ///********************
+
 
     cout<<"Importando registros aleatórios..."<<endl;
     reviews = importarAleatorios(bin_file_path, 1000000);
 
+    int totalSwapCountSum=0, totalCompCountSum=0;
+    double totalTimeSum=0;
 
+    vector<string> nomesAlgoritmos = {"Quick sort", "Counting sort", "Heap sort"};
     for(int k=0; k<3; k++) {
+
 
         for (int j = 0; j < 5; j++) {
             int numReviews = quantidades[j];
+            int swapCountSum=0, compCountSum=0;
+            double timeSum=0;
+
             for (int i = 0; i < 3; i++) {
 
                 vector<Review*> reviewsCopia = trucateVector(reviews, numReviews);
-                res+= simulaFuncao(reviewsCopia, sorting, k) + "\n";
+                double time = geraMetricasFuncao(reviewsCopia, sorting, k);
+
+                res += nomesAlgoritmos[k]+ " - tempo: " + to_string(time)
+                       + ", trocas: " + to_string(sorting.getlastAlgorithmSwapCount())
+                       + ", comparações: " + to_string(sorting.getLastAlgorithmComparisonCount())
+                       + ", tamanho lista: " + to_string(numReviews)+"\n";
+
+                timeSum+=time;
+                swapCountSum+=sorting.getlastAlgorithmSwapCount();
+                compCountSum+=sorting.getLastAlgorithmComparisonCount();
 
             }
-       }
+            res+="Medias- tempo: "+ to_string(timeSum/3)+", trocas: "+ to_string(swapCountSum/3) +", comparacoes: "+ to_string(compCountSum/3)+"\n\n";
+            totalCompCountSum+=compCountSum;
+            totalSwapCountSum+=swapCountSum;
+            totalTimeSum+=timeSum;
+        }
 
     }
+
+    res+="Media geral - tempo: "+ to_string(totalTimeSum/10)+", trocas: "+ to_string(totalSwapCountSum/10) +", comparacoes: "+ to_string(totalCompCountSum/10)+"\n";
+    res+= "(média feita considerando apenas os algoritmos heapsort e countingsort)\n";
 
 
     for (int i = 0; i < reviews.size(); i++) {
@@ -355,7 +380,6 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
 }
 
 
-
 void deleteVectorItems(vector<Review*> &items){
     for (int i = 0; i < items.size(); i++) {
         delete items[i];
@@ -364,12 +388,12 @@ void deleteVectorItems(vector<Review*> &items){
 
 
 
-void testeOrdenacao(string result_output_path, string bin_file_path){
+string ordenaVetorN(string bin_file_path, int n){
 
     string resultado="";
 
     Sorting sorting = Sorting();
-    vector<Review*> reviews = importarAleatorios(bin_file_path, 100);
+    vector<Review*> reviews = importarAleatorios(bin_file_path, n);
 
     vector<Review*> copiaReviews = reviews;
     sorting.quickSort(copiaReviews);
@@ -388,9 +412,9 @@ void testeOrdenacao(string result_output_path, string bin_file_path){
 
     deleteVectorItems(reviews);
 
-    cout << "Saida do teste de ordenacao gerada ao final do arquivo " << result_output_path<<endl;
-    appendArquivo(result_output_path, resultado);
-
+    //cout << "Saida do teste de ordenacao gerada ao final do arquivo " << result_output_path<<endl;
+    //appendArquivo(result_output_path, resultado);
+    return resultado;
 }
 
 
@@ -465,9 +489,10 @@ void menu(string input_dir, string bin_file_path){
     int i;
     cout << "1 - Funcao acessarRegistro (i)\n";
     cout << "2 - Funcao testeImportacao \n";
-    cout << "3 - Ordenacao \n";
-    cout << "4 - Hash \n";
-    cout << "5 - Modulo de Teste \n";
+    cout << "3 - Gerar metricas dos algoritmos de ordenacao \n";
+    cout << "4 - Ordenacao \n";
+    cout << "5 - Hash \n";
+    cout << "6 - Modulo de Teste \n";
 
     cin >> option;
 
@@ -491,14 +516,28 @@ void menu(string input_dir, string bin_file_path){
         simulacaoPerformaceOrdenacao("saida.txt", bin_file_path, input_dir);
     }
     else if(option == 4){
-        testaTabelaHash("teste.txt", bin_file_path);
+
+        int n;
+        cout << "Informe n: " ;
+        cin >> n;
+
+        cout << ordenaVetorN(bin_file_path, n);
     }
     else if(option == 5){
-        cout << "Teste Ordenacao: " << endl;
-        testeOrdenacao("teste.txt", bin_file_path);
+        int n;
+        cout << "Informe n: " ;
+        cin >> n;
 
-        cout << "Teste Hash: " << endl;
-        testaTabelaHash("teste.txt", bin_file_path);
+        cout << tabelaHashN(bin_file_path, n);
+    }
+    else if(option == 6){
+
+        string resultadoOrdenacao = "Teste Ordenacao: \n" + ordenaVetorN(bin_file_path, 100) + "\n\n";
+        string resultadoHash = "Teste Hash: \n" + tabelaHashN(bin_file_path, 100);
+
+        appendArquivo("teste.txt", resultadoOrdenacao+ resultadoHash);
+
+        cout << "Resultado escrito ao final do arquivo teste.txt" << endl;
     }
     else {
         cout << "Opcao invalida" << endl;
