@@ -20,16 +20,12 @@ public:
     Sorting();
     ~Sorting();
     void heapSort(vector<Review*> &V);
-    void countingSortRadix(vector<Review*> &V);
     void countingSort(vector<Review*> &V);
-    void countingSortCells(vector<Cell*> &A);
-    void radixSort(vector<Review*> &V);
+    void countingSortCells(vector<Cell*>&A);
     void quickSort(vector<Review*> &B, int min, int max);
     void quickSort(vector<Review*> &B);
     int getLastAlgorithmComparisonCount();
     int getlastAlgorithmSwapCount();
-    void incrementComparisonCount();
-    void incrementSwapCount();
     void maxHeapify(vector<Review*> &A, int i, int n);
     void trocar(vector<Review*> &A, int a, int b);
     void buildHeap(vector<Review*> &V, int n);

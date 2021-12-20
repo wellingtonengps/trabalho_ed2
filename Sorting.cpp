@@ -89,30 +89,21 @@ string Sorting::printCellList(vector<Cell*> &A){
 
     string res = "";
     for(int i=A.size()-1; i>=0; i--){
-        res+= A[i]->getCellInfo() +" [" + to_string(A[i]->getCount())+ "]" +", ";
+        res+= A[i]->getCellInfo() +" [" + to_string(A[i]->getCount())+ "]" +"\n";
     }
-   res+="\n";
     return res;
 }
 
 void Sorting::heapSort(vector<Review*> &A){
     resetCount();
     int n = A.size();
-    //printList(A);
     buildHeap(A, n);
 
-    //printList(A);
-    //cout <<endl;
     for(int i=n-1; i>=0; i--){
         trocar(A, 0, i);
-       // printList(A);
         maxHeapify(A, 0, i-1);
-        //printList(A);
-        //cout <<endl;
 
     }
-
-    //printList(A);
 
 }
 
@@ -127,19 +118,16 @@ void Sorting::countingSort(vector<Review*> &A){
         if(largest < A[i]->getUpvotes()){
             largest = A[i]->getUpvotes();
         }
-        lastAlgorithmComparisonCount++;
     }
 
     vector<int> count(largest+1, 0);
 
     for(i = 0; i < A.size(); i++){
         count [A[i]->getUpvotes()]++;
-        lastAlgorithmComparisonCount++;
     }
 
     for(i = 1; i <= largest; i++){
         count[i] = count[i-1] + count[i];
-        lastAlgorithmComparisonCount++;
     }
 
     for(i = A.size()-1; i >= 0; i--){
@@ -164,19 +152,16 @@ void Sorting::countingSortCells(vector<Cell*> &A){
         if(largest < A[i]->getCount()){
             largest = A[i]->getCount();
         }
-        //lastAlgorithmComparisonCount++;
     }
 
     vector<int> count(largest+1, 0);
 
     for(i = 0; i < A.size(); i++){
         count [A[i]->getCount()]++;
-       // lastAlgorithmComparisonCount++;
     }
 
     for(i = 1; i <= largest; i++){
         count[i] = count[i-1] + count[i];
-        //lastAlgorithmComparisonCount++;
     }
 
     for(i = A.size()-1; i >= 0; i--){
@@ -189,52 +174,6 @@ void Sorting::countingSortCells(vector<Cell*> &A){
         A[i] = tmp[i];
     }
 
-    //printList(A);
-}
-
-void Sorting::countingSortRadix(vector<Review*> &A){
-    /*int i;
-}
-    int maxNumb = 10;
-    int count[maxNumb];
-
-    vector<Review*> tmp(A.size());
-
-    for (int i = 0; i < maxNumb; ++i)
-        count[i] = 0
-
-    for(i = 1; i < A.size(); i++){
-        count[(A[i]->getUpvotes() / place) % 10]++;
-
-        vector<int> count(largest+1, 0);
-
-        for(i = 0; i < maxNumb; i++){
-            count[i] += count [A[i]->getUpvotes() - 1];
-        }
-
-        for(i = A.size() - 1; i >= 0; i--){
-            tmp[count[(A[i]->getUpvotes() / place)%10 ] -1] = A[i];
-            count[(A[i]->getUpvotes() / place ) % 10]--;
-        }
-
-        for(i = 0; i < A.size(); i++){
-            A[i] = tmp[i];
-        }
-
-        printList(A);*/
-}
-
-void Sorting::radixSort(vector<Review*> &V) {
-    int max = V[0]->getUpvotes();
-
-    for(int i ;i<max;i++){
-        if(V[i]->getUpvotes()>max){
-            max = V[i]->getUpvotes();
-        }
-
-    }
-    for (int place = 1; max / place > 0; place *= 10){}
-        //countingSortRadix(V,place);
 }
 
 int Sorting::particiona(vector<Review*> &B, int min, int max)
@@ -275,5 +214,4 @@ void Sorting::quickSort(vector<Review*> &B, int min, int max)
 void Sorting::quickSort(vector<Review *> &B) {
     resetCount();
     quickSort(B, 0, B.size()-1);
-    //printList(B);
 }

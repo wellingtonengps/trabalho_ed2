@@ -24,7 +24,6 @@ using namespace std::this_thread;
 
 // *********************Funções de Buffer********************
 
-
 int nextChar=0;
 int maxBlockSize = 100000;
 char* dados = new char[maxBlockSize];
@@ -32,7 +31,6 @@ int currentBlock =0;
 int fileSize;
 bool endOfFile = false;
 ifstream arqI;
-
 
 //inicializa arquivo para leitura no buffer
 void initFile(string path){
@@ -92,15 +90,12 @@ Review* acessarRegistroTAD(int i, ifstream& arq){
 
     Review *review = new Review();
 
-   // ifstream arq;
-
     char* review_id = new char[REVIEW_ID_LENGTH];
     char* review_text = new char[REVIEW_TEXT_LENGTH];
     char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
     char* version = new char[REVIEW_VERSION_LENGTH];
     char* date = new char[REVIEW_DATE_LENGTH];
 
-   // arq.open(path, ios::binary);
 
     int recordSize = RECORD_LENGTH*sizeof(char);
 
@@ -139,7 +134,6 @@ Review* acessarRegistroTAD(int i, ifstream& arq){
         delete [] version;
         delete [] date;
 
-      //  arq.close();
     }
     else {
         cout << "Arquivo nao aberto";
@@ -147,69 +141,6 @@ Review* acessarRegistroTAD(int i, ifstream& arq){
 
     return review;
 }
-
-
-Review* acessarRegistroTAD(int i, string path){
-
-    Review *review = new Review();
-
-    ifstream arq;
-
-    char* review_id = new char[REVIEW_ID_LENGTH];
-    char* review_text = new char[REVIEW_TEXT_LENGTH];
-    char* upvotes = new char[REVIEW_UPVOTES_LENGTH];
-    char* version = new char[REVIEW_VERSION_LENGTH];
-    char* date = new char[REVIEW_DATE_LENGTH];
-
-    arq.open(path, ios::binary);
-
-    int recordSize = RECORD_LENGTH*sizeof(char);
-
-    if (arq) {
-        arq.seekg(RECORD_LENGTH * i);
-        int currentPos= recordSize * i;
-
-        arq.read(review_id,REVIEW_ID_LENGTH);
-        currentPos+=REVIEW_ID_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(review_text,REVIEW_TEXT_LENGTH);
-        currentPos+=REVIEW_TEXT_LENGTH*sizeof(char) ;
-        arq.seekg(currentPos);
-
-        arq.read(upvotes,REVIEW_UPVOTES_LENGTH);
-        currentPos+=REVIEW_UPVOTES_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(version,REVIEW_VERSION_LENGTH);
-        currentPos+=REVIEW_VERSION_LENGTH*sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(date,REVIEW_DATE_LENGTH);
-
-        review->setReviewId(review_id);
-        review_text[399]='\0'; //garantir que a string termina
-        review->setReviewText(review_text);
-        review->setUpvotes(stoi(upvotes));
-        review->setAppVersion(version);
-        review->setPostedDate(date);
-
-        delete [] review_id;
-        delete [] review_text;
-        delete [] upvotes;
-        delete [] version;
-        delete [] date;
-
-        arq.close();
-    }
-    else {
-        cout << "Arquivo nao aberto";
-    }
-
-    return review;
-}
-
-
 
 void imprimeListaRegistros(vector<Review*> listaRegistros){
     for(int i = 0; i < listaRegistros.size(); i++){
@@ -248,15 +179,21 @@ void testeImportacao(string path){
     vector<Review*> listaRegistros;
     int option;
     int numRegistros = 3646476;
+    ifstream arq;
+
+    arq.open(path, ios::binary);
     srand (time(0));
+
 
     cout << "TesteImportacao, digite:\n1 - saida na tela (10 registros)\n2 - saida no arquivo data.txt (100 registros)" << endl;
     cin >> option;
 
     for(int i = 0; i < (option == 1 ? 10 : 100); i++){
         int numRand = rand() % numRegistros;
-        listaRegistros.push_back(acessarRegistroTAD(numRand, path));
+        listaRegistros.push_back(acessarRegistroTAD(numRand, arq));
     }
+
+    arq.close();
 
     if(option == 1){
         imprimeListaRegistros(listaRegistros);
@@ -287,9 +224,6 @@ vector<Review*> importarAleatorios(string path, int num){
     }
     arq.close();
 
-    /*for(int i = 0; i < listaRegistros.size(); i++){
-        delete listaRegistros[i];
-    }*/
     return listaRegistros;
 }
 
@@ -333,35 +267,35 @@ string simulaFuncao(vector<Review*> &reviews, Sorting sorting, int n){
 }
 
 
-void testaTabelaHash(string path){
+void testaTabelaHash(string result_output_path, string bin_file_path){
 
-    vector<Review*> reviews = importarAleatorios(path, 100);
-    imprimeListaRegistros(reviews);
+    vector<Review*> reviews = importarAleatorios(bin_file_path, 100);
     LinearHashTable linHT = LinearHashTable(0.7f);
-
     Sorting sorting =  Sorting();
 
-
     for(int i=0; i<reviews.size(); i++){
-
         if(!reviews[i]->getAppVersion().empty()){
-            //cout << "val: " << reviews[i]->getAppVersion() << endl;
             linHT.insert(reviews[i]->getAppVersion());
-            //linHT.printTable();
-
-            //cout << "achou? " << linHT.busca(reviews[i]->getAppVersion()) << endl;
         }
     }
 
+    cout << "Tabela hash com versoes e respectivas frequencias: "<<endl;
     linHT.printTable();
+    cout<<endl;
+
     vector<Cell*> cellVector = linHT.getTableAsVector();
     sorting.countingSortCells(cellVector);
+    string ordFrequencia = sorting.printCellList(cellVector);
+    ordFrequencia= "Versoes ordenadas por frequencia: \n" +ordFrequencia;
 
-    appendArquivo("teste.txt", sorting.printCellList(cellVector));
+    cout <<  ordFrequencia << endl;
+    appendArquivo(result_output_path, ordFrequencia);
+    cout << "Resultado escrito ao final do arquivo "<< result_output_path << endl;
 
     for (int i = 0; i < reviews.size(); i++) {
         delete reviews[i];
     }
+
 }
 
 vector<Review*> trucateVector(vector<Review*> &v, int n){
@@ -374,48 +308,50 @@ vector<Review*> trucateVector(vector<Review*> &v, int n){
     return res;
 }
 
-void simulacaoPerformaceOrdenacao(string path){
+void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path, string input_dir){
 
     Sorting sorting = Sorting();
     vector<Review*> reviews;
     string res;
 
-    int quantidades[5] = {10000, 50000, 100000, 500000, 1000000};
-    high_resolution_clock::time_point inicio = high_resolution_clock::now();
-    cout<<"Importando registros aleatórios..."<<endl;
-    reviews = importarAleatorios(path, 1000000);
-    high_resolution_clock::time_point fim = high_resolution_clock::now();
-    double time = duration_cast<duration<double>>(fim - inicio).count();
-    cout << "tempo importacao: "<<time << endl;
+    ifstream input;
+    input.open(input_dir+"/input.dat", ios::in);
 
-    //return;
-    inicio = high_resolution_clock::now();
+    int quantidades[5];
+    string line;
+    for(int i = 0; i < 5; i++){
+
+        getline(input, line);
+        quantidades[i] = stoi(line);
+    }
+
+    input.close();
+
+    cout<<"Importando registros aleatórios..."<<endl;
+    reviews = importarAleatorios(bin_file_path, 1000000);
+
 
     for(int k=0; k<3; k++) {
 
         for (int j = 0; j < 5; j++) {
             int numReviews = quantidades[j];
             for (int i = 0; i < 3; i++) {
-                //reviews = importarAleatorios(path, numReviews);
-               // cout << simulaFuncao(reviews, sorting, k) << "\n";
+
                 vector<Review*> reviewsCopia = trucateVector(reviews, numReviews);
                 res+= simulaFuncao(reviewsCopia, sorting, k) + "\n";
 
-                // sleep_for(seconds(1));
             }
        }
 
-        cout << endl;
     }
-    fim = high_resolution_clock::now();
-    time = duration_cast<duration<double>>(fim - inicio).count();
-    cout << "tempo simulação: "<<time << endl;
+
 
     for (int i = 0; i < reviews.size(); i++) {
         delete reviews[i];
     }
 
-    appendArquivo("saida.txt", res);
+    appendArquivo(output_file_path, res);
+    cout << "Resultado gerado em " <<output_file_path << endl;
 }
 
 
@@ -424,32 +360,16 @@ void deleteVectorItems(vector<Review*> &items){
     for (int i = 0; i < items.size(); i++) {
         delete items[i];
     }
-
-    //items.clear();
 }
 
-void testeOrdenacaoFuncao(vector<Review*> reviews, int func, string path){
-    Sorting sorting = Sorting();
-
-    if(func=0){
-        sorting.quickSort(reviews);
-    }else if(func=1){
-        sorting.heapSort(reviews);
-    }else{
-        sorting.countingSort(reviews);
-    }
-
-    imprimeListaRegistrosArquivo(reviews, path);
 
 
-}
-
-void testeOrdenacao(string path){
+void testeOrdenacao(string result_output_path, string bin_file_path){
 
     string resultado="";
 
     Sorting sorting = Sorting();
-    vector<Review*> reviews = importarAleatorios("data.bin", 100);
+    vector<Review*> reviews = importarAleatorios(bin_file_path, 100);
 
     vector<Review*> copiaReviews = reviews;
     sorting.quickSort(copiaReviews);
@@ -468,11 +388,10 @@ void testeOrdenacao(string path){
 
     deleteVectorItems(reviews);
 
-    appendArquivo(path, resultado);
+    cout << "Saida do teste de ordenacao gerada ao final do arquivo " << result_output_path<<endl;
+    appendArquivo(result_output_path, resultado);
 
 }
-
-
 
 
 void readCSVToBinary(string path, string binaryOut) {
@@ -541,22 +460,45 @@ void readCSVToBinary(string path, string binaryOut) {
     }
 }
 
-void menu(string input_file_path, string output_file_path){
+void menu(string input_dir, string bin_file_path){
     int option;
     int i;
-    cout << "1 - Funcao acessarRegistro (i)\n2 - Funcao testeImportacao " << endl;
+    cout << "1 - Funcao acessarRegistro (i)\n";
+    cout << "2 - Funcao testeImportacao \n";
+    cout << "3 - Ordenacao \n";
+    cout << "4 - Hash \n";
+    cout << "5 - Modulo de Teste \n";
+
     cin >> option;
 
     if(option == 1){
         cout << "Informe i: ";
         cin >> i;
-        Review* review = acessarRegistroTAD(i, output_file_path);
+
+        ifstream arq;
+        arq.open(bin_file_path, ios::binary);
+
+        Review* review = acessarRegistroTAD(i, arq);
         cout << review->toString();
+        arq.close();
 
         delete review;
     }
     else if(option == 2){
-        testeImportacao(output_file_path);
+        testeImportacao(bin_file_path);
+    }
+    else if(option == 3){
+        simulacaoPerformaceOrdenacao("saida.txt", bin_file_path, input_dir);
+    }
+    else if(option == 4){
+        testaTabelaHash("teste.txt", bin_file_path);
+    }
+    else if(option == 5){
+        cout << "Teste Ordenacao: " << endl;
+        testeOrdenacao("teste.txt", bin_file_path);
+
+        cout << "Teste Hash: " << endl;
+        testaTabelaHash("teste.txt", bin_file_path);
     }
     else {
         cout << "Opcao invalida" << endl;
@@ -564,38 +506,30 @@ void menu(string input_file_path, string output_file_path){
 }
 
 
-int main(){
-    //simulacaoPerformaceOrdenacao("data.bin");
-   // testeOrdenacao("teste.txt");
-   // testaTabelaHash("data.bin");
-
-    return 0;
-}
-
-int main2(int argc, char **argv) {
+int main(int argc, char **argv) {
     string input_dir;
     string input_file_path;
-    string output_file_path;
+    string bin_file_path;
 
     if (argc == 2) {
         input_dir = argv[1];
         input_file_path = input_dir + "/tiktok_app_reviews.csv";
-        output_file_path = input_dir + "/data.bin";
+        bin_file_path = input_dir + "/data.bin";
 
     } else {
         cout << "Erro: era esperado caminho do arquivo de entrada." << endl;
         return 0;
     }
 
-    ifstream binFile(output_file_path);
+    ifstream binFile(bin_file_path);
     if(binFile.fail()){
         cout << "Binario nao encontrado. Gerando arquivo binario..." << endl;
-        readCSVToBinary(input_file_path, output_file_path);
+        readCSVToBinary(input_file_path, bin_file_path);
 
-        menu(input_file_path, output_file_path);
+        menu(input_dir, bin_file_path);
     }else{
-       // testeImportacao(output_file_path);
-        menu(input_file_path, output_file_path);
+
+        menu(input_dir, bin_file_path);
     }
 
     return 0;

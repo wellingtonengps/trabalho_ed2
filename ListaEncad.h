@@ -19,12 +19,6 @@ public:
     void insereFinal(Cell* cell);
     int getSize();
     Node* getNode(int k);
-
-
-    //void removeInicio();
-    //void removeFinal();
-    //void set(int k, string val);
-    //void insereInicio(string val);
 private:
     Node *primeiro; /// primeiro No da lista
     Node *ultimo; /// ultimo No da lista

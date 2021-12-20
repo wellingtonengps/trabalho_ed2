@@ -29,8 +29,6 @@ LinearHashTable::~LinearHashTable() {
 void LinearHashTable::insert(string val) {
 
     int h = hash(val);
-   // cout<< "val: "<< val<< " balde: "<<h<<endl;
-
 
    //verifica se o valor já está inserido, se não, insere
    Cell* buscaCell = busca(val);
@@ -44,18 +42,16 @@ void LinearHashTable::insert(string val) {
        bucketList[h]->inserir(cell);
        nChaves++;
 
-       //cout <<"FC: " << fatorCarga()<<endl;
        if (fatorCarga() >= maxFatorCarga) {
-           // cout << "FC: "<< fatorCarga() << " >= "<<maxFatorCarga<<endl;
            splitBucket();
        }
    }
 }
 
+//reinsere valores que estão sendo redistribuídos
 void LinearHashTable::reinsert(Cell* cell) {
 
     int h = hash(cell->getCellInfo());
-    //cout<< "reinserindo val: "<< val<< " balde: "<<h<<endl;
     bucketList[h]->inserir(cell);
 }
 
@@ -81,15 +77,12 @@ void LinearHashTable::splitBucket() {
         g++;
     }
 
+    //cria 2 novos baldes, dividindo o balde apontado por splitPointer
     bucketList.push_back(new Bucket(bucketSize));
-    cout << "QNTD de baldes: "  << bucketList.size() << endl;
     Bucket* current = bucketList[splitPointer];
     bucketList[splitPointer] = new Bucket(bucketSize);
-    //nChaves-=current->getTotalSize();
 
-
-    //redistribuindo valores do balde dividido
-    cout<< "split balde "<< splitPointer<<endl;
+    //redistribui valores do balde dividido
     for(int i=0; i<current->getTotalSize(); i++){
         Cell* cell  =  current->getRemove(i);
         reinsert(cell);
@@ -117,21 +110,18 @@ int LinearHashTable::comprimeCaracteres(string val){
 
 int LinearHashTable::hash(string val) {
 
-   // cout << "val: "<< val<<endl;
-   // val.erase(remove(val.begin(), val.end(), '.'), val.end());
-
     int k = comprimeCaracteres(val);
-    int n = originalBucketCount /** pow(2, g)*/;
+    int n = originalBucketCount;
 
     int h = k % (int)(n * pow(2, this->g));
 
     if(h<splitPointer){
-        //todo: isso pode dar um número maior q o total de baldes
         h = k % (int)(n * pow(2, this->g+1));
     }
 
     return h;
 }
+
 
 void LinearHashTable::printTable(){
     for(int i=0; i < bucketList.size(); i++){
@@ -145,6 +135,8 @@ void LinearHashTable::printTable(){
     }
 }
 
+
+//converte tabela para um vetor de células
 vector<Cell*> LinearHashTable::getTableAsVector(){
 
     vector<Cell*> cells;
@@ -154,7 +146,7 @@ vector<Cell*> LinearHashTable::getTableAsVector(){
             Cell* cell = bucketList[i]->get(j);
             cells.push_back(cell);
         }
-        cout << endl;
+
     }
 
     return cells;

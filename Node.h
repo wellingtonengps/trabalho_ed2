@@ -11,8 +11,8 @@ using namespace std;
 
 class Node {
 private:
-    Cell* info; // valor armazenado no No
-    Node *prox; // ponteiro para o proximo No
+    Cell* info;
+    Node *prox;
 public:
     Node() { };
     ~Node() { };
