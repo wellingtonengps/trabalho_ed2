@@ -38,6 +38,7 @@ void LinearHashTable::insert(string val) {
    else{
        Cell* cell = new Cell();
        cell->setCellInfo(val);
+       cell->incrementCount();
 
        bucketList[h]->inserir(cell);
        nChaves++;
