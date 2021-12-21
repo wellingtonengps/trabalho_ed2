@@ -103,8 +103,14 @@ float LinearHashTable::fatorCarga(){
 
 int LinearHashTable::comprimeCaracteres(string val){
 
-    val.erase(remove(val.begin(), val.end(), '.'), val.end());
-    int res = stoi(val);
+    int res=0;
+    for(int i=0; i< val.size(); i++){
+
+        res +=val[i]*pow(10, i);
+    }
+
+   // val.erase(remove(val.begin(), val.end(), '.'), val.end());
+   // int res = stoi(val);
     return res;
 }
 
