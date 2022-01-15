@@ -2,25 +2,25 @@
 #define TRABALHO_ED2_VPNODE_H
 
 class VPNode {
-private:
-    VPNode *esq;
-    VPNode *dir;
-    VPNode *pai;
-    bool cor;
-    int info;
 public:
-    VPNode(int info);
-    ~VPNode();
-    void setEsq(VPNode *p);
-    void setInfo(int info);
-    void setDir(VPNode *p);
-    void setCor(bool infoCor);
-    void setPai(VPNode *p);
-    VPNode* getPai();
-    VPNode* getEsq();
-    int getInfo();
-    VPNode* getDir();
-    bool getCor();
+    VPNode(int data)               {cor = true; info = data; esq = dir = pai = NULL; };
+    ~VPNode()              { };
+    void setEsq(VPNode *p) { esq = p; };
+    void setInfo(int val) { info = val; };
+    void setDir(VPNode *p) { dir = p; };
+    VPNode* getEsq()       { return this->esq; };
+    int getInfo()         { return info; };
+    VPNode* getDir()       { return this->dir; };
+    void setPai(VPNode *paiInfo){pai = paiInfo;};
+    VPNode* getPai(){return pai;};
+    void setCor(bool corInfo){cor = corInfo;};
+    bool getCor(){return cor;};
+private:
+    VPNode* esq; // ponteiro para o filho a esquerda
+    int info;   // informa��o do No (int)
+    VPNode* dir; // ponteiro para o filho a direita
+    VPNode* pai;
+    bool cor;
 };
 
 #endif //TRABALHO_ED2_VPNODE_H
