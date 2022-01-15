@@ -24,6 +24,8 @@ public:
     BNode* getInsertionNode(string id);
     void splitNode(BNode* bNode);
     void splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode);
+    void printTree();
+    void printLevel(BNode* bnode);
 };
 
 

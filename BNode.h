@@ -24,10 +24,10 @@ public:
     bool isFull(){return reviewDataVector.size() == ord-1;}
     bool overflowed(){return reviewDataVector.size() >= ord;}
     void setIsLeaf(bool isLeaf){this->leaf=isLeaf;}
-    int getNumChildren(){return children.size();}
-    int getNumKeys(){return reviewDataVector.size();}
+    int getNumChildren(){return (int)children.size();}
+    int getNumKeys(){return (int)reviewDataVector.size();}
     ReviewData* getReviewData(int index){return reviewDataVector[index];}
-    BNode* getChild(int index){return children[index];}
+    BNode* getChild(int index);
     ReviewData* getElement(int index){return reviewDataVector[index];}
     int insert(ReviewData* reviewData);
     void insertAt(ReviewData* reviewData, int index);
