@@ -1,5 +1,7 @@
 #include "FileIO.h"
 #include "Review.h"
+#include "ReviewData.h"
+#include "BTree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -238,4 +240,24 @@ vector<Review*> FileIO::importarAleatorios(string path, int num){
     arq.close();
 
     return listaRegistros;
+}
+
+
+void FileIO::importarAleatoriosBTree(BTree &bTree, string path, int num){
+
+    int numRegistros = 3646476;
+    srand (std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    ifstream arq;
+    arq.open(path, ios::binary);
+
+    for(int i = 0; i < num; i++){
+        int numRand = rand() % numRegistros;
+
+        Review* review = acessarRegistroTAD(numRand, arq);
+
+        bTree.insert(/*review->getReviewId()*/ "00:"+to_string(i), i*RECORD_LENGTH);
+
+    }
+    arq.close();
+
 }

@@ -5,6 +5,7 @@
 #include <string>
 #include "Review.h"
 #include <vector>
+#include "BTree.h"
 
 
 
@@ -36,6 +37,7 @@ public:
     Review* acessarRegistroTAD(int i, string binary_input);
     void bufferChunk(ifstream* inputFile);
     vector<Review*> importarAleatorios(string path, int num);
+    void importarAleatoriosBTree(BTree &bTree, string path, int num);
 };
 
 

@@ -3,13 +3,13 @@
 //
 
 #include <iostream>
-#include <deque>
 #include <stack>
 #include "BTree.h"
 
 BTree::BTree(int ord) {
     this->root = new BNode();
     this->ord = ord;
+    //todo: tornar ord não estático. Vai dar problema se existir outra àrvore de ordem diferente
     BNode::ord = ord;
 }
 
@@ -18,9 +18,6 @@ BTree::~BTree() {
     delete root;
 }
 
-void BTree::insert(string id, int location){
-
-}
 
 void BTree::splitNode(BNode* bNode){
     if(bNode== this->root){
@@ -44,7 +41,7 @@ void BTree::splitNode(BNode* bNode){
                 newLeftNode->pushBackChild(bNode->getChild(i));
             }
             else{
-                newRightNode->pushBackChild(bNode->getChild(i));;
+                newRightNode->pushBackChild(bNode->getChild(i));
             }
         }
 
@@ -124,25 +121,39 @@ void BTree::splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode){
                 newLeftNode->pushBackChild(bNode->getChild(i));
             }
             else{
-                newRightNode->pushBackChild(bNode->getChild(i));;
+                newRightNode->pushBackChild(bNode->getChild(i));
             }
         }
 
+        newRightNode->setIsLeaf(bNode->isLeaf());
+        newLeftNode->setIsLeaf(bNode->isLeaf());
         //newRoot->insert(bNode->getElement(centralIndex));
        // newRoot->pushBackChild(newLeftNode);
        // newRoot->pushBackChild(newRightNode);
 
         //this->root = newRoot;
-        bNode->clear();
-        delete bNode;
+        //bNode->clear();
+        //delete bNode;
 }
 
-void BTree::insert(ReviewData* reviewData){
-    BNode* current = root;
-    stack<BNode*> bNodeStack;
-    string id = reviewData->getId();
-    bNodeStack.push(root);
 
+void printNode(BNode *bNode){
+
+    cout << "|";
+    for(int i=0; i<bNode->getNumKeys(); i++){
+        cout<<bNode->getElement(i)->getId() << " | ";
+    }
+}
+
+void BTree::insert(string id, int location){
+    ReviewData* reviewData = new ReviewData(id, location);
+    BNode* current = this->root;
+    stack<BNode*> bNodeStack;
+    //string id = reviewData->getId();
+    bNodeStack.push(this->root);
+    //printNode(root);
+
+    cout << "inserir: "<< id <<endl;
     while(!current->isLeaf()){
         for(int i=0; i<current->getNumKeys(); i++){
             string currentKey = current->getElement(i)->getId();
@@ -153,30 +164,44 @@ void BTree::insert(ReviewData* reviewData){
                 //pega o índice do primeiro elemento cujo id é maior que o passado por parâmetro
                 bNodeStack.push(current->getChild(i));
                 current = current->getChild(i);
+                //printNode(current->getChild(i));
                 break;
             }else if(i==current->getNumKeys()-1){
                 //pega último filho
                 bNodeStack.push(current->getChild(i+1));
+
+                //todo: ver essa parte. Quando chamo a linha seguinte, o parâmetro (ponteiro) chega como NULL na função
+                //todo: quando current->getChild(i+1) é passado, referência muda. Parece que de todos elementos dentro do vetor de BNodes filhos
+                //todo: os filhos do nó somem quando entra nessa função (???)
+                //resolvido
+                //printNode(current->getChild(i+1));
+
                 current = current->getChild(i+1);
                 break;
             }
         }
     }
+   // cout << "\n\n";
 
     //BNode* insertionNode = bNodeStack.top();
     //insertionNode->insert(reviewData);
     bNodeStack.top()->insert(reviewData);
     int centralIndex = ord/2;
 
-    while(bNodeStack.top()->overflowed()){
+
+    //todo: porque tem um nó folha acima do último nível?
+    while(!bNodeStack.empty() && bNodeStack.top()->overflowed()){
         cout << "Overflow. Fazer split"<<endl;
+        BNode* nodeToBeSplit = bNodeStack.top();
+        bNodeStack.pop();
+
         BNode* newLeftNode = new BNode();
         BNode* newRightNode = new BNode();
-        ReviewData* centerElement = bNodeStack.top()->getElement(centralIndex);
+        ReviewData* centerElement = nodeToBeSplit->getElement(centralIndex);
 
-        splitNode(bNodeStack.top(), newLeftNode, newRightNode);
+        splitNode(nodeToBeSplit, newLeftNode, newRightNode);
 
-        if(bNodeStack.top()== this->root){
+        if(nodeToBeSplit== this->root){
             //cria novo nó
             BNode* newRoot = new BNode();
             newRoot->setIsLeaf(false);
@@ -187,9 +212,8 @@ void BTree::insert(ReviewData* reviewData){
             newRoot->pushBackChild(newRightNode);
             //atribui nova raiz à raiz da árvore
             this->root = newRoot;
-            //bNodeStack.pop();
+
         }else{
-            bNodeStack.pop();
             //insere elemento central no pai
             int insertedPos = bNodeStack.top()->insert(centerElement);
             //insere novos nós filhos nesse pai, antes e depois do nó que acabou de ser inserido
@@ -198,7 +222,82 @@ void BTree::insert(ReviewData* reviewData){
             bNodeStack.top()->setIsLeaf(false);
         }
 
+        nodeToBeSplit->clear();
+        //cout << "delete " << nodeToBeSplit << endl;
+        delete nodeToBeSplit;
 
     }
 
+    printTree();
+
 }
+
+/*
+void BTree::printLevel(BNode* bnode){
+
+    vector<BNode*> v;
+
+    if(bnode->isLeaf()){
+        return;
+    }
+
+    if(bnode==this->root){
+        printNode(bnode);
+        for(int i=0; i<bnode->getNumChildren(); i++){
+            printLevel(bnode->getChild(i));
+        }
+    }else{
+        for(int i=0;i<bnode->getNumChildren(); i++){
+            v.push_back(bnode->getChild(i));
+            printNode(bnode->getChild(i));
+            cout << " + ";
+        }
+        for(int i=0; i<bnode->getNumChildren(); i++){
+            printLevel(bnode->getChild(i));
+        }
+
+    }
+    cout <<"\n";
+
+}*/
+
+void BTree::printTree(){
+
+
+    //printLevel(this->root);
+    vector<vector<BNode*>> nodeVector;
+    vector<BNode*> v;
+    nodeVector.push_back(v);
+    nodeVector[0].push_back(this->root);
+    bool loop = true;
+
+    int i=0;
+    while(loop){
+        for(int j=0; j< nodeVector[i].size(); j++){
+            vector<BNode*> vecToInsert;
+
+            if(nodeVector[i][j]->isLeaf()){
+                loop=false;
+                break;
+            }
+            for(int k=0; k<nodeVector[i][j]->getNumChildren(); k++){
+                vecToInsert.push_back(nodeVector[i][j]->getChild(k));
+            }
+
+            nodeVector.push_back(vecToInsert);
+
+        }
+        i++;
+    }
+
+    for(int i=0; i< nodeVector.size(); i++){
+        for(int j=0; j< nodeVector[i].size(); j++){
+            printNode(nodeVector[i][j]);
+            cout << "----";
+        }
+        cout << endl;
+    }
+
+}
+
+

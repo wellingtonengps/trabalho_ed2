@@ -6,6 +6,7 @@
 #define TRABALHO_REVIEWDATA_H
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -16,12 +17,8 @@ private:
     int location;
 
 public:
-    ReviewData(string id, int location) {
-        this->id = id;
-        this->location = location;
-    }
-
-    ~ReviewData() {}
+    ReviewData(string id, int location);
+    ~ReviewData();
     string getId() { return this->id; }
     int getLocation() { return this->location; }
     void setId(string id) { this->id = id; }
