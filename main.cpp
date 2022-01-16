@@ -5,6 +5,8 @@
 #include "Review.h"
 #include "Sorting.h"
 #include "LinearHashTable.h"
+#include "BTree.h"
+#include "FileIO.h"
 #include <time.h>
 #include <vector>
 #include <chrono>
@@ -485,7 +487,8 @@ void readCSVToBinary(string path, string binaryOut) {
 }
 
 void menu(string input_dir, string bin_file_path){
-    int option;
+    int option, modo;
+    string id;
     int i;
     cout << "1 - Funcao acessarRegistro (i)\n";
     cout << "2 - Funcao testeImportacao \n";
@@ -493,6 +496,9 @@ void menu(string input_dir, string bin_file_path){
     cout << "4 - Ordenacao \n";
     cout << "5 - Hash \n";
     cout << "6 - Modulo de Teste \n";
+    cout << "7 - Arvore Vermelho-Preto \n";
+    cout << "8 - Arvore B \n";
+    cout << "9 - Sair \n";
 
     cin >> option;
 
@@ -539,6 +545,58 @@ void menu(string input_dir, string bin_file_path){
 
         cout << "Resultado escrito ao final do arquivo teste.txt" << endl;
     }
+    else if(option == 7){
+
+        cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
+        cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
+
+        cin >> modo;
+
+        if(modo == 1){
+
+        }
+        else if(modo == 2){
+            cout << "Digite o ID da avaliacao que deseja buscar: ";
+            cin >> id;
+            //todo funcao de busca por id na arvore vp
+
+        }
+        else{
+            cout << "Opcao invalida" << endl;
+        }
+    }
+    else if(option == 8){
+        int ordem;
+        cout << "Digite a ordem da arvore B: ";
+        cin >> ordem;
+
+        BTree bTree = BTree(ordem);
+
+        FileIO fileIo = FileIO();
+        fileIo.importarAleatoriosBTree(bTree, "data.bin", 20);
+
+        cout << "\n";
+        cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
+        cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
+
+        cin >> modo;
+
+        if(modo == 1){
+
+        }
+        else if(modo == 2){
+            cout << "Digite o ID da avaliacao que deseja buscar: ";
+            cin >> id;
+            int find = bTree.find(id);
+        }
+        else{
+            cout << "Opcao invalida" << endl;
+        }
+
+    }
+    else if(option == 9){
+
+    }
     else {
         cout << "Opcao invalida" << endl;
     }
@@ -550,7 +608,7 @@ int main(int argc, char **argv) {
     string input_file_path;
     string bin_file_path;
 
-    if (argc == 2) {
+    /*if (argc == 2) {
         input_dir = argv[1];
         input_file_path = input_dir + "/tiktok_app_reviews.csv";
         bin_file_path = input_dir + "/data.bin";
@@ -559,6 +617,7 @@ int main(int argc, char **argv) {
         cout << "Erro: era esperado caminho do arquivo de entrada." << endl;
         return 0;
     }
+     */
 
     ifstream binFile(bin_file_path);
     if(binFile.fail()){
