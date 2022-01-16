@@ -21,7 +21,7 @@ BNode::~BNode() {
     for (int i = 0; i < this->getNumChildren(); i++) {
         delete this->getChild(i);
     }
-    cout << "Delete bnode: " << this << endl;
+   // cout << "Delete bnode: " << this << endl;
 }
 
 

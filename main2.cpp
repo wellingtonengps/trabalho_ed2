@@ -13,9 +13,9 @@
 
 int main(){
 
-/*
+
     BTree bTree = BTree(5);
-    bTree.insert("0001", 1);
+   /* bTree.insert("0001", 1);
     bTree.insert("0003", 1);
     bTree.insert("0000", 1);
     bTree.insert("0002", 1);
@@ -61,13 +61,21 @@ int main(){
     bTree.insert("000:1", 1);
     bTree.insert("000:1", 1);*/
 
-    /*FileIO fileIo = FileIO();
+    FileIO fileIo = FileIO();
     fileIo.importarAleatoriosBTree(bTree, "data.bin", 20);
-*/
-    // bTree.printTree();
 
 
-    cout << "Criando arv!!!" << endl;
+    int find = bTree.find("gp:AOqpTOGSsGv5rOA79ttW2LE0FeMYvkdUuXRMTfbyMk00pJ0uDDj4XRvR5b2fVE4EIG19EdKBF0pZzb7g0NYYMg");
+
+    if(find !=-1)
+        cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString()<< endl;
+    else
+        cout << "Não encontrado" << endl;
+
+     //bTree.printTree();
+
+
+  /*  cout << "Criando arv!!!" << endl;
 
     VPTree arv;
 
@@ -81,7 +89,7 @@ int main(){
 
 
     arv.imprime();
-    cout << endl;
+    cout << endl;*/
 
 return 0;
 }

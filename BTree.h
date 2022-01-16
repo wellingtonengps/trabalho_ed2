@@ -26,6 +26,7 @@ public:
     void splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode);
     void printTree();
     void printLevel(BNode* bnode);
+    int find(string id);
 };
 
 

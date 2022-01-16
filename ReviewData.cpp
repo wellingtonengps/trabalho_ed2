@@ -10,5 +10,5 @@ this->location = location;
 }
 
 ReviewData::~ReviewData() {
-    cout << "Delete ReviewData: "<<  this << endl;
+   // cout << "Delete ReviewData: "<<  this << endl;
 }

@@ -145,15 +145,41 @@ void printNode(BNode *bNode){
     }
 }
 
+int BTree::find(string id){
+    BNode* current = this->root;
+
+    while(!current->isLeaf()){
+        for(int i=0; i<current->getNumKeys(); i++){
+            string currentKey = current->getElement(i)->getId();
+
+            //a.compare(b): -1 significa que a é menor que b
+            //a.compare(b):  1 significa que a é maior que b
+            if(id.compare(currentKey)<0){
+                //pega o índice do primeiro elemento cujo id é maior que o passado por parâmetro
+                current = current->getChild(i);
+                break;
+            }else if(id.compare(currentKey)==0){
+                return  current->getElement(i)->getLocation();
+
+            }else if(i==current->getNumKeys()-1){
+                //pega último filho
+                current = current->getChild(i+1);
+                break;
+            }
+        }
+    }
+
+    return -1;
+
+}
+
 void BTree::insert(string id, int location){
     ReviewData* reviewData = new ReviewData(id, location);
     BNode* current = this->root;
     stack<BNode*> bNodeStack;
-    //string id = reviewData->getId();
     bNodeStack.push(this->root);
-    //printNode(root);
 
-    cout << "inserir: "<< id <<endl;
+    //cout << "inserir: "<< id <<endl;
     while(!current->isLeaf()){
         for(int i=0; i<current->getNumKeys(); i++){
             string currentKey = current->getElement(i)->getId();
@@ -169,29 +195,19 @@ void BTree::insert(string id, int location){
             }else if(i==current->getNumKeys()-1){
                 //pega último filho
                 bNodeStack.push(current->getChild(i+1));
-
-                //todo: ver essa parte. Quando chamo a linha seguinte, o parâmetro (ponteiro) chega como NULL na função
-                //todo: quando current->getChild(i+1) é passado, referência muda. Parece que de todos elementos dentro do vetor de BNodes filhos
-                //todo: os filhos do nó somem quando entra nessa função (???)
-                //resolvido
-                //printNode(current->getChild(i+1));
-
                 current = current->getChild(i+1);
                 break;
             }
         }
     }
-   // cout << "\n\n";
 
-    //BNode* insertionNode = bNodeStack.top();
-    //insertionNode->insert(reviewData);
     bNodeStack.top()->insert(reviewData);
     int centralIndex = ord/2;
 
 
     //todo: porque tem um nó folha acima do último nível?
     while(!bNodeStack.empty() && bNodeStack.top()->overflowed()){
-        cout << "Overflow. Fazer split"<<endl;
+       // cout << "Overflow. Fazer split"<<endl;
         BNode* nodeToBeSplit = bNodeStack.top();
         bNodeStack.pop();
 
@@ -228,7 +244,7 @@ void BTree::insert(string id, int location){
 
     }
 
-    printTree();
+    //printTree();
 
 }
 
