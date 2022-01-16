@@ -43,6 +43,16 @@ void VPTree::rotacaoSimplesEsq(VPNode *p){
     p->setDir(q->getEsq());
     q->setEsq(p);
 
+    //****
+    if(p->getPai()!=NULL){
+        if(p->getPai()->getDir()==p){
+            p->getPai()->setDir(q);
+        }else{
+            p->getPai()->setEsq(q);
+        }
+    }
+    //****
+
     if(p == raiz){
         raiz = q;
     }
@@ -78,9 +88,21 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
     p->setEsq(q->getDir());
     q->setDir(p);
 
+    //*****
+    if(p->getPai()!=NULL){
+        if(p->getPai()->getDir()==p){
+            p->getPai()->setDir(q);
+        }else{
+            p->getPai()->setEsq(q);
+        }
+    }
+    //*****
+
     if(p == raiz){
         raiz = q;
     }
+
+
     /*
 
     VPNode *q = p->getEsq();
