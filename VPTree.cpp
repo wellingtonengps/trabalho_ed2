@@ -40,15 +40,16 @@ VPNode* getTio(VPNode *p){
 void VPTree::rotacaoSimplesEsq(VPNode *p){
 
     VPNode *q = p->getDir();
+    VPNode *paiAnterior = p->getPai();
     p->setDir(q->getEsq());
     q->setEsq(p);
 
     //****
-    if(p->getPai()!=NULL){
-        if(p->getPai()->getDir()==p){
-            p->getPai()->setDir(q);
+    if(paiAnterior!=NULL){
+        if(paiAnterior->getDir()==p){
+            paiAnterior->setDir(q);
         }else{
-            p->getPai()->setEsq(q);
+            paiAnterior->setEsq(q);
         }
     }
     //****
@@ -85,15 +86,16 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
 
 
     VPNode *q = p->getEsq();
+    VPNode *paiAnterior = p->getPai();
     p->setEsq(q->getDir());
     q->setDir(p);
 
     //*****
-    if(p->getPai()!=NULL){
-        if(p->getPai()->getDir()==p){
-            p->getPai()->setDir(q);
+    if(paiAnterior!=NULL){
+        if(paiAnterior->getDir()==p){
+            paiAnterior->setDir(q);
         }else{
-            p->getPai()->setEsq(q);
+            paiAnterior->setEsq(q);
         }
     }
     //*****
@@ -101,7 +103,6 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
     if(p == raiz){
         raiz = q;
     }
-
 
     /*
 
@@ -147,7 +148,6 @@ VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
     if(p->getInfo() < raiz->getInfo()) { //se for menor que a raiz, vai para a esquerda
          raiz->setEsq(auxInsere(raiz->getEsq(),p));
          raiz->getEsq()->setPai(raiz);
-
     }
     else { //se for menor que a raiz, vai para a direita
         raiz->setDir(auxInsere(raiz->getDir(), p));

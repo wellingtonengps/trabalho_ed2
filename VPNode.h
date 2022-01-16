@@ -5,9 +5,9 @@ class VPNode {
 public:
     VPNode(int data)               {cor = true; info = data; esq = dir = pai = NULL; };
     ~VPNode()              { };
-    void setEsq(VPNode *p) { esq = p; };
+    void setEsq(VPNode *p) { esq = p; if(p!=NULL)p->setPai(this);};
     void setInfo(int val) { info = val; };
-    void setDir(VPNode *p) { dir = p; };
+    void setDir(VPNode *p) { dir = p; if(p!=NULL)p->setPai(this);};
     VPNode* getEsq()       { return this->esq; };
     int getInfo()         { return info; };
     VPNode* getDir()       { return this->dir; };
