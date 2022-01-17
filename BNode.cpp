@@ -5,6 +5,7 @@
 #include <iostream>
 #include "BNode.h"
 #include "ReviewData.h"
+#include "Metricas.h"
 
 //int BNode::ord = 0;
 
@@ -40,6 +41,7 @@ int BNode::insert(ReviewData *reviewData) {
 
         //a.compare(b): -1 significa que a é menor que b
         //a.compare(b):  1 significa que a é maior que b
+        Metricas::incrementComparisonCount(1);
         if (this->reviewDataVector[i]->getId().compare(reviewData->getId()) > 0) {
             //inserir em i
             this->insertAt(reviewData, i);

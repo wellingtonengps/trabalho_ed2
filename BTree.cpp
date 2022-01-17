@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stack>
 #include "BTree.h"
+#include "Metricas.h"
 
 BTree::BTree(int ord) {
     this->root = new BNode(ord);
@@ -17,7 +18,7 @@ BTree::~BTree() {
     delete root;
 }
 
-
+/*
 void BTree::splitNode(BNode* bNode){
     if(bNode== this->root){
 
@@ -57,6 +58,8 @@ void BTree::splitNode(BNode* bNode){
 
     }
 }
+
+*/
 /*
 void BTree::splitRoot(ReviewData* overflowedElement){
     BNode* newLeftNode = new BNode();
@@ -78,6 +81,7 @@ void BTree::insert(ReviewData* reviewData){
 }
 */
 
+/*
 BNode* BTree::getInsertionNode(string id){
     BNode* current = root;
 
@@ -98,6 +102,7 @@ BNode* BTree::getInsertionNode(string id){
 
     return current;
 }
+*/
 
 void BTree::splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode){
 
@@ -150,14 +155,16 @@ int BTree::find(string id){
     while(!current->isLeaf()){
         for(int i=0; i<current->getNumKeys(); i++){
             string currentKey = current->getElement(i)->getId();
+            int comparison = id.compare(currentKey);
+            Metricas::incrementComparisonCount(1);
 
             //a.compare(b): -1 significa que a é menor que b
             //a.compare(b):  1 significa que a é maior que b
-            if(id.compare(currentKey)<0){
+            if(comparison<0){
                 //pega o índice do primeiro elemento cujo id é maior que o passado por parâmetro
                 current = current->getChild(i);
                 break;
-            }else if(id.compare(currentKey)==0){
+            }else if(comparison==0){
                 return  current->getElement(i)->getLocation();
 
             }else if(i==current->getNumKeys()-1){
@@ -183,14 +190,19 @@ void BTree::insert(string id, int location){
         for(int i=0; i<current->getNumKeys(); i++){
             string currentKey = current->getElement(i)->getId();
 
+            int comparison = id.compare(currentKey);
+            Metricas::incrementComparisonCount(1);
+
             //a.compare(b): -1 significa que a é menor que b
             //a.compare(b):  1 significa que a é maior que b
-            if(id.compare(currentKey)<0){
+            if(comparison<0){
                 //pega o índice do primeiro elemento cujo id é maior que o passado por parâmetro
                 bNodeStack.push(current->getChild(i));
                 current = current->getChild(i);
                 //printNode(current->getChild(i));
                 break;
+            }else if(comparison==0){
+                return;
             }else if(i==current->getNumKeys()-1){
 
                 //pega último filho6
