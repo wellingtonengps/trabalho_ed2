@@ -276,7 +276,7 @@ void FileIO::importarAleatoriosVPTree(VPTree &vpTree, string path, int num) {
 
         Review *review = acessarRegistroTAD(numRand, arq);
 
-        vpTree.insere(review->getReviewId() /*"00:" + to_string(i)*/, numRand);
+        vpTree.insere(review->getReviewId(), numRand);
 
     }
     arq.close();

@@ -556,7 +556,7 @@ void menu(string input_dir, string bin_file_path){
         VPTree vpTree = VPTree();
 
         FileIO fileIo = FileIO();
-        fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 8);
+        fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 20);
 
         if(modo == 1){
 

@@ -143,9 +143,12 @@ VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
     {
         return p;
     }
+    else if(p->getInfo()->getId().compare(raiz->getInfo()->getId()) == 0){
+
+    }
 
     //p->getInfo()->getId() < raiz->getInfo()->getId();
-    if(p->getInfo()->getId().compare(raiz->getInfo()->getId())<0) { //se for menor que a raiz, vai para a esquerda
+    else if(p->getInfo()->getId().compare(raiz->getInfo()->getId())<0) { //se for menor que a raiz, vai para a esquerda
         raiz->setEsq(auxInsere(raiz->getEsq(),p));
         raiz->getEsq()->setPai(raiz);
     }
@@ -279,14 +282,14 @@ int VPTree::auxBusca(VPNode *p, string id)
     //casos base
     if(p == NULL)
         return -1;
-    else if(p->getInfo()->getId() == id)
+    else if(p->getInfo()->getId().compare(id) == 0)
         return p->getInfo()->getLocation();
 
-    //casos recurivos
-    else if(id < p->getInfo()->getId())
-        return auxBusca(p->getEsq(), p->getInfo()->getId());
+        //casos recurivos
+    else if(id.compare(p->getInfo()->getId()) < 0)
+        return auxBusca(p->getEsq(), id);
     else
-        return auxBusca(p->getDir(), p->getInfo()->getId());
+        return auxBusca(p->getDir(), id);
 }
 
 void VPTree::imprime()
