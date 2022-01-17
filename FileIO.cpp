@@ -257,7 +257,11 @@ void FileIO::importarAleatoriosBTree(BTree &bTree, string path, int num){
 
         Review* review = acessarRegistroTAD(numRand, arq);
 
-        bTree.insert(review->getReviewId(), numRand);
+        if(bTree.find(review->getReviewId())==-1){
+            bTree.insert(review->getReviewId(), numRand);
+        }else{
+            i--;
+        }
 
     }
     arq.close();
@@ -275,8 +279,11 @@ void FileIO::importarAleatoriosVPTree(VPTree &vpTree, string path, int num) {
         int numRand = rand() % numRegistros;
 
         Review *review = acessarRegistroTAD(numRand, arq);
-
-        vpTree.insere(review->getReviewId(), numRand);
+        if(vpTree.busca(review->getReviewId())==-1){
+            vpTree.insere(review->getReviewId(), numRand);
+        }else{
+            i--;
+        }
 
     }
     arq.close();

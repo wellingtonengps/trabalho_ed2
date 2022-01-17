@@ -6,11 +6,12 @@
 #include "BNode.h"
 #include "ReviewData.h"
 
-int BNode::ord = 0;
+//int BNode::ord = 0;
 
-BNode::BNode() {
+BNode::BNode(int ord) {
     //this->reviewDataVector.reserve(BNode::ord);
    // this->children.reserve(BNode::ord + 1);
+    this->ord=ord;
 }
 
 BNode::~BNode() {

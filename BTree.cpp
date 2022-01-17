@@ -7,10 +7,9 @@
 #include "BTree.h"
 
 BTree::BTree(int ord) {
-    this->root = new BNode();
+    this->root = new BNode(ord);
     this->ord = ord;
-    //todo: tornar ord não estático. Vai dar problema se existir outra àrvore de ordem diferente
-    BNode::ord = ord;
+   // BNode::ord = ord;
 }
 
 
@@ -23,9 +22,9 @@ void BTree::splitNode(BNode* bNode){
     if(bNode== this->root){
 
         int centralIndex = ord/2;
-        BNode* newRoot = new BNode();
-        BNode* newLeftNode = new BNode();
-        BNode* newRightNode = new BNode();
+        BNode* newRoot = new BNode(this->ord);
+        BNode* newLeftNode = new BNode(this->ord);
+        BNode* newRightNode = new BNode(this->ord);
 
         for (int i =0; i< bNode->getNumKeys(); i++){
             if(i<centralIndex){
@@ -212,15 +211,15 @@ void BTree::insert(string id, int location){
         BNode* nodeToBeSplit = bNodeStack.top();
         bNodeStack.pop();
 
-        BNode* newLeftNode = new BNode();
-        BNode* newRightNode = new BNode();
+        BNode* newLeftNode = new BNode(this->ord);
+        BNode* newRightNode = new BNode(this->ord);
         ReviewData* centerElement = nodeToBeSplit->getElement(centralIndex);
 
         splitNode(nodeToBeSplit, newLeftNode, newRightNode);
 
         if(nodeToBeSplit== this->root){
             //cria novo nó
-            BNode* newRoot = new BNode();
+            BNode* newRoot = new BNode(this->ord);
             newRoot->setIsLeaf(false);
             //insere elemento central
             newRoot->insert(centerElement);

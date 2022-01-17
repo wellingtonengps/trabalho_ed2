@@ -17,8 +17,8 @@ private:
      bool leaf=true;
      //static int ord;
 public:
-    static int ord;
-    BNode();
+    int ord;
+    BNode(int ord);
     ~BNode();
     bool isLeaf(){return leaf;}
     bool isFull(){return reviewDataVector.size() == ord-1;}
@@ -31,8 +31,8 @@ public:
     ReviewData* getElement(int index){return reviewDataVector[index];}
     int insert(ReviewData* reviewData);
     void insertAt(ReviewData* reviewData, int index);
-    static int getOrd(){return BNode::ord;}
-    static void setOrd(int ord){BNode::ord=ord;}
+    int getOrd(){return this->ord;}
+    void setOrd(int ord){this->ord=ord;}
     vector<ReviewData*> getElementsVector(){return  reviewDataVector;}
     vector<BNode*> getChildren(){return children;}
     void clear(){reviewDataVector.clear(); children.clear();}

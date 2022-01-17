@@ -556,7 +556,7 @@ void menu(string input_dir, string bin_file_path){
         VPTree vpTree = VPTree();
 
         FileIO fileIo = FileIO();
-        fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 20);
+        fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 10);
 
         if(modo == 1){
 
@@ -584,7 +584,7 @@ void menu(string input_dir, string bin_file_path){
         BTree bTree = BTree(ordem);
 
         FileIO fileIo = FileIO();
-        fileIo.importarAleatoriosBTree(bTree, "data.bin", 20);
+        fileIo.importarAleatoriosBTree(bTree, "data.bin", 10);
 
         cout << "\n";
         cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
