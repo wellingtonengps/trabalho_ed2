@@ -261,9 +261,9 @@ void VPTree::balancemento(VPNode *p){
 
 void VPTree::insere(string id, int location)
 {
-    ReviewData *info = new ReviewData(id, location);
+    //ReviewData *info = new ReviewData(id, location);
 
-    VPNode *p = new VPNode(info);
+    VPNode *p = new VPNode(id, location);
 
     raiz = auxInsere(raiz, p);
 

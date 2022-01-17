@@ -6,8 +6,8 @@ using namespace std;
 
 class VPNode {
 public:
-    VPNode(ReviewData *data)               {cor = true; info = data; esq = dir = pai = NULL; };
-    ~VPNode()              { };
+    VPNode(string id, int location){cor = true; esq = dir = pai = NULL; ReviewData *data =  new ReviewData(id, location); info = data;};
+    ~VPNode()              { delete info;};
     void setEsq(VPNode *p) { esq = p; if(p!=NULL)p->setPai(this);};
     void setInfo(ReviewData *data) { info = data; };
     void setDir(VPNode *p) { dir = p; if(p!=NULL)p->setPai(this);};
