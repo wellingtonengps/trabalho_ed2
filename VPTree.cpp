@@ -1,6 +1,7 @@
 #include <iostream>
 #include "VPTree.h"
 #include <cmath>
+#include "Metricas.h"
 
 VPTree::VPTree()
 {
@@ -139,20 +140,21 @@ void swapCor(VPNode *x, VPNode *y){
 
 VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
 {
-    if(raiz == NULL)
-    {
+    if(raiz == NULL){
         return p;
     }
     else if(p->getInfo()->getId().compare(raiz->getInfo()->getId()) == 0){
-
+        Metricas::incrementComparisonCount(1);
     }
 
     //p->getInfo()->getId() < raiz->getInfo()->getId();
-    else if(p->getInfo()->getId().compare(raiz->getInfo()->getId())<0) { //se for menor que a raiz, vai para a esquerda
+    else if(p->getInfo()->getId().compare(raiz->getInfo()->getId())<0) {
+        Metricas::incrementComparisonCount(1);
+        //se for menor que a raiz, vai para a esquerda
         raiz->setEsq(auxInsere(raiz->getEsq(),p));
         raiz->getEsq()->setPai(raiz);
     }
-    else { //se for menor que a raiz, vai para a direita
+    else { //se for menor que a raiz, vai para a
         raiz->setDir(auxInsere(raiz->getDir(), p));
         raiz->getDir()->setPai(raiz);
 
@@ -191,6 +193,7 @@ void VPTree::balancemento(VPNode *p){
 
     //caso 2:
     if((pai_p != NULL && tio_p != NULL)){
+
         if(pai_p->getCor() == true && tio_p->getCor() == true){
             pai_p->setCor(!pai_p->getCor());
             tio_p->setCor(!tio_p->getCor());
@@ -223,6 +226,7 @@ void VPTree::balancemento(VPNode *p){
             avo_p->setCor(!avo_p->getCor());
 
             if(tio_p == avo_p->getEsq()){ //caso A: rotacao esquerda
+                Metricas::incrementComparisonCount(1);
                 rotacaoSimplesEsq(avo_p);
                 //balancemento(avo_p);
             }else{
@@ -269,7 +273,7 @@ void VPTree::insere(string id, int location)
 
     balancemento(p);
 
-    imprime();
+    //imprime();
 }
 
 int VPTree::busca(string id)
@@ -280,14 +284,19 @@ int VPTree::busca(string id)
 int VPTree::auxBusca(VPNode *p, string id)
 {
     //casos base
-    if(p == NULL)
-        return -1;
-    else if(p->getInfo()->getId().compare(id) == 0)
-        return p->getInfo()->getLocation();
+    if(p == NULL) {
 
+        return -1;
+    }
+    else if(p->getInfo()->getId().compare(id) == 0) {
+
+
+        return p->getInfo()->getLocation();
+    }
         //casos recurivos
-    else if(id.compare(p->getInfo()->getId()) < 0)
+    else if(id.compare(p->getInfo()->getId()) < 0) {
         return auxBusca(p->getEsq(), id);
+    }
     else
         return auxBusca(p->getDir(), id);
 }

@@ -9,9 +9,12 @@
 #include "VPTree.h"
 #include "FileIO.h"
 #include <time.h>
+#include <unistd.h>
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <stdlib.h>
+#include "Metricas.h"
 
 
 int REVIEW_TEXT_LENGTH = 400;
@@ -486,12 +489,162 @@ void readCSVToBinary(string path, string binaryOut) {
     }
 }
 
-void menu(string input_dir, string bin_file_path){
+void metricasArvoreVP(string binary_input_file, string output_file, int n) {
+
+    FileIO fileIo = FileIO();
+    string res;
+
+    vector<Review*> data =  fileIo.importarAleatorios(binary_input_file, 100);
+
+    res += "Arvore Vermelho e Preto\n";
+    for (int i = 0; i < 3; i++) {
+        Metricas::clearMetrics();
+
+        VPTree vpTree = VPTree();
+
+
+        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+        fileIo.importarAleatoriosVPTree(vpTree, binary_input_file, n);
+        high_resolution_clock::time_point fim = high_resolution_clock::now();
+
+        double time = duration_cast<duration<double>>(fim - inicio).count();
+
+        res += "Inserção-";
+        res += "Iteração " + to_string(i) +
+               ", n= " + to_string(n) +
+               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               ", tempo: " + to_string(time) + "\n";
+
+        Metricas::clearMetrics();
+
+        inicio = high_resolution_clock::now();
+        for(int i = 0; i < data.size(); i++){
+            vpTree.busca(data[i]->getReviewId());
+        }
+        fim = high_resolution_clock::now();
+
+        time = duration_cast<duration<double>>(fim - inicio).count();
+
+        res += "Busca-";
+        res += "Iteração " + to_string(i) +
+               ", n= " + to_string(n) +
+               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               ", tempo: " + to_string(time) + "\n";
+    }
+
+    appendArquivo(output_file, res);
+}
+
+void metricasArvoreB(string binary_input_file, string output_file, int n) {
+
+    FileIO fileIo = FileIO();
+
+    string res;
+    vector<Review*> reviews = fileIo.importarAleatorios(binary_input_file, 100);
+
+
+    int somaComparacoesInsercao=0;
+    int somaComparacoesBusca=0;
+    double somaTempoInsercao=0;
+    double somaTempoBusca=0;
+
+    res += "Arvore B, ordem m =20\n";
+    for (int i = 0; i < 3; i++) {
+        Metricas::clearMetrics();
+
+        BTree bTree = BTree(20);
+        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+        fileIo.importarAleatoriosBTree(bTree, binary_input_file, n);
+        high_resolution_clock::time_point fim = high_resolution_clock::now();
+
+        double time = duration_cast<duration<double>>(fim - inicio).count();
+
+        res += "Inserção-";
+        res += "Iteração " + to_string(i) +
+               ", n= " + to_string(n) +
+               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               ", tempo: " + to_string(time) + "\n";
+
+        somaComparacoesInsercao+=Metricas::getComparisonCount();
+        somaTempoInsercao+=time;
+
+
+        Metricas::clearMetrics();
+        inicio = high_resolution_clock::now();
+        for(int i=0; i<reviews.size(); i++){
+            bTree.find(reviews[i]->getReviewId());
+        }
+         fim = high_resolution_clock::now();
+
+        time = duration_cast<duration<double>>(fim - inicio).count();
+
+        res += "Busca-";
+        res += "Iteração " + to_string(i) +
+               ", n= " + to_string(n) +
+               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               ", tempo: " + to_string(time) + "\n";
+
+        somaComparacoesBusca+=Metricas::getComparisonCount();
+        somaTempoBusca+=time;
+    }
+
+    res += "Arvore B, ordem m =200\n";
+    for (int i = 0; i < 3; i++) {
+        Metricas::clearMetrics();
+
+        BTree bTree = BTree(200);
+        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+        fileIo.importarAleatoriosBTree(bTree, binary_input_file, n);
+        high_resolution_clock::time_point fim = high_resolution_clock::now();
+
+        double time = duration_cast<duration<double>>(fim - inicio).count();
+
+        res += "Inserção-";
+        res += "Iteração " + to_string(i) +
+               ", n= " + to_string(n) +
+               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               ", tempo: " + to_string(time) + "\n";
+
+        somaComparacoesInsercao+=Metricas::getComparisonCount();
+        somaTempoInsercao+=time;
+
+
+        Metricas::clearMetrics();
+        inicio = high_resolution_clock::now();
+        for(int i=0; i<reviews.size(); i++){
+            bTree.find(reviews[i]->getReviewId());
+        }
+        fim = high_resolution_clock::now();
+
+        time = duration_cast<duration<double>>(fim - inicio).count();
+
+        res += "Busca-";
+        res += "Iteração " + to_string(i) +
+               ", n= " + to_string(n) +
+               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               ", tempo: " + to_string(time) + "\n";
+
+        somaComparacoesBusca+=Metricas::getComparisonCount();
+        somaTempoBusca+=time;
+
+    }
+
+    appendArquivo(output_file, res);
+
+}
+
+
+void menu(string input_dir, string bin_file_path) {
+
+    bool saida = false;
     int option, modo;
     string id;
     int i;
-    cout << "1 - Funcao acessarRegistro (i)\n";
-    cout << "2 - Funcao testeImportacao \n";
+
+    cout << "\n";
+    cout << "----------- MENU -----------\n";
+    cout << "1 - Funcao Acessar Registro (i)\n";
+    cout << "2 - Funcao Teste Importacao \n";
     cout << "3 - Gerar metricas dos algoritmos de ordenacao \n";
     cout << "4 - Ordenacao \n";
     cout << "5 - Hash \n";
@@ -499,58 +652,59 @@ void menu(string input_dir, string bin_file_path){
     cout << "7 - Arvore Vermelho-Preto \n";
     cout << "8 - Arvore B \n";
     cout << "9 - Sair \n";
-
+    cout << "\n";
+    cout << "Opcao: ";
     cin >> option;
+    cout << "\n";
 
-    if(option == 1){
+    if (option == 1) {
         cout << "Informe i: ";
         cin >> i;
 
         ifstream arq;
         arq.open(bin_file_path, ios::binary);
 
-        Review* review = acessarRegistroTAD(i, arq);
+        Review *review = acessarRegistroTAD(i, arq);
         cout << review->toString();
         arq.close();
 
         delete review;
-    }
-    else if(option == 2){
+    } else if (option == 2) {
         testeImportacao(bin_file_path);
-    }
-    else if(option == 3){
+    } else if (option == 3) {
         simulacaoPerformaceOrdenacao("saida.txt", bin_file_path, input_dir);
-    }
-    else if(option == 4){
+    } else if (option == 4) {
 
         int n;
-        cout << "Informe n: " ;
+        cout << "Informe n: ";
         cin >> n;
 
         cout << ordenaVetorN(bin_file_path, n);
-    }
-    else if(option == 5){
+    } else if (option == 5) {
         int n;
-        cout << "Informe n: " ;
+        cout << "Informe n: ";
         cin >> n;
 
         cout << tabelaHashN(bin_file_path, n);
-    }
-    else if(option == 6){
+    } else if (option == 6) {
 
         string resultadoOrdenacao = "Teste Ordenacao: \n" + ordenaVetorN(bin_file_path, 100) + "\n\n";
         string resultadoHash = "Teste Hash: \n" + tabelaHashN(bin_file_path, 100);
 
-        appendArquivo("teste.txt", resultadoOrdenacao+ resultadoHash);
+        appendArquivo("teste.txt", resultadoOrdenacao + resultadoHash);
 
         cout << "Resultado escrito ao final do arquivo teste.txt" << endl;
-    }
-    else if(option == 7){
+    } else if (option == 7) {
+
 
         cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
         cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
 
+
+        cout << "\n";
+        cout << "Modo: ";
         cin >> modo;
+        cout << "\n";
 
         VPTree vpTree = VPTree();
 
@@ -569,31 +723,29 @@ void menu(string input_dir, string bin_file_path){
             cin >> id;
             int find = vpTree.busca(id);
 
-            if(find == -1){
-                cout << "id nao encontrado" << endl;
-            }else{
-                cout << fileIo.acessarRegistroTAD(find,"data.bin")->toString();
+            if (find == -1) {
+                cout << "\n ID nao encontrado." << endl;
+            } else {
+                cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString();
             }
+        } else {
+            cout << "\n Opcao invalida" << endl;
         }
-        else{
-            cout << "Opcao invalida" << endl;
-        }
-    }
-    else if(option == 8){
+    } else if (option == 8) {
         int ordem;
-        cout << "Digite a ordem da arvore B: ";
-        cin >> ordem;
 
         BTree bTree = BTree(ordem);
 
         FileIO fileIo = FileIO();
         fileIo.importarAleatoriosBTree(bTree, "data.bin", 10);
 
-        cout << "\n";
         cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
         cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
 
+        cout << "\n";
+        cout << "Modo: ";
         cin >> modo;
+        cout << "\n";
 
         if (modo == 1) {
             metricasArvoreB(bin_file_path, "saida.txt", 100);
@@ -613,11 +765,11 @@ void menu(string input_dir, string bin_file_path){
             cout << "\n Opcao invalida." << endl;
         }
 
-    }
-    else if(option == 9){
-
-    }
-    else {
+    } else if (option == 9) {
+        cout << "Encerrando o programa...";
+        sleep(2);
+        return;
+    } else {
         cout << "Opcao invalida" << endl;
     }
 }
