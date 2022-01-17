@@ -1,14 +1,18 @@
 #ifndef TRABALHO_ED2_VPTREE_H
 #define TRABALHO_ED2_VPTREE_H
 #include "VPNode.h"
+#include <iostream>
+#include "ReviewData.h"
+
+using namespace std;
 
 class VPTree {
 public:
     VPTree();
     ~VPTree();
     bool vazia(); // verifica se a �rvore est� vazia
-    bool busca(int val);
-    void insere(int val);
+    int busca(string id);
+    void insere(string id, int location);
     void remove(int val);
     void imprime();
     VPNode* getRaiz();
@@ -17,7 +21,7 @@ private:
     void rotacaoSimplesEsq(VPNode *p);
     void rotacaoSimplesDir(VPNode *p);
     VPNode* raiz; // ponteiro para o No raiz da �rvore
-    bool auxBusca(VPNode *p, int val);
+    int auxBusca(VPNode *p, string id);
     VPNode* auxInsere(VPNode *raiz, VPNode *p);
     VPNode* auxRemove(VPNode *p, int val);
     VPNode* menorSubArvDireita(VPNode *p);

@@ -2,8 +2,6 @@
 #include "VPTree.h"
 #include <cmath>
 
-using namespace std;
-
 VPTree::VPTree()
 {
     raiz = NULL;
@@ -90,6 +88,7 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
     p->setEsq(q->getDir());
     q->setDir(p);
 
+
     //*****
     if(paiAnterior!=NULL){
         if(paiAnterior->getDir()==p){
@@ -145,6 +144,18 @@ VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
         return p;
     }
 
+    //p->getInfo()->getId() < raiz->getInfo()->getId();
+    if(p->getInfo()->getId().compare(raiz->getInfo()->getId())<0) { //se for menor que a raiz, vai para a esquerda
+        raiz->setEsq(auxInsere(raiz->getEsq(),p));
+        raiz->getEsq()->setPai(raiz);
+    }
+    else { //se for menor que a raiz, vai para a direita
+        raiz->setDir(auxInsere(raiz->getDir(), p));
+        raiz->getDir()->setPai(raiz);
+
+    }
+
+    /*
     if(p->getInfo() < raiz->getInfo()) { //se for menor que a raiz, vai para a esquerda
          raiz->setEsq(auxInsere(raiz->getEsq(),p));
          raiz->getEsq()->setPai(raiz);
@@ -153,7 +164,7 @@ VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
         raiz->setDir(auxInsere(raiz->getDir(), p));
         raiz->getDir()->setPai(raiz);
 
-    }
+    }*/
 
     return raiz;
 }
@@ -168,6 +179,12 @@ void VPTree::balancemento(VPNode *p){
 
     avo_p = getAvo(p);
     tio_p = getTio(p);
+
+    bool  corAvo;
+
+   /*if(avo_p != NULL){
+       corAvo = avo_p->getCor();
+   }*/
 
     //caso 2:
     if((pai_p != NULL && tio_p != NULL)){
@@ -204,10 +221,10 @@ void VPTree::balancemento(VPNode *p){
 
             if(tio_p == avo_p->getEsq()){ //caso A: rotacao esquerda
                 rotacaoSimplesEsq(avo_p);
-                //balancemento(raiz, p);
+                //balancemento(avo_p);
             }else{
                 rotacaoSimplesDir(avo_p); //caso B: rotacao direita
-                //balancemento(raiz, p);
+                //balancemento(avo_p);
             }
         }
 
@@ -228,11 +245,22 @@ void VPTree::balancemento(VPNode *p){
 
     //caso 1:
     raiz->setCor(false);
+
+    /*
+    if(avo_p != NULL && avo_p!= this->raiz && corAvo != avo_p->getCor()){
+        balancemento(avo_p);
+    }*/
+
+    /*if(p != NULL && p->getPai() != NULL && p->getPai()->getPai() != NULL && p->getPai()->getPai()->getPai() != NULL){
+        balancemento(p->getPai());
+    }*/
 }
 
-void VPTree::insere(int val)
+void VPTree::insere(string id, int location)
 {
-    VPNode *p = new VPNode(val);
+    ReviewData *info = new ReviewData(id, location);
+
+    VPNode *p = new VPNode(info);
 
     raiz = auxInsere(raiz, p);
 
@@ -241,24 +269,24 @@ void VPTree::insere(int val)
     imprime();
 }
 
-bool VPTree::busca(int val)
+int VPTree::busca(string id)
 {
-    return auxBusca(raiz, val);
+    return auxBusca(raiz, id);
 }
 
-bool VPTree::auxBusca(VPNode *p, int val)
+int VPTree::auxBusca(VPNode *p, string id)
 {
     //casos base
     if(p == NULL)
         return false;
-    else if(p->getInfo() == val)
-        return true;
+    else if(p->getInfo()->getId() == id)
+        return p->getInfo()->getLocation();
 
-        //casos recurivos
-    else if(val < p->getInfo())
-        return auxBusca(p->getEsq(), val);
+    //casos recurivos
+    else if(id < p->getInfo()->getId())
+        return auxBusca(p->getEsq(), p->getInfo()->getId());
     else
-        return auxBusca(p->getDir(), val);
+        return auxBusca(p->getDir(), p->getInfo()->getId());
 }
 
 void VPTree::imprime()
@@ -278,7 +306,7 @@ void VPTree::imprimePorNivel(VPNode *p, int nivel) //pre-ordem
         cout << "(" << nivel << ")";
         for(int i = 1; i <= nivel; i++)
             cout << "--";
-        cout << p->getInfo() << endl;
+        cout << p->getInfo()->getId() << endl;
         imprimePorNivel(p->getEsq(), nivel+1);
         imprimePorNivel(p->getDir(), nivel+1);
     }

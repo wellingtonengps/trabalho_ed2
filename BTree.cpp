@@ -193,7 +193,8 @@ void BTree::insert(string id, int location){
                 //printNode(current->getChild(i));
                 break;
             }else if(i==current->getNumKeys()-1){
-                //pega último filho
+
+                //pega último filho6
                 bNodeStack.push(current->getChild(i+1));
                 current = current->getChild(i+1);
                 break;

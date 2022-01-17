@@ -6,7 +6,7 @@
 #include "Review.h"
 #include <vector>
 #include "BTree.h"
-
+#include "VPTree.h"
 
 
 class FileIO {
@@ -38,6 +38,7 @@ public:
     void bufferChunk(ifstream* inputFile);
     vector<Review*> importarAleatorios(string path, int num);
     void importarAleatoriosBTree(BTree &bTree, string path, int num);
+    void importarAleatoriosVPTree(VPTree &vpTree, string path, int num);
 };
 
 
