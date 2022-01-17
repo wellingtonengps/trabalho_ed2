@@ -266,7 +266,7 @@ void FileIO::importarAleatoriosBTree(BTree &bTree, string path, int num){
 
 void FileIO::importarAleatoriosVPTree(VPTree &vpTree, string path, int num) {
 
-    int numRegistros = 3646476;
+    int numRegistros = 10;
     srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
     ifstream arq;
     arq.open(path, ios::binary);

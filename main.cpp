@@ -6,6 +6,7 @@
 #include "Sorting.h"
 #include "LinearHashTable.h"
 #include "BTree.h"
+#include "VPTree.h"
 #include "FileIO.h"
 #include <time.h>
 #include <vector>
@@ -552,14 +553,24 @@ void menu(string input_dir, string bin_file_path){
 
         cin >> modo;
 
+        VPTree vpTree = VPTree();
+
+        FileIO fileIo = FileIO();
+        fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 8);
+
         if(modo == 1){
 
         }
         else if(modo == 2){
             cout << "Digite o ID da avaliacao que deseja buscar: ";
-            cin >> id;
-            //todo funcao de busca por id na arvore vp
+            //cin >> id;
+            int find = vpTree.busca("gp:AOqpTOGSsGv5rOA79ttW2LE0FeMYvkdUuXRMTfbyMk00pJ0uDDj4XRvR5b2fVE4EIG19EdKBF0pZzb7g0NYYMg");
 
+            if(find == -1){
+                cout << "id nao encontrado" << endl;
+            }else{
+                cout << fileIo.acessarRegistroTAD(find,"data.bin")->toString();
+            }
         }
         else{
             cout << "Opcao invalida" << endl;
@@ -588,6 +599,11 @@ void menu(string input_dir, string bin_file_path){
             cout << "Digite o ID da avaliacao que deseja buscar: ";
             cin >> id;
             int find = bTree.find(id);
+            if(find == -1){
+                cout << "id nao encontrado" << endl;
+            }else{
+                cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString();
+            }
         }
         else{
             cout << "Opcao invalida" << endl;

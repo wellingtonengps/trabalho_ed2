@@ -278,7 +278,7 @@ int VPTree::auxBusca(VPNode *p, string id)
 {
     //casos base
     if(p == NULL)
-        return false;
+        return -1;
     else if(p->getInfo()->getId() == id)
         return p->getInfo()->getLocation();
 
