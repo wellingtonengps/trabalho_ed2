@@ -497,25 +497,41 @@ void metricasArvoreVP(string binary_input_file, string output_file, int n) {
     vector<Review*> data =  fileIo.importarAleatorios(binary_input_file, 100);
 
     res += "Arvore Vermelho e Preto\n";
-    for (int i = 0; i < 3; i++) {
-        Metricas::clearMetrics();
 
-        VPTree vpTree = VPTree();
+    VPTree vpTree = VPTree();
+
+    high_resolution_clock::time_point inicio;
+    high_resolution_clock::time_point fim;
+    double time;
 
 
-        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+    for(int i = 0; i < 3; i++){
+
+        inicio = high_resolution_clock::now();
         fileIo.importarAleatoriosVPTree(vpTree, binary_input_file, n);
-        high_resolution_clock::time_point fim = high_resolution_clock::now();
+        fim = high_resolution_clock::now();
 
-        double time = duration_cast<duration<double>>(fim - inicio).count();
+        time = duration_cast<duration<double>>(fim - inicio).count();
 
-        res += "Inserção-";
+        Metricas::setTime(time);
+
+        res += "Insersao-";
         res += "Iteração " + to_string(i) +
                ", n= " + to_string(n) +
-               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               " - comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
+        Metricas::incrementMedia();
         Metricas::clearMetrics();
+    }
+
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison()) + "\n";
+
+    Metricas::clearMedia();
+    Metricas::clearMetrics();
+
+    for (int i = 0; i < 3; i++) {
 
         inicio = high_resolution_clock::now();
         for(int i = 0; i < data.size(); i++){
@@ -525,12 +541,20 @@ void metricasArvoreVP(string binary_input_file, string output_file, int n) {
 
         time = duration_cast<duration<double>>(fim - inicio).count();
 
+        Metricas::setTime(time);
+
         res += "Busca-";
         res += "Iteração " + to_string(i) +
                ", n= " + to_string(n) +
-               "- comparações: " + to_string(Metricas::getComparisonCount()) +
+               " - comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
+
+        Metricas::incrementMedia();
+        Metricas::clearMetrics();
     }
+
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
 
     appendArquivo(output_file, res);
 }
