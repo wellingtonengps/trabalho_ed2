@@ -500,12 +500,13 @@ void readCSVToBinary(string path, string binaryOut) {
     }
 }
 */
-void metricasArvoreVP(string binary_input_file, string output_file, int n) {
+void metricasArvoreVP(string binary_input_file, string output_file, int n, int b) {
+
 
     FileIO fileIo = FileIO();
     string res;
 
-    vector<Review*> data =  fileIo.importarAleatorios(binary_input_file, 100);
+    //vector<Review*> data =  fileIo.importarAleatorios(binary_input_file, 100);
 
     res += "Arvore Vermelho e Preto\n";
 
@@ -526,7 +527,7 @@ void metricasArvoreVP(string binary_input_file, string output_file, int n) {
 
         Metricas::setTime(time);
 
-        res += "Insersao-";
+        res += "Inserção-";
         res += "Iteração " + to_string(i) +
                ", n= " + to_string(n) +
                " - comparações: " + to_string(Metricas::getComparisonCount()) +
@@ -541,12 +542,15 @@ void metricasArvoreVP(string binary_input_file, string output_file, int n) {
 
     Metricas::clearMedia();
     Metricas::clearMetrics();
+    Metricas::enable();
 
     for (int i = 0; i < 3; i++) {
+        vector<Review*> reviews =  fileIo.importarAleatorios(binary_input_file, b);
+
 
         inicio = high_resolution_clock::now();
-        for(int i = 0; i < data.size(); i++){
-            vpTree.busca(data[i]->getReviewId());
+        for(int i = 0; i < reviews.size(); i++){
+            vpTree.busca(reviews[i]->getReviewId());
         }
         fim = high_resolution_clock::now();
 
@@ -556,26 +560,27 @@ void metricasArvoreVP(string binary_input_file, string output_file, int n) {
 
         res += "Busca-";
         res += "Iteração " + to_string(i) +
-               ", n= " + to_string(n) +
+               ", b= " + to_string(b) +
                " - comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
         Metricas::incrementMedia();
         Metricas::clearMetrics();
+        deleteVectorItems(reviews);
     }
 
     res += "Media time: " + to_string(Metricas::getMediaTime());
-    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison()) + "\n\n";
 
     fileIo.appendArquivo(output_file, res);
 }
 
-void metricasArvoreB(string binary_input_file, string output_file, int n) {
-
+void metricasArvoreB(string binary_input_file, string output_file, int n, int b) {
+    Metricas::enable();
     FileIO fileIo = FileIO();
 
     string res;
-    vector<Review*> reviews = fileIo.importarAleatorios(binary_input_file, 100);
+   // vector<Review*> reviews = fileIo.importarAleatorios(binary_input_file, 100);
 
     high_resolution_clock::time_point inicio;
     high_resolution_clock::time_point fim;
@@ -590,7 +595,7 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
 
     res += "Arvore B, ordem m =20\n";
     for (int i = 0; i < 3; i++) {
-        Metricas::clearMetrics();
+
 
         inicio = high_resolution_clock::now();
         fileIo.importarAleatoriosBTree(bTree, binary_input_file, n);
@@ -606,17 +611,19 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
 
         Metricas::setTime(time);
         Metricas::incrementMedia();
+        Metricas::clearMetrics();
     }
 
     res += "Media time: " + to_string(Metricas::getMediaTime());
-    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison()) + "\n";
 
     Metricas::clearMedia();
     Metricas::clearMetrics();
+    Metricas::enable();
 
     for (int i = 0; i < 3; i++){
+        vector<Review*> reviews =  fileIo.importarAleatorios(binary_input_file, b);
 
-        Metricas::clearMetrics();
 
         inicio = high_resolution_clock::now();
 
@@ -629,28 +636,31 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
 
         res += "Busca-";
         res += "Iteração " + to_string(i) +
-               ", n= " + to_string(n) +
+               ", b= " + to_string(b) +
                "- comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
         Metricas::setTime(time);
         Metricas::incrementMedia();
+        Metricas::clearMetrics();
+
+        deleteVectorItems(reviews);
     };
+
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison()) + "\n\n";
 
     Metricas::clearMedia();
     Metricas::clearMetrics();
+    Metricas::enable();
 
-    res += "Media time: " + to_string(Metricas::getMediaTime());
-    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
-
-    bTree = BTree(200); ///?
+    BTree bTree2 = BTree(200);
 
     res += "Arvore B, ordem m =200\n";
     for (int i = 0; i < 3; i++) {
-        Metricas::clearMetrics();
 
         inicio = high_resolution_clock::now();
-        fileIo.importarAleatoriosBTree(bTree, binary_input_file, n);
+        fileIo.importarAleatoriosBTree(bTree2, binary_input_file, n);
         fim = high_resolution_clock::now();
 
         time = duration_cast<duration<double>>(fim - inicio).count();
@@ -663,18 +673,23 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
 
         Metricas::setTime(time);
         Metricas::incrementMedia();
+        Metricas::clearMetrics();
     }
+
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison()) + "\n";
 
     Metricas::clearMedia();
     Metricas::clearMetrics();
-
-    res += "Media time: " + to_string(Metricas::getMediaTime());
-    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+    Metricas::enable();
 
     for(int i = 0; i < 3; i++){
+        vector<Review*> reviews =  fileIo.importarAleatorios(binary_input_file,  b);
+
+
         inicio = high_resolution_clock::now();
         for(int i=0; i<reviews.size(); i++){
-            bTree.find(reviews[i]->getReviewId());
+            bTree2.find(reviews[i]->getReviewId());
         }
         fim = high_resolution_clock::now();
 
@@ -682,16 +697,19 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
 
         res += "Busca-";
         res += "Iteração " + to_string(i) +
-               ", n= " + to_string(n) +
+               ", b= " + to_string(b) +
                "- comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
         Metricas::setTime(time);
         Metricas::incrementMedia();
+        Metricas::clearMetrics();
+
+        deleteVectorItems(reviews);
     }
 
     res += "Media time: " + to_string(Metricas::getMediaTime());
-    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison())+"\n\n";
 
     fileIo.appendArquivo(output_file, res);
 
@@ -774,11 +792,11 @@ void menu(string input_dir, string bin_file_path) {
         VPTree vpTree = VPTree();
 
         if (modo == 1) {
-            metricasArvoreVP(bin_file_path, "saida.txt", 100);
+            metricasArvoreVP(bin_file_path, "saida.txt", 10000, 100);
             cout << "\nArquivo de saida gerado.";
         } else if (modo == 2) {
             int n;
-            cout << "Digite n: \n";
+            cout << "Digite numero de reviews aleatorias para importacao: \n";
             cin >> n;
 
             FileIO fileIo = FileIO();
@@ -797,12 +815,6 @@ void menu(string input_dir, string bin_file_path) {
             cout << "\n Opcao invalida" << endl;
         }
     } else if (option == 8) {
-        int ordem;
-
-        BTree bTree = BTree(ordem);
-
-        FileIO fileIo = FileIO();
-        fileIo.importarAleatoriosBTree(bTree, "data.bin", 10);
 
         cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
         cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
@@ -813,11 +825,23 @@ void menu(string input_dir, string bin_file_path) {
         cout << "\n";
 
         if (modo == 1) {
-            metricasArvoreB(bin_file_path, "saida.txt", 100);
+            metricasArvoreB(bin_file_path, "saida.txt", 10000, 100);
             cout << "\nArquivo de saida gerado.\n";
         } else if (modo == 2) {
+            int ordem;
+
             cout << "\n Digite a ordem da arvore B: ";
+
             cin >> ordem;
+            BTree bTree = BTree(ordem);
+
+            int n;
+            cout << "Digite numero de reviews aleatorias para importacao: \n";
+            cin >> n;
+
+            FileIO fileIo = FileIO();
+            fileIo.importarAleatoriosBTree(bTree, "data.bin", n);
+
             cout << "\n Digite o ID da avaliacao que deseja buscar: ";
             cin >> id;
             int find = bTree.find(id);
@@ -845,7 +869,7 @@ int main(int argc, char **argv) {
     string input_file_path;
     string bin_file_path = "data.bin";
 
-    /*if (argc == 2) {
+    if (argc == 2) {
         input_dir = argv[1];
         input_file_path = input_dir + "/tiktok_app_reviews.csv";
         bin_file_path = input_dir + "/data.bin";
@@ -854,7 +878,7 @@ int main(int argc, char **argv) {
         cout << "Erro: era esperado caminho do arquivo de entrada." << endl;
         return 0;
     }
-     */
+
 
     ifstream binFile(bin_file_path);
     if (binFile.fail()) {

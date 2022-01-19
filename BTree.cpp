@@ -18,92 +18,6 @@ BTree::~BTree() {
     delete root;
 }
 
-/*
-void BTree::splitNode(BNode* bNode){
-    if(bNode== this->root){
-
-        int centralIndex = ord/2;
-        BNode* newRoot = new BNode(this->ord);
-        BNode* newLeftNode = new BNode(this->ord);
-        BNode* newRightNode = new BNode(this->ord);
-
-        for (int i =0; i< bNode->getNumKeys(); i++){
-            if(i<centralIndex){
-                newLeftNode->insert(bNode->getElement(i));
-            }
-            else if(i>centralIndex){
-                newRightNode->insert(bNode->getElement(i));
-            }
-        }
-
-        for (int i =0; i< bNode->getNumChildren(); i++){
-            if(i<=centralIndex){
-                newLeftNode->pushBackChild(bNode->getChild(i));
-            }
-            else{
-                newRightNode->pushBackChild(bNode->getChild(i));
-            }
-        }
-
-        newRoot->insert(bNode->getElement(centralIndex));
-        newRoot->pushBackChild(newLeftNode);
-        newRoot->pushBackChild(newRightNode);
-
-        this->root = newRoot;
-        bNode->clear();
-        delete bNode;
-
-
-    }else{
-
-    }
-}
-
-*/
-/*
-void BTree::splitRoot(ReviewData* overflowedElement){
-    BNode* newLeftNode = new BNode();
-    BNode* newRightNode = new BNode();
-
-}
-*/
-
-/*
-void BTree::insert(ReviewData* reviewData){
-
-        BNode* insertionNode = getInsertionNode(reviewData->getId());
-        insertionNode->insert(reviewData);
-
-        if(insertionNode->overflowed()){
-            cout << "Overflow. Fazer split"<<endl;
-            splitNode(insertionNode);
-        }
-}
-*/
-
-/*
-BNode* BTree::getInsertionNode(string id){
-    BNode* current = root;
-
-    while(!current->isLeaf()){
-        for(int i=0; i<current->getNumKeys(); i++){
-            string currentKey = current->getElement(i)->getId();
-
-            //a.compare(b): -1 significa que a é menor que b
-            //a.compare(b):  1 significa que a é maior que b
-            if(id.compare(currentKey)<0){
-                current = current->getChild(i);
-            }
-        }
-
-        //pega ultimo filho
-        current = current->getChild(current->getNumChildren()-1);
-    }
-
-    return current;
-}
-*/
-
 void BTree::splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode){
 
         int centralIndex = ord/2;
@@ -131,13 +45,7 @@ void BTree::splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode){
 
         newRightNode->setIsLeaf(bNode->isLeaf());
         newLeftNode->setIsLeaf(bNode->isLeaf());
-        //newRoot->insert(bNode->getElement(centralIndex));
-       // newRoot->pushBackChild(newLeftNode);
-       // newRoot->pushBackChild(newRightNode);
 
-        //this->root = newRoot;
-        //bNode->clear();
-        //delete bNode;
 }
 
 
@@ -216,8 +124,6 @@ void BTree::insert(string id, int location){
     bNodeStack.top()->insert(reviewData);
     int centralIndex = ord/2;
 
-
-    //todo: porque tem um nó folha acima do último nível?
     while(!bNodeStack.empty() && bNodeStack.top()->overflowed()){
        // cout << "Overflow. Fazer split"<<endl;
         BNode* nodeToBeSplit = bNodeStack.top();

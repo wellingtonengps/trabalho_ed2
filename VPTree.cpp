@@ -290,16 +290,16 @@ int VPTree::auxBusca(VPNode *p, string id)
 {
     //casos base
     if(p == NULL) {
-
+        Metricas::incrementComparisonCount(1);
         return -1;
     }
     else if(p->getInfo()->getId().compare(id) == 0) {
-
-
+        Metricas::incrementComparisonCount(1);
         return p->getInfo()->getLocation();
     }
         //casos recurivos
     else if(id.compare(p->getInfo()->getId()) < 0) {
+        Metricas::incrementComparisonCount(1);
         return auxBusca(p->getEsq(), id);
     }
     else
