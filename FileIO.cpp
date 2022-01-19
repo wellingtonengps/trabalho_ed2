@@ -9,6 +9,7 @@
 #include <string>
 #include <fstream>
 #include <chrono>
+#include "Metricas.h"
 
 using namespace std;
 using namespace std::chrono;
@@ -17,17 +18,10 @@ using namespace std;
 
 
 FileIO::FileIO(){
-    //nextChar=0;
-    //currentBlock=0;
-   // endOfFile=false;
+
     this->bufferSize = 10000;
     dados = new char[bufferSize];
-    //ifstream newInputFile;
-    //newInputFile.open(path, ios::binary);
-    //this->inputFile = inputFile;
-    //this->inputFile->seekg(0, inputFile->end);
-    //fileSize = this->inputFile->tellg();
-    //this->inputFile->seekg(0, inputFile->beg);
+
 }
 
 
@@ -258,7 +252,10 @@ void FileIO::importarAleatoriosBTree(BTree &bTree, string path, int num){
         Review* review = acessarRegistroTAD(numRand, arq);
 
         if(bTree.find(review->getReviewId())==-1){
+            Metricas::enable();
             bTree.insert(review->getReviewId(), numRand);
+            Metricas::disable();
+
         }else{
             i--;
         }
@@ -280,7 +277,9 @@ void FileIO::importarAleatoriosVPTree(VPTree &vpTree, string path, int num) {
 
         Review *review = acessarRegistroTAD(numRand, arq);
         if(vpTree.busca(review->getReviewId())==-1){
+            Metricas::enable();
             vpTree.insere(review->getReviewId(), numRand);
+            Metricas::disable();
         }else{
             i--;
         }
@@ -288,4 +287,45 @@ void FileIO::importarAleatoriosVPTree(VPTree &vpTree, string path, int num) {
     }
     arq.close();
 
-};
+}
+
+
+void FileIO::imprimeListaRegistros(vector<Review *> listaRegistros) {
+    for (int i = 0; i < listaRegistros.size(); i++) {
+        cout << listaRegistros[i]->toString() << endl;
+    }
+}
+
+string FileIO::imprimeListaRegistrosStr(vector<Review *> listaRegistros) {
+    string listaStr = "";
+    for (int i = 0; i < listaRegistros.size(); i++) {
+        listaStr += listaRegistros[i]->toString() + "\n";
+    }
+
+    return listaStr;
+}
+
+void FileIO::imprimeListaRegistrosArquivo(vector<Review *> listaRegistros, string output_path) {
+
+    ofstream saida;
+    saida.open(output_path, ios::out);
+
+    if (!saida) {
+        cout << "Não foi possível gerar arquivo data.txt contendo lista de registros" << endl;
+        return;
+    }
+
+    for (int i = 0; i < listaRegistros.size(); i++) {
+        saida << listaRegistros[i]->toString() << "\n";
+    }
+    saida.close();
+
+}
+
+void FileIO::appendArquivo(string output_path, string data) {
+
+    ofstream saida;
+    saida.open(output_path, ios::app);
+    saida << data;
+    saida.close();
+}

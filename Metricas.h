@@ -20,8 +20,8 @@ public:
     static void clearMetrics(){Metricas::swaps=0; Metricas::comparisons=0;}
     static int getComparisonCount(){return Metricas::comparisons;}
     static int getSwapCount(){return Metricas::swaps;}
-    static void enableMetrics(){Metricas::enabled=true;}
-    static void disableMetrics(){Metricas::enabled=false;}
+    static void enable(){ Metricas::enabled=true;}
+    static void disable(){ Metricas::enabled=false;}
     static void setTime(double times){Metricas::time=times;}
     static double getTime(){return Metricas::time;}
     static void incrementMedia(){metricasComparison.push_back(comparisons); metricasTime.push_back(time);}

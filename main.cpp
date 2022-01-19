@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include "Metricas.h"
 
-
+/*
 int REVIEW_TEXT_LENGTH = 400;
 int REVIEW_ID_LENGTH = 90;
 int REVIEW_UPVOTES_LENGTH = 6;
@@ -24,13 +24,13 @@ int REVIEW_VERSION_LENGTH = 9;
 int REVIEW_DATE_LENGTH = 20;
 int RECORD_LENGTH =
         REVIEW_TEXT_LENGTH + REVIEW_ID_LENGTH + REVIEW_UPVOTES_LENGTH + REVIEW_VERSION_LENGTH + REVIEW_DATE_LENGTH;
-
+*/
 using namespace std;
 using namespace std::chrono;
 using namespace std::this_thread;
 
 // *********************Funções de Buffer********************
-
+/*
 int nextChar = 0;
 int maxBlockSize = 100000;
 char *dados = new char[maxBlockSize];
@@ -38,8 +38,10 @@ int currentBlock = 0;
 int fileSize;
 bool endOfFile = false;
 ifstream arqI;
+*/
 
 //inicializa arquivo para leitura no buffer
+/*
 void initFile(string path) {
     nextChar = 0;
     currentBlock = 0;
@@ -90,9 +92,10 @@ char getNextChar() {
 
     return c;
 }
+*/
 
 //**********************************************************************
-
+/*
 Review *acessarRegistroTAD(int i, ifstream &arq) {
 
     Review *review = new Review();
@@ -146,8 +149,8 @@ Review *acessarRegistroTAD(int i, ifstream &arq) {
     }
 
     return review;
-}
-
+}*/
+/*
 void imprimeListaRegistros(vector<Review *> listaRegistros) {
     for (int i = 0; i < listaRegistros.size(); i++) {
         cout << listaRegistros[i]->toString() << endl;
@@ -179,6 +182,7 @@ void imprimeListaRegistrosArquivo(vector<Review *> listaRegistros, string output
     saida.close();
 
 }
+*/
 
 void testeImportacao(string path) {
 
@@ -186,6 +190,8 @@ void testeImportacao(string path) {
     int option;
     int numRegistros = 3646476;
     ifstream arq;
+    FileIO fileIo = FileIO();
+
 
     arq.open(path, ios::binary);
     srand(time(0));
@@ -197,15 +203,15 @@ void testeImportacao(string path) {
 
     for (int i = 0; i < (option == 1 ? 10 : 100); i++) {
         int numRand = rand() % numRegistros;
-        listaRegistros.push_back(acessarRegistroTAD(numRand, arq));
+        listaRegistros.push_back(fileIo.acessarRegistroTAD(numRand, arq));
     }
 
     arq.close();
 
     if (option == 1) {
-        imprimeListaRegistros(listaRegistros);
+        fileIo.imprimeListaRegistros(listaRegistros);
     } else if (option == 2) {
-        imprimeListaRegistrosArquivo(listaRegistros, "data.txt");
+        fileIo.imprimeListaRegistrosArquivo(listaRegistros, "data.txt");
 
     }
 
@@ -214,6 +220,7 @@ void testeImportacao(string path) {
     }
 }
 
+/*
 vector<Review *> importarAleatorios(string path, int num) {
 
     vector<Review *> listaRegistros;
@@ -232,14 +239,15 @@ vector<Review *> importarAleatorios(string path, int num) {
 
     return listaRegistros;
 }
-
+*/
+/*
 void appendArquivo(string output_path, string data) {
 
     ofstream saida;
     saida.open(output_path, ios::app);
     saida << data;
     saida.close();
-}
+}*/
 
 double geraMetricasFuncao(vector<Review *> &reviews, Sorting &sorting, int n) {
     string res = "";
@@ -273,7 +281,8 @@ double geraMetricasFuncao(vector<Review *> &reviews, Sorting &sorting, int n) {
 
 string tabelaHashN(string bin_file_path, int n) {
 
-    vector<Review *> reviews = importarAleatorios(bin_file_path, n);
+    FileIO fileIo = FileIO();
+    vector<Review *> reviews = fileIo.importarAleatorios(bin_file_path, n);
     LinearHashTable linHT = LinearHashTable(0.7f);
     Sorting sorting = Sorting();
 
@@ -310,6 +319,7 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
     Sorting sorting = Sorting();
     vector<Review *> reviews;
     string res;
+    FileIO fileIo = FileIO();
 
 
     ///pega tamanho dos conjuntos de dados do arquivo .dat
@@ -334,7 +344,7 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
 
 
     cout << "Importando registros aleatórios..." << endl;
-    reviews = importarAleatorios(bin_file_path, 1000000);
+    reviews = fileIo.importarAleatorios(bin_file_path, 1000000);
 
     int totalSwapCountSum = 0, totalCompCountSum = 0;
     double totalTimeSum = 0;
@@ -381,7 +391,7 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
         delete reviews[i];
     }
 
-    appendArquivo(output_file_path, res);
+    fileIo.appendArquivo(output_file_path, res);
     cout << "Resultado gerado em " << output_file_path << endl;
 }
 
@@ -396,24 +406,25 @@ void deleteVectorItems(vector<Review *> &items) {
 string ordenaVetorN(string bin_file_path, int n) {
 
     string resultado = "";
+    FileIO fileIo = FileIO();
 
     Sorting sorting = Sorting();
-    vector<Review *> reviews = importarAleatorios(bin_file_path, n);
+    vector<Review *> reviews = fileIo.importarAleatorios(bin_file_path, n);
 
     vector<Review *> copiaReviews = reviews;
     sorting.quickSort(copiaReviews);
     resultado += "-----------QUICKSORT-----------\n";
-    resultado += imprimeListaRegistrosStr(copiaReviews);
+    resultado += fileIo.imprimeListaRegistrosStr(copiaReviews);
 
     copiaReviews = reviews;
     sorting.heapSort(copiaReviews);
     resultado += "-----------HEAPSORT-----------\n";
-    resultado += imprimeListaRegistrosStr(copiaReviews);
+    resultado += fileIo.imprimeListaRegistrosStr(copiaReviews);
 
     copiaReviews = reviews;
     sorting.countingSort(copiaReviews);
     resultado += "-----------COUNTINGSORT-----------\n";
-    resultado += imprimeListaRegistrosStr(copiaReviews);
+    resultado += fileIo.imprimeListaRegistrosStr(copiaReviews);
 
     deleteVectorItems(reviews);
 
@@ -422,7 +433,7 @@ string ordenaVetorN(string bin_file_path, int n) {
     return resultado;
 }
 
-
+/*
 void readCSVToBinary(string path, string binaryOut) {
 
     char c;
@@ -488,7 +499,7 @@ void readCSVToBinary(string path, string binaryOut) {
         cout << "Erro ao abrir o arquivo" << endl;
     }
 }
-
+*/
 void metricasArvoreVP(string binary_input_file, string output_file, int n) {
 
     FileIO fileIo = FileIO();
@@ -556,7 +567,7 @@ void metricasArvoreVP(string binary_input_file, string output_file, int n) {
     res += "Media time: " + to_string(Metricas::getMediaTime());
     res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
 
-    appendArquivo(output_file, res);
+    fileIo.appendArquivo(output_file, res);
 }
 
 void metricasArvoreB(string binary_input_file, string output_file, int n) {
@@ -682,7 +693,7 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
     res += "Media time: " + to_string(Metricas::getMediaTime());
     res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
 
-    appendArquivo(output_file, res);
+    fileIo.appendArquivo(output_file, res);
 
 }
 
@@ -693,6 +704,7 @@ void menu(string input_dir, string bin_file_path) {
     int option, modo;
     string id;
     int i;
+    FileIO fileIo = FileIO();
 
     cout << "\n";
     cout << "----------- MENU -----------\n";
@@ -717,7 +729,7 @@ void menu(string input_dir, string bin_file_path) {
         ifstream arq;
         arq.open(bin_file_path, ios::binary);
 
-        Review *review = acessarRegistroTAD(i, arq);
+        Review *review = fileIo.acessarRegistroTAD(i, arq);
         cout << review->toString();
         arq.close();
 
@@ -744,7 +756,7 @@ void menu(string input_dir, string bin_file_path) {
         string resultadoOrdenacao = "Teste Ordenacao: \n" + ordenaVetorN(bin_file_path, 100) + "\n\n";
         string resultadoHash = "Teste Hash: \n" + tabelaHashN(bin_file_path, 100);
 
-        appendArquivo("teste.txt", resultadoOrdenacao + resultadoHash);
+        fileIo.appendArquivo("teste.txt", resultadoOrdenacao + resultadoHash);
 
         cout << "Resultado escrito ao final do arquivo teste.txt" << endl;
     } else if (option == 7) {
@@ -847,7 +859,8 @@ int main(int argc, char **argv) {
     ifstream binFile(bin_file_path);
     if (binFile.fail()) {
         cout << "Binario nao encontrado. Gerando arquivo binario..." << endl;
-        readCSVToBinary(input_file_path, bin_file_path);
+        FileIO fileIO = FileIO();
+        fileIO.readCSVToBinary(input_file_path, bin_file_path);
 
         menu(input_dir, bin_file_path);
     } else {
