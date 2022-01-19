@@ -61,31 +61,31 @@ int main(){
     bTree.insert("000:1", 1);
     bTree.insert("000:1", 1);*/
 
-    FileIO fileIo = FileIO();
-    fileIo.importarAleatoriosBTree(bTree, "data.bin", 20);
+    //FileIO fileIo = FileIO();
+    //fileIo.importarAleatoriosBTree(bTree, "data.bin", 20);
 
 
-    int find = bTree.find("gp:AOqpTOGSsGv5rOA79ttW2LE0FeMYvkdUuXRMTfbyMk00pJ0uDDj4XRvR5b2fVE4EIG19EdKBF0pZzb7g0NYYMg");
+   // int find = bTree.find("gp:AOqpTOGSsGv5rOA79ttW2LE0FeMYvkdUuXRMTfbyMk00pJ0uDDj4XRvR5b2fVE4EIG19EdKBF0pZzb7g0NYYMg");
 
     VPTree vpTree = VPTree();
 
-    /*
-    arv.insere("2", 1);
-    arv.insere("1", 1);
-    arv.insere("4", 1);
-    arv.insere("3", 1);
-    arv.insere("5", 1);
-    arv.insere("6", 1);
-    arv.insere("7", 1); */
+    vpTree.insere("0", 1);
+    vpTree.insere("1", 1);
+    vpTree.insere("2", 1);
+    vpTree.insere("3", 1);
+    vpTree.insere("4", 1);
+    vpTree.insere("5", 1);
+    vpTree.insere("6", 1);
+    vpTree.insere("7", 1);
 
-    FileIO fileIo = FileIO();
-    fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 8);
+    //FileIO fileIo = FileIO();
+    //fileIo.importarAleatoriosVPTree(vpTree, "data.bin", 8);
 
     cout << "Raiz: " << vpTree.getRaiz()->getInfo()->getId() << endl;
 
     vpTree.imprime();
 
-    cout << "Busca: " <<  vpTree.busca("00:1") << endl;
+   // cout << "Busca: " <<  vpTree.busca("00:1") << endl;
 
     cout << endl;
 

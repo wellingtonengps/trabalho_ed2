@@ -6,3 +6,4 @@
 
 int Metricas::comparisons=0;
 int Metricas::swaps=0;
+bool Metricas::enabled=false;

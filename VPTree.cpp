@@ -55,6 +55,7 @@ void VPTree::rotacaoSimplesEsq(VPNode *p){
 
     if(p == raiz){
         raiz = q;
+        q->setPai(nullptr);
     }
 
     /*
@@ -102,6 +103,7 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
 
     if(p == raiz){
         raiz = q;
+        q->setPai(nullptr);
     }
 
     /*
@@ -192,7 +194,7 @@ void VPTree::balancemento(VPNode *p){
    }*/
 
     //caso 2:
-    if((pai_p != NULL && tio_p != NULL)){
+    if((pai_p != NULL && tio_p != NULL && p->getCor())){
 
         if(pai_p->getCor() == true && tio_p->getCor() == true){
             pai_p->setCor(!pai_p->getCor());
@@ -202,7 +204,7 @@ void VPTree::balancemento(VPNode *p){
     }
 
     //caso 3:
-    if((pai_p != NULL && avo_p != NULL && tio_p == NULL && pai_p->getCor())){
+    if((pai_p != NULL && avo_p != NULL && (tio_p == NULL || !tio_p->getCor()) && pai_p->getCor() && p->getCor())){
 
 
         if(pai_p==avo_p->getDir() && p == pai_p->getEsq()){
@@ -252,6 +254,9 @@ void VPTree::balancemento(VPNode *p){
 
     //caso 1:
     raiz->setCor(false);
+
+    if(p != NULL && p->getPai() != NULL)
+        balancemento(p->getPai());
 
     /*
     if(avo_p != NULL && avo_p!= this->raiz && corAvo != avo_p->getCor()){
