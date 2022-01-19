@@ -566,22 +566,26 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
     string res;
     vector<Review*> reviews = fileIo.importarAleatorios(binary_input_file, 100);
 
+    high_resolution_clock::time_point inicio;
+    high_resolution_clock::time_point fim;
+    double time;
 
-    int somaComparacoesInsercao=0;
-    int somaComparacoesBusca=0;
-    double somaTempoInsercao=0;
-    double somaTempoBusca=0;
+    BTree bTree = BTree(20); ///pode ser aqui?
+
+    //int somaComparacoesInsercao=0;
+    //int somaComparacoesBusca=0;
+    //double somaTempoInsercao=0;
+    //double somaTempoBusca=0;
 
     res += "Arvore B, ordem m =20\n";
     for (int i = 0; i < 3; i++) {
         Metricas::clearMetrics();
 
-        BTree bTree = BTree(20);
-        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+        inicio = high_resolution_clock::now();
         fileIo.importarAleatoriosBTree(bTree, binary_input_file, n);
-        high_resolution_clock::time_point fim = high_resolution_clock::now();
+        fim = high_resolution_clock::now();
 
-        double time = duration_cast<duration<double>>(fim - inicio).count();
+        time = duration_cast<duration<double>>(fim - inicio).count();
 
         res += "Inserção-";
         res += "Iteração " + to_string(i) +
@@ -589,16 +593,26 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
                "- comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
-        somaComparacoesInsercao+=Metricas::getComparisonCount();
-        somaTempoInsercao+=time;
+        Metricas::setTime(time);
+        Metricas::incrementMedia();
+    }
 
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+
+    Metricas::clearMedia();
+    Metricas::clearMetrics();
+
+    for (int i = 0; i < 3; i++){
 
         Metricas::clearMetrics();
+
         inicio = high_resolution_clock::now();
+
         for(int i=0; i<reviews.size(); i++){
             bTree.find(reviews[i]->getReviewId());
         }
-         fim = high_resolution_clock::now();
+        fim = high_resolution_clock::now();
 
         time = duration_cast<duration<double>>(fim - inicio).count();
 
@@ -608,20 +622,27 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
                "- comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
-        somaComparacoesBusca+=Metricas::getComparisonCount();
-        somaTempoBusca+=time;
-    }
+        Metricas::setTime(time);
+        Metricas::incrementMedia();
+    };
+
+    Metricas::clearMedia();
+    Metricas::clearMetrics();
+
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+
+    bTree = BTree(200); ///?
 
     res += "Arvore B, ordem m =200\n";
     for (int i = 0; i < 3; i++) {
         Metricas::clearMetrics();
 
-        BTree bTree = BTree(200);
-        high_resolution_clock::time_point inicio = high_resolution_clock::now();
+        inicio = high_resolution_clock::now();
         fileIo.importarAleatoriosBTree(bTree, binary_input_file, n);
-        high_resolution_clock::time_point fim = high_resolution_clock::now();
+        fim = high_resolution_clock::now();
 
-        double time = duration_cast<duration<double>>(fim - inicio).count();
+        time = duration_cast<duration<double>>(fim - inicio).count();
 
         res += "Inserção-";
         res += "Iteração " + to_string(i) +
@@ -629,11 +650,17 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
                "- comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
-        somaComparacoesInsercao+=Metricas::getComparisonCount();
-        somaTempoInsercao+=time;
+        Metricas::setTime(time);
+        Metricas::incrementMedia();
+    }
 
+    Metricas::clearMedia();
+    Metricas::clearMetrics();
 
-        Metricas::clearMetrics();
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
+
+    for(int i = 0; i < 3; i++){
         inicio = high_resolution_clock::now();
         for(int i=0; i<reviews.size(); i++){
             bTree.find(reviews[i]->getReviewId());
@@ -648,10 +675,12 @@ void metricasArvoreB(string binary_input_file, string output_file, int n) {
                "- comparações: " + to_string(Metricas::getComparisonCount()) +
                ", tempo: " + to_string(time) + "\n";
 
-        somaComparacoesBusca+=Metricas::getComparisonCount();
-        somaTempoBusca+=time;
-
+        Metricas::setTime(time);
+        Metricas::incrementMedia();
     }
+
+    res += "Media time: " + to_string(Metricas::getMediaTime());
+    res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison());
 
     appendArquivo(output_file, res);
 
