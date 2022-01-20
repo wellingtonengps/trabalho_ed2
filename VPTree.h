@@ -10,7 +10,7 @@ class VPTree {
 public:
     VPTree();
     ~VPTree();
-    bool vazia(); // verifica se a �rvore est� vazia
+    bool vazia();
     int busca(string id);
     void insere(string id, int location);
     void remove(int val);

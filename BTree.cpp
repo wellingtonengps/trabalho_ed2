@@ -10,7 +10,6 @@
 BTree::BTree(int ord) {
     this->root = new BNode(ord);
     this->ord = ord;
-   // BNode::ord = ord;
 }
 
 
@@ -21,9 +20,6 @@ BTree::~BTree() {
 void BTree::splitNode(BNode* bNode, BNode* newLeftNode, BNode* newRightNode){
 
         int centralIndex = ord/2;
-        //BNode* newRoot = new BNode();
-        //BNode* newLeftNode = new BNode();
-        //BNode* newRightNode = new BNode();
 
         for (int i =0; i< bNode->getNumKeys(); i++){
             if(i<centralIndex){
@@ -107,7 +103,6 @@ void BTree::insert(string id, int location){
                 //pega o índice do primeiro elemento cujo id é maior que o passado por parâmetro
                 bNodeStack.push(current->getChild(i));
                 current = current->getChild(i);
-                //printNode(current->getChild(i));
                 break;
             }else if(comparison==0){
                 return;
@@ -157,43 +152,12 @@ void BTree::insert(string id, int location){
         }
 
         nodeToBeSplit->clear();
-        //cout << "delete " << nodeToBeSplit << endl;
         delete nodeToBeSplit;
 
     }
 
-    //printTree();
 
 }
-
-/*
-void BTree::printLevel(BNode* bnode){
-
-    vector<BNode*> v;
-
-    if(bnode->isLeaf()){
-        return;
-    }
-
-    if(bnode==this->root){
-        printNode(bnode);
-        for(int i=0; i<bnode->getNumChildren(); i++){
-            printLevel(bnode->getChild(i));
-        }
-    }else{
-        for(int i=0;i<bnode->getNumChildren(); i++){
-            v.push_back(bnode->getChild(i));
-            printNode(bnode->getChild(i));
-            cout << " + ";
-        }
-        for(int i=0; i<bnode->getNumChildren(); i++){
-            printLevel(bnode->getChild(i));
-        }
-
-    }
-    cout <<"\n";
-
-}*/
 
 void BTree::printTree(){
 

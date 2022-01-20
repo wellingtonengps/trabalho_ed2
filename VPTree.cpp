@@ -43,7 +43,6 @@ void VPTree::rotacaoSimplesEsq(VPNode *p){
     p->setDir(q->getEsq());
     q->setEsq(p);
 
-    //****
     if(paiAnterior!=NULL){
         if(paiAnterior->getDir()==p){
             paiAnterior->setDir(q);
@@ -51,35 +50,11 @@ void VPTree::rotacaoSimplesEsq(VPNode *p){
             paiAnterior->setEsq(q);
         }
     }
-    //****
 
     if(p == raiz){
         raiz = q;
         q->setPai(nullptr);
     }
-
-    /*
-    VPNode *q = p->getDir();
-
-    p->setDir(q->getEsq());
-
-    if (p->getDir() != NULL)
-        p->getDir()->setPai(p);
-
-    q->setPai(p->getPai());
-
-    if (p->getPai() == NULL)
-        raiz = q;
-
-    else if (p == p->getPai()->getEsq())
-        p->getPai()->setEsq(q);
-
-    else
-        p->getPai()->setDir(q);
-
-    q->setEsq(p);
-    p->setPai(q);
-    */
 }
 
 void VPTree::rotacaoSimplesDir(VPNode *p){
@@ -91,7 +66,6 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
     q->setDir(p);
 
 
-    //*****
     if(paiAnterior!=NULL){
         if(paiAnterior->getDir()==p){
             paiAnterior->setDir(q);
@@ -99,45 +73,11 @@ void VPTree::rotacaoSimplesDir(VPNode *p){
             paiAnterior->setEsq(q);
         }
     }
-    //*****
 
     if(p == raiz){
         raiz = q;
         q->setPai(nullptr);
     }
-
-    /*
-
-    VPNode *q = p->getEsq();
-
-    p->setEsq(q->getDir());
-
-    if (p->getEsq() != NULL)
-        p->getEsq()->setPai(p);
-
-    q->setPai(p->getPai());
-
-    if (p->getPai() == NULL)
-        raiz = q;
-
-    else if (p == p->getPai()->getDir())
-        p->getPai()->setDir(q);
-
-    else
-        p->getPai()->setEsq(q);
-
-    q->setDir(p);
-    p->setPai(q);
- */
-}
-
-
-void swapCor(VPNode *x, VPNode *y){
-    bool aux;
-
-    aux = x->getCor();
-    x->setCor(y->getCor());
-    y->setCor(aux);
 }
 
 VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
@@ -145,12 +85,11 @@ VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
     if(raiz == NULL){
         return p;
     }
-    else if(p->getInfo()->getId().compare(raiz->getInfo()->getId()) == 0){
+    else if(p->getInfo()->getId().compare(raiz->getInfo()->getId()) == 0) {
         Metricas::incrementComparisonCount(1);
     }
-
-    //p->getInfo()->getId() < raiz->getInfo()->getId();
     else if(p->getInfo()->getId().compare(raiz->getInfo()->getId())<0) {
+
         Metricas::incrementComparisonCount(1);
         //se for menor que a raiz, vai para a esquerda
         raiz->setEsq(auxInsere(raiz->getEsq(),p));
@@ -161,18 +100,6 @@ VPNode* VPTree::auxInsere(VPNode *raiz, VPNode *p)
         raiz->getDir()->setPai(raiz);
 
     }
-
-    /*
-    if(p->getInfo() < raiz->getInfo()) { //se for menor que a raiz, vai para a esquerda
-         raiz->setEsq(auxInsere(raiz->getEsq(),p));
-         raiz->getEsq()->setPai(raiz);
-    }
-    else { //se for menor que a raiz, vai para a direita
-        raiz->setDir(auxInsere(raiz->getDir(), p));
-        raiz->getDir()->setPai(raiz);
-
-    }*/
-
     return raiz;
 }
 
@@ -187,11 +114,6 @@ void VPTree::balancemento(VPNode *p){
     avo_p = getAvo(p);
     tio_p = getTio(p);
 
-    bool  corAvo;
-
-   /*if(avo_p != NULL){
-       corAvo = avo_p->getCor();
-   }*/
 
     //caso 2:
     if((pai_p != NULL && tio_p != NULL && p->getCor())){
@@ -230,27 +152,12 @@ void VPTree::balancemento(VPNode *p){
             if(tio_p == avo_p->getEsq()){ //caso A: rotacao esquerda
                 Metricas::incrementComparisonCount(1);
                 rotacaoSimplesEsq(avo_p);
-                //balancemento(avo_p);
             }else{
                 rotacaoSimplesDir(avo_p); //caso B: rotacao direita
-                //balancemento(avo_p);
             }
         }
 
     }
-
-    //caso 4: rotacao dupla esquerda ou direita
-    //dupla esquerda: pai vermelho e tio preto;
-   /* if(pai_p != NULL && tio_p == NULL ){
-
-        if(pai_p->getCor() == true && tio_p == NULL){
-            p->setCor(!p->getCor());
-            avo_p->setCor(!avo_p->getCor());
-
-            rotacaoSimplesDir(avo_p);
-            rotacaoSimplesEsq(avo_p);
-        }
-    }*/
 
     //caso 1:
     raiz->setCor(false);
@@ -258,19 +165,11 @@ void VPTree::balancemento(VPNode *p){
     if(p != NULL && p->getPai() != NULL)
         balancemento(p->getPai());
 
-    /*
-    if(avo_p != NULL && avo_p!= this->raiz && corAvo != avo_p->getCor()){
-        balancemento(avo_p);
-    }*/
 
-    /*if(p != NULL && p->getPai() != NULL && p->getPai()->getPai() != NULL && p->getPai()->getPai()->getPai() != NULL){
-        balancemento(p->getPai());
-    }*/
 }
 
 void VPTree::insere(string id, int location)
 {
-    //ReviewData *info = new ReviewData(id, location);
 
     VPNode *p = new VPNode(id, location);
 
@@ -278,7 +177,6 @@ void VPTree::insere(string id, int location)
 
     balancemento(p);
 
-    //imprime();
 }
 
 int VPTree::busca(string id)

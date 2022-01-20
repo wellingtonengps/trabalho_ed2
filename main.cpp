@@ -16,173 +16,11 @@
 #include <stdlib.h>
 #include "Metricas.h"
 
-/*
-int REVIEW_TEXT_LENGTH = 400;
-int REVIEW_ID_LENGTH = 90;
-int REVIEW_UPVOTES_LENGTH = 6;
-int REVIEW_VERSION_LENGTH = 9;
-int REVIEW_DATE_LENGTH = 20;
-int RECORD_LENGTH =
-        REVIEW_TEXT_LENGTH + REVIEW_ID_LENGTH + REVIEW_UPVOTES_LENGTH + REVIEW_VERSION_LENGTH + REVIEW_DATE_LENGTH;
-*/
+
 using namespace std;
 using namespace std::chrono;
 using namespace std::this_thread;
 
-// *********************Funções de Buffer********************
-/*
-int nextChar = 0;
-int maxBlockSize = 100000;
-char *dados = new char[maxBlockSize];
-int currentBlock = 0;
-int fileSize;
-bool endOfFile = false;
-ifstream arqI;
-*/
-
-//inicializa arquivo para leitura no buffer
-/*
-void initFile(string path) {
-    nextChar = 0;
-    currentBlock = 0;
-    endOfFile = false;
-
-    arqI.open(path, ios::binary);
-    arqI.seekg(0, arqI.end);
-    fileSize = arqI.tellg();
-    arqI.seekg(0, arqI.beg);
-}
-
-//armazena bloco do arquivo no buffer
-void bufferFile() {
-
-    if (!arqI) {
-        return;
-    }
-    arqI.seekg(maxBlockSize * currentBlock);
-    arqI.read(dados, maxBlockSize);
-}
-
-//retorna próximo caracter a ser lido no buffer
-char getNextChar() {
-
-    //armazena primeiro bloco no buffer
-    if (currentBlock == 0 && nextChar == 0) {
-        bufferFile();
-    }
-
-    char c = dados[nextChar];
-
-    //se no final do bloco, carrega próximo bloco
-    //caso contrário, incrementa contador nextChar
-    if (nextChar == maxBlockSize - 1) {
-        currentBlock++;
-        nextChar = 0;
-        bufferFile();
-    } else {
-        nextChar++;
-    }
-
-    //se no final do arquivo, desaloca o buffer e fecha o arquivo
-    if ((nextChar + currentBlock * maxBlockSize) * sizeof(char) >= fileSize) {
-        endOfFile = true;
-        arqI.close();
-        delete[] dados;
-    }
-
-    return c;
-}
-*/
-
-//**********************************************************************
-/*
-Review *acessarRegistroTAD(int i, ifstream &arq) {
-
-    Review *review = new Review();
-
-    char *review_id = new char[REVIEW_ID_LENGTH];
-    char *review_text = new char[REVIEW_TEXT_LENGTH];
-    char *upvotes = new char[REVIEW_UPVOTES_LENGTH];
-    char *version = new char[REVIEW_VERSION_LENGTH];
-    char *date = new char[REVIEW_DATE_LENGTH];
-
-
-    int recordSize = RECORD_LENGTH * sizeof(char);
-
-    if (arq) {
-        arq.seekg(RECORD_LENGTH * i);
-        int currentPos = recordSize * i;
-
-        arq.read(review_id, REVIEW_ID_LENGTH);
-        currentPos += REVIEW_ID_LENGTH * sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(review_text, REVIEW_TEXT_LENGTH);
-        currentPos += REVIEW_TEXT_LENGTH * sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(upvotes, REVIEW_UPVOTES_LENGTH);
-        currentPos += REVIEW_UPVOTES_LENGTH * sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(version, REVIEW_VERSION_LENGTH);
-        currentPos += REVIEW_VERSION_LENGTH * sizeof(char);
-        arq.seekg(currentPos);
-
-        arq.read(date, REVIEW_DATE_LENGTH);
-
-        review->setReviewId(review_id);
-        review_text[399] = '\0'; //garantir que a string termina
-        review->setReviewText(review_text);
-        review->setUpvotes(stoi(upvotes));
-        review->setAppVersion(version);
-        review->setPostedDate(date);
-
-        delete[] review_id;
-        delete[] review_text;
-        delete[] upvotes;
-        delete[] version;
-        delete[] date;
-
-    } else {
-        cout << "Arquivo nao aberto";
-    }
-
-    return review;
-}*/
-/*
-void imprimeListaRegistros(vector<Review *> listaRegistros) {
-    for (int i = 0; i < listaRegistros.size(); i++) {
-        cout << listaRegistros[i]->toString() << endl;
-    }
-}
-
-string imprimeListaRegistrosStr(vector<Review *> listaRegistros) {
-    string listaStr = "";
-    for (int i = 0; i < listaRegistros.size(); i++) {
-        listaStr += listaRegistros[i]->toString() + "\n";
-    }
-
-    return listaStr;
-}
-
-void imprimeListaRegistrosArquivo(vector<Review *> listaRegistros, string output_path) {
-
-    ofstream saida;
-    saida.open(output_path, ios::out);
-
-    if (!saida) {
-        cout << "Não foi possível gerar arquivo data.txt contendo lista de registros" << endl;
-        return;
-    }
-
-    for (int i = 0; i < listaRegistros.size(); i++) {
-        saida << listaRegistros[i]->toString() << "\n";
-    }
-    saida.close();
-
-}
-*/
 
 void testeImportacao(string path) {
 
@@ -220,34 +58,6 @@ void testeImportacao(string path) {
     }
 }
 
-/*
-vector<Review *> importarAleatorios(string path, int num) {
-
-    vector<Review *> listaRegistros;
-    listaRegistros.reserve(num);
-    int numRegistros = 3646476;
-    srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-    ifstream arq;
-    arq.open(path, ios::binary);
-
-    for (int i = 0; i < num; i++) {
-        int numRand = rand() % numRegistros;
-        listaRegistros.push_back(acessarRegistroTAD(numRand, arq));
-
-    }
-    arq.close();
-
-    return listaRegistros;
-}
-*/
-/*
-void appendArquivo(string output_path, string data) {
-
-    ofstream saida;
-    saida.open(output_path, ios::app);
-    saida << data;
-    saida.close();
-}*/
 
 double geraMetricasFuncao(vector<Review *> &reviews, Sorting &sorting, int n) {
     string res = "";
@@ -433,73 +243,6 @@ string ordenaVetorN(string bin_file_path, int n) {
     return resultado;
 }
 
-/*
-void readCSVToBinary(string path, string binaryOut) {
-
-    char c;
-
-    ofstream arqOut;
-    arqOut.open(binaryOut, ios::binary);
-
-    initFile(path);
-    bool primeiraLinha = true;
-
-
-    if (arqOut) {
-        bool ignoraVirgula = false;
-        int campoAtual = 0;
-        string value;
-
-        //lê dados do arquivo de entrada caractere por caractere
-        //escrevendo os dados no arquivo de saída
-        while (!endOfFile) {
-            c = getNextChar();
-
-            //ignorar a primeira linha do arquivo csv
-            if (c == '\n' && primeiraLinha) {
-                primeiraLinha = false;
-                continue;
-            }
-            if (primeiraLinha) {
-                continue;
-            }
-
-            if (c == '\"') {
-                ignoraVirgula = !ignoraVirgula;
-            } else if ((c == ',' || c == '\n') && ignoraVirgula == false) {
-                value += '\0';
-
-                if (campoAtual == 0) {
-                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_ID_LENGTH);
-                    campoAtual++;
-                } else if (campoAtual == 1) {
-                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_TEXT_LENGTH);
-                    campoAtual++;
-                } else if (campoAtual == 2) {
-                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_UPVOTES_LENGTH);
-                    campoAtual++;
-                } else if (campoAtual == 3) {
-                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_VERSION_LENGTH);
-                    campoAtual++;
-                } else if (campoAtual == 4) {
-                    arqOut.write(value.c_str(), sizeof(char) * REVIEW_DATE_LENGTH);
-                    campoAtual = 0;
-                }
-
-                value.clear();
-
-
-            } else {
-                value += c;
-            }
-        }
-
-        arqOut.close();
-    } else {
-        cout << "Erro ao abrir o arquivo" << endl;
-    }
-}
-*/
 void metricasArvoreVP(string binary_input_file, string output_file, int n, int b) {
 
 
@@ -792,7 +535,7 @@ void menu(string input_dir, string bin_file_path) {
         VPTree vpTree = VPTree();
 
         if (modo == 1) {
-            metricasArvoreVP(bin_file_path, "saida.txt", 10000, 100);
+            metricasArvoreVP(bin_file_path, "saida.txt", 1000000, 100);
             cout << "\nArquivo de saida gerado.";
         } else if (modo == 2) {
             int n;
@@ -825,7 +568,7 @@ void menu(string input_dir, string bin_file_path) {
         cout << "\n";
 
         if (modo == 1) {
-            metricasArvoreB(bin_file_path, "saida.txt", 10000, 100);
+            metricasArvoreB(bin_file_path, "saida.txt", 1000000, 100);
             cout << "\nArquivo de saida gerado.\n";
         } else if (modo == 2) {
             int ordem;
@@ -888,7 +631,6 @@ int main(int argc, char **argv) {
 
         menu(input_dir, bin_file_path);
     } else {
-
         menu(input_dir, bin_file_path);
     }
 
