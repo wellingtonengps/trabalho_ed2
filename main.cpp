@@ -535,7 +535,7 @@ void menu(string input_dir, string bin_file_path) {
         VPTree vpTree = VPTree();
 
         if (modo == 1) {
-            metricasArvoreVP(bin_file_path, "saida.txt", 1000000, 100);
+            metricasArvoreVP(bin_file_path, "saida.txt", 100, 100);
             cout << "\nArquivo de saida gerado.";
         } else if (modo == 2) {
             int n;
@@ -568,7 +568,7 @@ void menu(string input_dir, string bin_file_path) {
         cout << "\n";
 
         if (modo == 1) {
-            metricasArvoreB(bin_file_path, "saida.txt", 1000000, 100);
+            metricasArvoreB(bin_file_path, "saida.txt", 100, 100);
             cout << "\nArquivo de saida gerado.\n";
         } else if (modo == 2) {
             int ordem;

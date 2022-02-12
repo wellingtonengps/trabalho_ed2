@@ -1,0 +1,10 @@
+Arvore Vermelho e Preto
+Inserção-Iteração 0, n= 100 - comparações: 280, tempo: 1.628476
+Inserção-Iteração 1, n= 100 - comparações: 421, tempo: 1.739049
+Inserção-Iteração 2, n= 100 - comparações: 456, tempo: 1.563098
+Media time: 1.643541, Media coparacoes: 385
+Busca-Iteração 0, b= 100 - comparações: 593, tempo: 0.007618
+Busca-Iteração 1, b= 100 - comparações: 540, tempo: 0.006950
+Busca-Iteração 2, b= 100 - comparações: 547, tempo: 0.007229
+Media time: 0.007266, Media coparacoes: 560
+
