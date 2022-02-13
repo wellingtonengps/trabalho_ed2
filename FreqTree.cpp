@@ -3,6 +3,8 @@
 //
 
 #include "FreqTree.h"
+#include <vector>
+#include <iostream>
 
 
 FreqTree::FreqTree(char raizInicial){
@@ -34,6 +36,37 @@ FreqNode *FreqTree::getRaiz() const {
 void FreqTree::setRaiz(FreqNode *raiz) {
     FreqTree::raiz = raiz;
 }
+
+void auxDecodificacao(FreqNode* node, string cod, vector<pair<char, string>> &v){
+
+
+    if(node->getInfo()!='\0'){
+        pair<char, string> p(node->getInfo(), cod);
+        v.push_back(p);
+    }
+    else{
+        auxDecodificacao(node->getEsq(), cod+"0", v);
+        auxDecodificacao(node->getDir(), cod+"1", v);
+    }
+
+}
+
+vector<pair<char, string>> FreqTree::gerarTabela() {
+
+    vector<pair<char, string>> v;
+
+    if(this->raiz != nullptr){
+        auxDecodificacao(this->raiz, "", v);
+    }
+
+    for(int i=0; i<v.size(); i++){
+        cout << "("<< v[i].first <<", "<<v[i].second << "), ";
+    }
+    cout << endl;
+
+    return v;
+}
+
 
 
 

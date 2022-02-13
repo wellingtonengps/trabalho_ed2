@@ -21,7 +21,6 @@ FreqTree* auxBusca(vector<FreqTree*> v, char data){
     return nullptr;
 }
 
-
 void imprimePorNivel(FreqNode *p, int nivel) //pre-ordem
 {
     ///imprir a arvore em-oderm faz com que a impress�o fique em ordem crescente.
@@ -36,7 +35,6 @@ void imprimePorNivel(FreqNode *p, int nivel) //pre-ordem
         imprimePorNivel(p->getDir(), nivel+1);
     }
 }
-
 
 void imprime(FreqNode* raiz)
 {
@@ -56,7 +54,7 @@ bool comparaArvores(FreqTree* i, FreqTree* j){
     return i->getRaiz()->getFreq() > j->getRaiz()->getFreq();
 }
 
-void Compression::compress(string data) {
+void Compression::gerarArvore(string data) {
 
     vector<FreqTree*> trees;
     FreqTree* novaArvore;
@@ -88,9 +86,23 @@ void Compression::compress(string data) {
 
     this->freqTree = primeira;
     imprime(primeira->getRaiz());
-
-
 }
 
+void Compression::gerarTabela() {
+    this->tabela=this->freqTree->gerarTabela();
+}
 
+string Compression::compress(string data) {
+
+    string compressedData;
+    for(int i = 0; i < data.size(); i++){
+        for(int j = 0; j < this->tabela.size(); j++){
+            if(data[i] == tabela[j].first){
+               compressedData.append(tabela[j].second);
+            }
+        }
+    }
+
+    return compressedData;
+}
 

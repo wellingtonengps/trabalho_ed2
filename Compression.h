@@ -13,11 +13,13 @@ class Compression {
 
 private:
     FreqTree* freqTree;
+    vector<pair<char, string>> tabela;
 public:
     ~Compression(){if(freqTree!= nullptr)delete freqTree;}
-    void compress(string data);
+    void gerarArvore(string data);
+    string compress(string data);
     //string decompress();
-
+    void gerarTabela();
 };
 
 

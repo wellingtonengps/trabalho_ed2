@@ -6,6 +6,7 @@
 #define TRABALHO_ED2_FREQTREE_H
 #include "FreqNode.h"
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -24,7 +25,7 @@ public:
     void setRaiz(FreqNode *raiz);
 
     void unir(FreqNode* raiz);
-    string getCodificacao(char c);
+    vector<pair<char, string>> gerarTabela();
 };
 
 
