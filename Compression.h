@@ -18,7 +18,7 @@ public:
     ~Compression(){if(freqTree!= nullptr)delete freqTree;}
     void gerarArvore(string data);
     string compress(string data);
-    //string decompress();
+    string decompress(string bin);
     void gerarTabela();
 };
 

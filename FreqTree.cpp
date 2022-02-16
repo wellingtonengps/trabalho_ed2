@@ -16,6 +16,35 @@ FreqTree::~FreqTree() {
     delete raiz;
 }
 
+string FreqTree::decodificar(string bin){
+
+    string result;
+    FreqNode* next = this->raiz;
+
+    if(bin.size()==1){
+        result=next->getInfo();
+        return result;
+    }
+
+    for(int i=0;i<bin.size();i++){
+        if(bin[i]=='0'){
+            next = next->getEsq();
+        }if(bin[i]=='1'){
+            next = next->getDir();
+        }
+
+        if(next->getInfo()!='\0'){
+            result+=next->getInfo();
+            next = this->raiz;
+        }
+
+    }
+
+    return result;
+}
+
+
+
 void FreqTree::unir(FreqNode* raiz){
     FreqNode* novaRaiz = new FreqNode('\0', raiz->getFreq() + this->raiz->getFreq());
     if(raiz->getFreq() >= this->raiz->getFreq()){
@@ -37,7 +66,7 @@ void FreqTree::setRaiz(FreqNode *raiz) {
     FreqTree::raiz = raiz;
 }
 
-void auxDecodificacao(FreqNode* node, string cod, vector<pair<char, string>> &v){
+void auxGeraTabela(FreqNode* node, string cod, vector<pair<char, string>> &v){
 
 
     if(node->getInfo()!='\0'){
@@ -45,18 +74,20 @@ void auxDecodificacao(FreqNode* node, string cod, vector<pair<char, string>> &v)
         v.push_back(p);
     }
     else{
-        auxDecodificacao(node->getEsq(), cod+"0", v);
-        auxDecodificacao(node->getDir(), cod+"1", v);
+        auxGeraTabela(node->getEsq(), cod + "0", v);
+        auxGeraTabela(node->getDir(), cod + "1", v);
     }
 
 }
+
+
 
 vector<pair<char, string>> FreqTree::gerarTabela() {
 
     vector<pair<char, string>> v;
 
     if(this->raiz != nullptr){
-        auxDecodificacao(this->raiz, "", v);
+        auxGeraTabela(this->raiz, "", v);
     }
 
     for(int i=0; i<v.size(); i++){

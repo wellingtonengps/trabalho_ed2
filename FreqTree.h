@@ -26,6 +26,7 @@ public:
 
     void unir(FreqNode* raiz);
     vector<pair<char, string>> gerarTabela();
+    string decodificar(string bin);
 };
 
 

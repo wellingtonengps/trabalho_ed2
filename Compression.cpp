@@ -106,3 +106,8 @@ string Compression::compress(string data) {
     return compressedData;
 }
 
+string Compression::decompress(string bin){
+    return this->freqTree->decodificar(bin);
+}
+
+
