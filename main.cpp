@@ -19,7 +19,7 @@
 
 using namespace std;
 using namespace std::chrono;
-using namespace std::this_thread;
+//using namespace std::this_thread;
 
 
 void testeImportacao(string path) {
@@ -477,7 +477,10 @@ void menu(string input_dir, string bin_file_path) {
     cout << "6 - Modulo de Teste \n";
     cout << "7 - Arvore Vermelho-Preto \n";
     cout << "8 - Arvore B \n";
-    cout << "9 - Sair \n";
+    cout << "9 - Comprimir N registros para reviewComp.bin \n";
+    cout << "10 - Descomprir reviewComp.bin para reviewOrig.bin\n";
+    cout << "11 - Modulo de teste compressao\n";
+    cout << "12 - Sair \n";
     cout << "\n";
     cout << "Opcao: ";
     cin >> option;
@@ -598,10 +601,42 @@ void menu(string input_dir, string bin_file_path) {
         }
 
     } else if (option == 9) {
+
+        int n;
+        cout << "Informe N: ";
+        cin >> n;
+
+        FileIO fileIo = FileIO();
+
+        Compression compression = Compression();
+
+        string data = fileIo.importarAleatoriosCompression(bin_file_path, n);
+
+        compression.gerarArvore(data);
+        compression.gerarTabela();
+        string compressedData = compression.compress(data);
+        string codedString = compression.readBinaryString(compressedData);
+
+        //escreve binario
+        cout << codedString << endl;
+        fileIo.writeReviewComp("reviewsComp.bin", codedString);
+
+        //le binario
+        string dataBin = fileIo.readReviewComp("reviewsComp.bin");
+        string convertedBack = compression.readCompressedText(dataBin);
+
+        cout << compression.decompress(convertedBack);
+
+    } else if (option == 9) {
+
+    } else if (option == 11) {
+
+    } else if (option == 12) {
         cout << "Encerrando o programa...";
         sleep(2);
         return;
-    } else {
+    }
+    else {
         cout << "Opcao invalida" << endl;
     }
 }

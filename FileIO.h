@@ -7,6 +7,7 @@
 #include <vector>
 #include "BTree.h"
 #include "VPTree.h"
+#include "Compression.h"
 
 
 class FileIO {
@@ -39,10 +40,13 @@ public:
     vector<Review*> importarAleatorios(string path, int num);
     void importarAleatoriosBTree(BTree &bTree, string path, int num);
     void importarAleatoriosVPTree(VPTree &vpTree, string path, int num);
+    string importarAleatoriosCompression(string path, int num);
     void imprimeListaRegistros(vector<Review *> listaRegistros);
     string imprimeListaRegistrosStr(vector<Review *> listaRegistros);
     void imprimeListaRegistrosArquivo(vector<Review *> listaRegistros, string output_path);
     void appendArquivo(string output_path, string data);
+    string readReviewComp(string path);
+    void writeReviewComp(string path, string bin);
 };
 
 

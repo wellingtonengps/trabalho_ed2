@@ -20,6 +20,14 @@ public:
     string compress(string data);
     string decompress(string bin);
     void gerarTabela();
+    string readBinaryString(string bin);
+    string readCompressedText(string codedString);
+    string codedCharsToBynaryString(string codedString);
+    string charToBinaryString(unsigned char c);
+    char readBinaryStringToChar(string bin);
+    int readBinaryStringToInt(string bin);
+    string  intToBinaryString(unsigned int number);
+
 };
 
 

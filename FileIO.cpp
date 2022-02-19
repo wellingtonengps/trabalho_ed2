@@ -284,6 +284,35 @@ void FileIO::importarAleatoriosVPTree(VPTree &vpTree, string path, int num) {
 
 }
 
+string FileIO::importarAleatoriosCompression(string path, int num) {
+
+    int numRegistros = 3646476;
+    srand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    ifstream arq;
+    arq.open(path, ios::binary);
+    string data;
+
+    for (int i = 0; i < num; i++) {
+        int numRand = rand() % numRegistros;
+
+        Review *review = acessarRegistroTAD(numRand, arq);
+        //Metricas::enable();
+        //compress.insere(review->getReviewId(), numRand);
+
+        //Metricas::disable();
+
+        //concatena
+        data+=review->getReviewText();
+
+        delete review;
+
+    }
+    arq.close();
+
+
+    return data;
+}
+
 
 void FileIO::imprimeListaRegistros(vector<Review *> listaRegistros) {
     for (int i = 0; i < listaRegistros.size(); i++) {
@@ -323,4 +352,29 @@ void FileIO::appendArquivo(string output_path, string data) {
     saida.open(output_path, ios::app);
     saida << data;
     saida.close();
+}
+
+void FileIO::writeReviewComp(string path, string bin){
+
+    ofstream arq;
+    arq.open(path, ios::binary);
+
+    arq << bin;
+    arq.close();
+}
+
+string FileIO::readReviewComp(string path){
+
+    ifstream arq;
+    arq.open(path, ios::binary);
+
+    Compression compression = Compression();
+
+    string bin;
+
+    getline(arq, bin);
+
+    arq.close();
+
+    return bin;
 }

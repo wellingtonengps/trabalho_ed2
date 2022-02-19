@@ -5,6 +5,8 @@
 #include "Compression.h"
 #include "string"
 #include <cmath>
+#include <fstream>
+#include "FileIO.h"
 
 using namespace std;
 
@@ -84,25 +86,87 @@ string readBinaryString(string bin){
     return result;
 }
 
+void writeReviewComp(string path, string bin){
+
+    ofstream arq;
+    arq.open(path, ios::binary);
+
+    arq << bin;
+    arq.close();
+}
+
+string readReviewComp(string path){
+
+    ifstream arq;
+    arq.open(path, ios::binary);
+
+    Compression compression = Compression();
+
+    string bin;
+
+    getline(arq, bin);
+
+    arq.close();
+
+    return bin;
+}
+
+
+
 int main(int argc, char **argv) {
 
-    string data = "wellingtonpatrickviniciuserafalqueestalostarkwellingtonpatrickviniciuserafalqueestalostark"
-                  "wellingtonpatrickviniciuserafalqueestalostarkwellingtonpatrickviniciuserafalqueestalostark"
-                  "wellingtonpatrickviniciuserafalqueestalostarkwellingtonpatrickviniciuserafalqueestalostark"
-                  "wellingtonpatrickviniciuserafalqueestalostarkwellingtonpatrickviniciuserafalqueestalostark"
-                  ;
+
+    //string data = "abacateabafabafofojaofjaojfojafojfojafojsofjaofjaofjsaofjaofjasofjaofjasofjaosfjaosjfaojfao[fojqw[pqjf[wpqjf[w";
+
+    //Compression compression = Compression();
+    //compression.gerarArvore(data);
+    //compression.gerarTabela();
+    //string compressedData = compression.compress(data);
+    //string codedString = readBinaryString(compressedData);
+    //string convertedBack = readCompressedText(codedString);
+    //string convertedBackFullCode = codedCharsToBynaryString(codedString);
+
+    //cout << compressedData << endl;
+    //cout << codedString << endl;
+    //cout << convertedBack << endl;
+    //cout << convertedBackFullCode << endl;
+   //cout << compression.decompress(convertedBack)<<endl;
+
+    //escreve binario
+    //writeReviewComp("reviewsComp.bin", codedString);
+
+    //le binario
+    //string dataBin = readReviewComp("reviewsComp.bin");
+    //string convertedBack = readCompressedText(dataBin);
+
+    //cout << compression.decompress(convertedBack);
+
+    int n;
+    cout << "Informe N: ";
+    cin >> n;
+
+    FileIO fileIo = FileIO();
+
     Compression compression = Compression();
+
+    string data = fileIo.importarAleatoriosCompression("data.bin", n);
+
+    cout << data;
+
     compression.gerarArvore(data);
     compression.gerarTabela();
     string compressedData = compression.compress(data);
-    string codedString = readBinaryString(compressedData);
-    string convertedBack = readCompressedText(codedString);
-    string convertedBackFullCode = codedCharsToBynaryString(codedString);
+    string codedString = compression.readBinaryString(compressedData);
 
-    cout << compressedData << endl;
+    //escreve binario
     cout << codedString << endl;
-    cout << convertedBack << endl;
-    cout << convertedBackFullCode << endl;
-    cout << compression.decompress(convertedBack)<<endl;
+    fileIo.writeReviewComp("reviewsComp.bin", codedString);
 
+    //le binario
+    string dataBin = fileIo.readReviewComp("reviewsComp.bin");
+    string convertedBack = compression.readCompressedText(dataBin);
+
+    string textOriginal = compression.decompress(convertedBack);
+
+    fileIo.appendArquivo("reviewsOrig.bin", textOriginal);
 }
