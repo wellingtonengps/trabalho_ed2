@@ -303,6 +303,7 @@ string FileIO::importarAleatoriosCompression(string path, int num) {
 
         //concatena
         data+=review->getReviewText();
+        data+=" ";
 
         delete review;
 

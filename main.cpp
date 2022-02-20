@@ -243,6 +243,47 @@ string ordenaVetorN(string bin_file_path, int n) {
     return resultado;
 }
 
+void metricasCompressao(string binary_input_file, string output_file){
+
+    FileIO fileIo = FileIO();
+    float somaTaxaCompressao=0;
+    string res;
+    res += "Médias Compressão:\n";
+
+    int n[3] = {1,2,3};
+
+    for(int i = 0; i < 3; i++){
+        string data = fileIo.importarAleatoriosCompression(binary_input_file, n[i]);
+
+        for(int j = 0; j < 3; j++){
+            Compression compression = Compression();
+            compression.gerarArvore(data);
+            compression.gerarTabela();
+
+            string compressedData = compression.compress(data);
+            string codedString = compression.readBinaryString(compressedData);
+
+            ///teste
+            //string convertedBack = compression.readCompressedText(codedString);
+            //cout << compression.decompress(convertedBack)<<endl;
+
+            somaTaxaCompressao += compression.taxaCompressao();
+            cout << "Taxa de compressao: " << compression.taxaCompressao() << endl;
+        }
+
+        float mediaTaxa = somaTaxaCompressao/3;
+        cout << mediaTaxa << endl;
+
+        res += "Iteracao-" + to_string(n[i]) + ": " + to_string(mediaTaxa);
+        res += "\n";
+
+        somaTaxaCompressao=0;
+    }
+
+    fileIo.appendArquivo(output_file, res);
+    cout << "saida.txt gerado" << endl;
+}
+
 void metricasArvoreVP(string binary_input_file, string output_file, int n, int b) {
 
 
@@ -466,178 +507,191 @@ void menu(string input_dir, string bin_file_path) {
     string id;
     int i;
     FileIO fileIo = FileIO();
+    Compression compression = Compression();
 
-    cout << "\n";
-    cout << "----------- MENU -----------\n";
-    cout << "1 - Funcao Acessar Registro (i)\n";
-    cout << "2 - Funcao Teste Importacao \n";
-    cout << "3 - Gerar metricas dos algoritmos de ordenacao \n";
-    cout << "4 - Ordenacao \n";
-    cout << "5 - Hash \n";
-    cout << "6 - Modulo de Teste \n";
-    cout << "7 - Arvore Vermelho-Preto \n";
-    cout << "8 - Arvore B \n";
-    cout << "9 - Comprimir N registros para reviewComp.bin \n";
-    cout << "10 - Descomprir reviewComp.bin para reviewOrig.bin\n";
-    cout << "11 - Modulo de teste compressao\n";
-    cout << "12 - Sair \n";
-    cout << "\n";
-    cout << "Opcao: ";
-    cin >> option;
-    cout << "\n";
-
-    if (option == 1) {
-        cout << "Informe i: ";
-        cin >> i;
-
-        ifstream arq;
-        arq.open(bin_file_path, ios::binary);
-
-        Review *review = fileIo.acessarRegistroTAD(i, arq);
-        cout << review->toString();
-        arq.close();
-
-        delete review;
-    } else if (option == 2) {
-        testeImportacao(bin_file_path);
-    } else if (option == 3) {
-        simulacaoPerformaceOrdenacao("saida.txt", bin_file_path, input_dir);
-    } else if (option == 4) {
-
-        int n;
-        cout << "Informe n: ";
-        cin >> n;
-
-        cout << ordenaVetorN(bin_file_path, n);
-    } else if (option == 5) {
-        int n;
-        cout << "Informe n: ";
-        cin >> n;
-
-        cout << tabelaHashN(bin_file_path, n);
-    } else if (option == 6) {
-
-        string resultadoOrdenacao = "Teste Ordenacao: \n" + ordenaVetorN(bin_file_path, 100) + "\n\n";
-        string resultadoHash = "Teste Hash: \n" + tabelaHashN(bin_file_path, 100);
-
-        fileIo.appendArquivo("teste.txt", resultadoOrdenacao + resultadoHash);
-
-        cout << "Resultado escrito ao final do arquivo teste.txt" << endl;
-    } else if (option == 7) {
-
-
-        cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
-        cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
-
+    while(option != 12){
 
         cout << "\n";
-        cout << "Modo: ";
-        cin >> modo;
+        cout << "----------- MENU -----------\n";
+        cout << "1 - Funcao Acessar Registro (i)\n";
+        cout << "2 - Funcao Teste Importacao \n";
+        cout << "3 - Gerar metricas dos algoritmos de ordenacao \n";
+        cout << "4 - Ordenacao \n";
+        cout << "5 - Hash \n";
+        cout << "6 - Modulo de Teste \n";
+        cout << "7 - Arvore Vermelho-Preto \n";
+        cout << "8 - Arvore B \n";
+        cout << "9 -  Comprimir N registros para reviewComp.bin \n";
+        cout << "10 - reviewComp.bin para reviewOrig.bin\n";
+        cout << "11 - Modulo de teste compressao\n";
+        cout << "12 - Sair \n";
+        cout << "\n";
+        cout << "Opcao: ";
+        cin >> option;
         cout << "\n";
 
-        VPTree vpTree = VPTree();
+        if (option == 1) {
+            cout << "Informe i: ";
+            cin >> i;
 
-        if (modo == 1) {
-            metricasArvoreVP(bin_file_path, "saida.txt", 100, 100);
-            cout << "\nArquivo de saida gerado.";
-        } else if (modo == 2) {
-            int n;
-            cout << "Digite numero de reviews aleatorias para importacao: \n";
-            cin >> n;
+            ifstream arq;
+            arq.open(bin_file_path, ios::binary);
 
-            FileIO fileIo = FileIO();
-            fileIo.importarAleatoriosVPTree(vpTree, "data.bin", n);
+            Review *review = fileIo.acessarRegistroTAD(i, arq);
+            cout << review->toString();
+            arq.close();
 
-            cout << "Digite o ID da avaliacao que deseja buscar: ";
-            cin >> id;
-            int find = vpTree.busca(id);
-
-            if (find == -1) {
-                cout << "\n ID nao encontrado." << endl;
-            } else {
-                cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString();
-            }
-        } else {
-            cout << "\n Opcao invalida" << endl;
-        }
-    } else if (option == 8) {
-
-        cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
-        cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
-
-        cout << "\n";
-        cout << "Modo: ";
-        cin >> modo;
-        cout << "\n";
-
-        if (modo == 1) {
-            metricasArvoreB(bin_file_path, "saida.txt", 100, 100);
-            cout << "\nArquivo de saida gerado.\n";
-        } else if (modo == 2) {
-            int ordem;
-
-            cout << "\n Digite a ordem da arvore B: ";
-
-            cin >> ordem;
-            BTree bTree = BTree(ordem);
+            delete review;
+        } else if (option == 2) {
+            testeImportacao(bin_file_path);
+        } else if (option == 3) {
+            simulacaoPerformaceOrdenacao("saida.txt", bin_file_path, input_dir);
+        } else if (option == 4) {
 
             int n;
-            cout << "Digite numero de reviews aleatorias para importacao: \n";
+            cout << "Informe n: ";
             cin >> n;
 
-            FileIO fileIo = FileIO();
-            fileIo.importarAleatoriosBTree(bTree, "data.bin", n);
+            cout << ordenaVetorN(bin_file_path, n);
+        } else if (option == 5) {
+            int n;
+            cout << "Informe n: ";
+            cin >> n;
 
-            cout << "\n Digite o ID da avaliacao que deseja buscar: ";
-            cin >> id;
-            int find = bTree.find(id);
-            if (find == -1) {
-                cout << "\n ID nao encontrado." << endl;
+            cout << tabelaHashN(bin_file_path, n);
+        } else if (option == 6) {
+
+            string resultadoOrdenacao = "Teste Ordenacao: \n" + ordenaVetorN(bin_file_path, 100) + "\n\n";
+            string resultadoHash = "Teste Hash: \n" + tabelaHashN(bin_file_path, 100);
+
+            fileIo.appendArquivo("teste.txt", resultadoOrdenacao + resultadoHash);
+
+            cout << "Resultado escrito ao final do arquivo teste.txt" << endl;
+        } else if (option == 7) {
+
+
+            cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
+            cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
+
+
+            cout << "\n";
+            cout << "Modo: ";
+            cin >> modo;
+            cout << "\n";
+
+            VPTree vpTree = VPTree();
+
+            if (modo == 1) {
+                metricasArvoreVP(bin_file_path, "saida.txt", 100, 100);
+                cout << "\nArquivo de saida gerado.";
+            } else if (modo == 2) {
+                int n;
+                cout << "Digite numero de reviews aleatorias para importacao: \n";
+                cin >> n;
+
+                FileIO fileIo = FileIO();
+                fileIo.importarAleatoriosVPTree(vpTree, "data.bin", n);
+
+                cout << "Digite o ID da avaliacao que deseja buscar: ";
+                cin >> id;
+                int find = vpTree.busca(id);
+
+                if (find == -1) {
+                    cout << "\n ID nao encontrado." << endl;
+                } else {
+                    cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString();
+                }
             } else {
-                cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString();
+                cout << "\n Opcao invalida" << endl;
             }
-        } else {
-            cout << "\n Opcao invalida." << endl;
+        } else if (option == 8) {
+
+            cout << "Digite 1 para Modo de Analise (gera relatorio) \n";
+            cout << "Digite 2 para Modo de Teste (buscar avaliacao por id) \n";
+
+            cout << "\n";
+            cout << "Modo: ";
+            cin >> modo;
+            cout << "\n";
+
+            if (modo == 1) {
+                metricasArvoreB(bin_file_path, "saida.txt", 100, 100);
+                cout << "\nArquivo de saida gerado.\n";
+            } else if (modo == 2) {
+                int ordem;
+
+                cout << "\n Digite a ordem da arvore B: ";
+
+                cin >> ordem;
+                BTree bTree = BTree(ordem);
+
+                int n;
+                cout << "Digite numero de reviews aleatorias para importacao: \n";
+                cin >> n;
+
+                FileIO fileIo = FileIO();
+                fileIo.importarAleatoriosBTree(bTree, "data.bin", n);
+
+                cout << "\n Digite o ID da avaliacao que deseja buscar: ";
+                cin >> id;
+                int find = bTree.find(id);
+                if (find == -1) {
+                    cout << "\n ID nao encontrado." << endl;
+                } else {
+                    cout << fileIo.acessarRegistroTAD(find, "data.bin")->toString();
+                }
+            } else {
+                cout << "\n Opcao invalida." << endl;
+            }
+
+        } else if (option == 9) {
+
+            int n;
+            cout << "Informe N: ";
+            cin >> n;
+
+            string data = fileIo.importarAleatoriosCompression("data.bin", n);
+
+            compression.gerarArvore(data);
+            compression.gerarTabela();
+
+            string compressedData = compression.compress(data);
+            string codedString = compression.readBinaryString(compressedData);
+
+            fileIo.writeReviewComp("reviewsComp.bin", codedString);
+
+            ///teste
+            //string convertedBack = compression.readCompressedText(codedString);
+            //cout << compression.decompress(convertedBack)<<endl;
+
+
+            cout << "Taxa de compressao: " << compression.taxaCompressao() << endl;
+
+            cout << "reviewsComp.bin gerado" << endl;
+
+        } else if (option == 10) {
+
+            string dataBin = fileIo.readReviewComp("reviewsComp.bin");
+            string convertedBack = compression.readCompressedText(dataBin);
+
+            string textOriginal = compression.decompress(convertedBack);
+
+            fileIo.writeReviewComp("reviewsOrig.bin", textOriginal);
+
+            cout << "reviewsOrig.bin gerado" << endl;
+
+            cout << fileIo.readReviewComp("reviewsOrig.bin");
+
+        } else if (option == 11) {
+            metricasCompressao("data.bin", "saida.txt");
+        } else if (option == 12) {
+            cout << "Encerrando o programa...";
+            sleep(2);
+            return;
         }
-
-    } else if (option == 9) {
-
-        int n;
-        cout << "Informe N: ";
-        cin >> n;
-
-        FileIO fileIo = FileIO();
-
-        Compression compression = Compression();
-
-        string data = fileIo.importarAleatoriosCompression(bin_file_path, n);
-
-        compression.gerarArvore(data);
-        compression.gerarTabela();
-        string compressedData = compression.compress(data);
-        string codedString = compression.readBinaryString(compressedData);
-
-        //escreve binario
-        cout << codedString << endl;
-        fileIo.writeReviewComp("reviewsComp.bin", codedString);
-
-        //le binario
-        string dataBin = fileIo.readReviewComp("reviewsComp.bin");
-        string convertedBack = compression.readCompressedText(dataBin);
-
-        cout << compression.decompress(convertedBack);
-
-    } else if (option == 9) {
-
-    } else if (option == 11) {
-
-    } else if (option == 12) {
-        cout << "Encerrando o programa...";
-        sleep(2);
-        return;
-    }
-    else {
-        cout << "Opcao invalida" << endl;
+        else {
+            cout << "Opcao invalida" << endl;
+        }
     }
 }
 

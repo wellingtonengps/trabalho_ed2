@@ -80,8 +80,6 @@ void auxGeraTabela(FreqNode* node, string cod, vector<pair<char, string>> &v){
 
 }
 
-
-
 vector<pair<char, string>> FreqTree::gerarTabela() {
 
     vector<pair<char, string>> v;
@@ -90,10 +88,11 @@ vector<pair<char, string>> FreqTree::gerarTabela() {
         auxGeraTabela(this->raiz, "", v);
     }
 
+
     for(int i=0; i<v.size(); i++){
-        cout << "("<< v[i].first <<", "<<v[i].second << "), ";
+      cout << "("<< v[i].first <<", "<<v[i].second << "), ";
     }
-    cout << endl;
+   cout << endl;
 
     return v;
 }

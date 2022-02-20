@@ -14,6 +14,7 @@ class Compression {
 private:
     FreqTree* freqTree;
     vector<pair<char, string>> tabela;
+    int dataSize=0;
 public:
     ~Compression(){if(freqTree!= nullptr)delete freqTree;}
     void gerarArvore(string data);
@@ -27,6 +28,7 @@ public:
     char readBinaryStringToChar(string bin);
     int readBinaryStringToInt(string bin);
     string  intToBinaryString(unsigned int number);
+    float taxaCompressao();
 
 };
 

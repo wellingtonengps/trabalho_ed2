@@ -4,6 +4,7 @@
 
 #include "Compression.h"
 #include "FreqTree.h"
+#include "FileIO.h"
 #include <vector>
 #include <iostream>
 #include <bits/stdc++.h>
@@ -58,6 +59,8 @@ void Compression::gerarArvore(string data) {
 
     vector<FreqTree*> trees;
     FreqTree* novaArvore;
+    this->dataSize = data.size();
+
     for(int i=0; i<data.size(); i++){
         FreqTree* busca = auxBusca(trees, data[i]);
 
@@ -187,4 +190,15 @@ string Compression::readBinaryString(string bin){
     return result;
 }
 
+float Compression::taxaCompressao(){
 
+    cout << this->dataSize << endl;
+    cout << this->tabela.size() << endl;
+
+
+    float taxa = ((this->dataSize - this->tabela.size()) / (float)this->dataSize) * 100;
+
+    cout << taxa << endl;
+
+    return taxa;
+}
