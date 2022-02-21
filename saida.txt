@@ -1,4 +1,0 @@
-Médias Compressão:
-Iteracao-1: 3549559040.000000
-Iteracao-2: 4618244096.000000
-Iteracao-3: 2025927296.000000

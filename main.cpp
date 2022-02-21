@@ -250,7 +250,7 @@ void metricasCompressao(string binary_input_file, string output_file){
     string res;
     res += "Médias Compressão:\n";
 
-    int n[3] = {1,2,3};
+    int n[3] = {10000,100000,1000000};
 
     for(int i = 0; i < 3; i++){
         string data = fileIo.importarAleatoriosCompression(binary_input_file, n[i]);
@@ -263,16 +263,10 @@ void metricasCompressao(string binary_input_file, string output_file){
             string compressedData = compression.compress(data);
             string codedString = compression.readBinaryString(compressedData);
 
-            ///teste
-            //string convertedBack = compression.readCompressedText(codedString);
-            //cout << compression.decompress(convertedBack)<<endl;
-
-            somaTaxaCompressao += compression.taxaCompressao();
-            cout << "Taxa de compressao: " << compression.taxaCompressao() << endl;
+            somaTaxaCompressao += compression.taxaCompressao(codedString);
         }
 
         float mediaTaxa = somaTaxaCompressao/3;
-        cout << mediaTaxa << endl;
 
         res += "Iteracao-" + to_string(n[i]) + ": " + to_string(mediaTaxa);
         res += "\n";
@@ -660,13 +654,6 @@ void menu(string input_dir, string bin_file_path) {
 
             fileIo.writeReviewComp("reviewsComp.bin", codedString);
 
-            ///teste
-            //string convertedBack = compression.readCompressedText(codedString);
-            //cout << compression.decompress(convertedBack)<<endl;
-
-
-            cout << "Taxa de compressao: " << compression.taxaCompressao() << endl;
-
             cout << "reviewsComp.bin gerado" << endl;
 
         } else if (option == 10) {
@@ -679,8 +666,6 @@ void menu(string input_dir, string bin_file_path) {
             fileIo.writeReviewComp("reviewsOrig.bin", textOriginal);
 
             cout << "reviewsOrig.bin gerado" << endl;
-
-            cout << fileIo.readReviewComp("reviewsOrig.bin");
 
         } else if (option == 11) {
             metricasCompressao("data.bin", "saida.txt");

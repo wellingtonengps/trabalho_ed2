@@ -71,9 +71,8 @@ void Compression::gerarArvore(string data) {
         }
     }
 
-    //todo: anular a raiz das arvores que não são donas da raiz após a união e deletar
 
-    print(trees);
+    //print(trees);
 
     sort(trees.begin(), trees.end(), comparaArvores);
 
@@ -88,7 +87,7 @@ void Compression::gerarArvore(string data) {
     }
 
     this->freqTree = primeira;
-    imprime(primeira->getRaiz());
+    //imprime(primeira->getRaiz());
 }
 
 void Compression::gerarTabela() {
@@ -190,15 +189,9 @@ string Compression::readBinaryString(string bin){
     return result;
 }
 
-float Compression::taxaCompressao(){
+float Compression::taxaCompressao(string data){
 
-    cout << this->dataSize << endl;
-    cout << this->tabela.size() << endl;
-
-
-    float taxa = ((this->dataSize - this->tabela.size()) / (float)this->dataSize) * 100;
-
-    cout << taxa << endl;
+    float taxa = ((this->dataSize - data.size() ) / (float)this->dataSize) * 100;
 
     return taxa;
 }

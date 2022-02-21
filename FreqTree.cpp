@@ -89,9 +89,9 @@ vector<pair<char, string>> FreqTree::gerarTabela() {
     }
 
 
-    for(int i=0; i<v.size(); i++){
-      cout << "("<< v[i].first <<", "<<v[i].second << "), ";
-    }
+    //for(int i=0; i<v.size(); i++){
+     // cout << "("<< v[i].first <<", "<<v[i].second << "), ";
+   // }
    cout << endl;
 
     return v;

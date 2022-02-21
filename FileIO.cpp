@@ -296,12 +296,7 @@ string FileIO::importarAleatoriosCompression(string path, int num) {
         int numRand = rand() % numRegistros;
 
         Review *review = acessarRegistroTAD(numRand, arq);
-        //Metricas::enable();
-        //compress.insere(review->getReviewId(), numRand);
 
-        //Metricas::disable();
-
-        //concatena
         data+=review->getReviewText();
         data+=" ";
 

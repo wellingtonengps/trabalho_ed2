@@ -28,7 +28,7 @@ public:
     char readBinaryStringToChar(string bin);
     int readBinaryStringToInt(string bin);
     string  intToBinaryString(unsigned int number);
-    float taxaCompressao();
+    float taxaCompressao(string data);
 
 };
 
