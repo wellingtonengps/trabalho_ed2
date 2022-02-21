@@ -178,7 +178,7 @@ void Sorting::countingSortCells(vector<Cell*> &A){
 
 int Sorting::particiona(vector<Review*> &B, int min, int max)
 {
-    Review* pivot = B[max];
+    Review* pivot = B[(min+max)/2];
     int i = (min - 1);
 
     for (int j = min; j <= max - 1; j++)
@@ -207,6 +207,7 @@ void Sorting::quickSort(vector<Review*> &B, int min, int max)
 
         quickSort(B, min, pivot - 1);
         quickSort(B, pivot + 1, max);
+        return;
     }
 
 }
