@@ -58,7 +58,6 @@ bool comparaArvores(FreqTree* i, FreqTree* j){
 void Compression::gerarArvore(string data) {
 
     vector<FreqTree*> trees;
-    FreqTree* novaArvore;
     this->dataSize = data.size();
 
     for(int i=0; i<data.size(); i++){
@@ -71,22 +70,26 @@ void Compression::gerarArvore(string data) {
         }
     }
 
-
-    //print(trees);
-
     sort(trees.begin(), trees.end(), comparaArvores);
+    print(trees);
 
-    FreqTree* primeira = trees.back();
-    trees.pop_back();
-    while (!trees.empty()){
-        FreqTree* segunda = trees.back();
+    //FreqTree* primeira = trees.back();
+    //trees.pop_back();
+    while (trees.size()>1){
+        FreqTree* primeira = trees.back();
         trees.pop_back();
-        primeira->unir(segunda->getRaiz());
-        segunda->setRaiz(nullptr);
-        delete segunda;
+        FreqTree* segunda = trees.back();
+        //trees.pop_back();
+        segunda->unir(primeira->getRaiz());
+        primeira->setRaiz(nullptr);
+        delete primeira;
+
+        sort(trees.begin(), trees.end(), comparaArvores);
+        print(trees);
+
     }
 
-    this->freqTree = primeira;
+    this->freqTree = trees.front();
     //imprime(primeira->getRaiz());
 }
 

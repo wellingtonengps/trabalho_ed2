@@ -367,10 +367,15 @@ string FileIO::readReviewComp(string path){
     Compression compression = Compression();
 
     string bin;
+    string result;
 
-    getline(arq, bin);
+    while(!arq.eof()){
+        getline(arq, bin);
+        result.append(bin);
+    }
+
 
     arq.close();
 
-    return bin;
+    return result;
 }
