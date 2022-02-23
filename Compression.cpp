@@ -5,6 +5,7 @@
 #include "Compression.h"
 #include "FreqTree.h"
 #include "FileIO.h"
+#include "Metricas.h"
 #include <vector>
 #include <iostream>
 #include <bits/stdc++.h>

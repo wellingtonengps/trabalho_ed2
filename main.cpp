@@ -21,6 +21,11 @@ using namespace std;
 using namespace std::chrono;
 //using namespace std::this_thread;
 
+void deleteVectorItems(vector<Review *> &items) {
+    for (int i = 0; i < items.size(); i++) {
+        delete items[i];
+    }
+}
 
 void testeImportacao(string path) {
 
@@ -206,11 +211,7 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
 }
 
 
-void deleteVectorItems(vector<Review *> &items) {
-    for (int i = 0; i < items.size(); i++) {
-        delete items[i];
-    }
-}
+
 
 
 string ordenaVetorN(string bin_file_path, int n) {
@@ -250,12 +251,14 @@ void metricasCompressao(string binary_input_file, string output_file){
     string res;
     res += "Médias Compressão:\n";
 
-    int n[3] = {10000,100000,1000000};
+    int n[3] = {1000,2000,3000};
+    Metricas::enable();
 
     for(int i = 0; i < 3; i++){
-        string data = fileIo.importarAleatoriosCompression(binary_input_file, n[i]);
-
         for(int j = 0; j < 3; j++){
+            string data = fileIo.importarAleatoriosCompression(binary_input_file, n[i]);
+            cout<< "Importando textos de avaliacao aleatorios (" << n[i] << ") " << j+1 << "/3..." << endl;
+
             Compression compression = Compression();
             compression.gerarArvore(data);
             compression.gerarTabela();
@@ -269,9 +272,11 @@ void metricasCompressao(string binary_input_file, string output_file){
         float mediaTaxa = somaTaxaCompressao/3;
 
         res += "Iteracao-" + to_string(n[i]) + ": " + to_string(mediaTaxa);
+        res += ", Media coparacoes: " + to_string(Metricas::getMediaComparison()) + "\n";
         res += "\n";
 
         somaTaxaCompressao=0;
+        Metricas::clearMedia();
     }
 
     fileIo.appendArquivo(output_file, res);
