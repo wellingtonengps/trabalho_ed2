@@ -175,7 +175,8 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
 
             for (int i = 0; i < 3; i++) {
 
-                vector<Review *> reviewsCopia = trucateVector(reviews, numReviews);
+                //vector<Review *> reviewsCopia = trucateVector(reviews, numReviews);
+                vector<Review *> reviewsCopia = fileIo.importarAleatorios(bin_file_path, numReviews);
                 double time = geraMetricasFuncao(reviewsCopia, sorting, k);
 
                 res += nomesAlgoritmos[k] + " - tempo: " + to_string(time)
@@ -186,6 +187,8 @@ void simulacaoPerformaceOrdenacao(string output_file_path, string bin_file_path,
                 timeSum += time;
                 swapCountSum += sorting.getlastAlgorithmSwapCount();
                 compCountSum += sorting.getLastAlgorithmComparisonCount();
+
+                deleteVectorItems(reviewsCopia);
 
             }
             res += "Medias- tempo: " + to_string(timeSum / 3) + ", trocas: " + to_string(swapCountSum / 3) +
@@ -251,7 +254,7 @@ void metricasCompressao(string binary_input_file, string output_file){
     string res;
     res += "Médias Compressão:\n";
 
-    int n[3] = {1000,2000,3000};
+    int n[3] = {10000,100000,500000};
     Metricas::enable();
 
     for(int i = 0; i < 3; i++){
@@ -267,6 +270,9 @@ void metricasCompressao(string binary_input_file, string output_file){
             string codedString = compression.readBinaryString(compressedData);
 
             somaTaxaCompressao += compression.taxaCompressao(codedString);
+            //cout << "Comparacoes: " << Metricas::getComparisonCount() << endl;
+            Metricas::incrementMedia();
+            Metricas::clearMetrics();
         }
 
         float mediaTaxa = somaTaxaCompressao/3;

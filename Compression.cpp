@@ -53,6 +53,9 @@ void print(vector<FreqTree*> v){
 }
 
 bool comparaArvores(FreqTree* i, FreqTree* j){
+    //incrementa comparações
+    Metricas::incrementComparisonCount(1);
+
     return i->getRaiz()->getFreq() > j->getRaiz()->getFreq();
 }
 
@@ -72,7 +75,7 @@ void Compression::gerarArvore(string data) {
     }
 
     sort(trees.begin(), trees.end(), comparaArvores);
-    print(trees);
+    //print(trees);
 
     //FreqTree* primeira = trees.back();
     //trees.pop_back();
@@ -86,7 +89,7 @@ void Compression::gerarArvore(string data) {
         delete primeira;
 
         sort(trees.begin(), trees.end(), comparaArvores);
-        print(trees);
+       // print(trees);
 
     }
 
