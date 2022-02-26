@@ -179,6 +179,7 @@ void Sorting::countingSortCells(vector<Cell*> &A){
 int Sorting::particiona(vector<Review*> &B, int min, int max)
 {
     Review* pivot = B[(min+max)/2];
+    int iPivot = (min+max)/2;
     int i = (min - 1);
 
     for (int j = min; j <= max - 1; j++)
@@ -193,15 +194,17 @@ int Sorting::particiona(vector<Review*> &B, int min, int max)
 
     }
     trocar(B, i+1, max);
-    return (i + 1);
+    return (iPivot + 1);
 }
 
 
 void Sorting::quickSort(vector<Review*> &B, int min, int max)
 {
     lastAlgorithmComparisonCount++;
+
     if (min < max)
     {
+        cout<<min <<"-"<< max<<endl;
 
         int pivot = particiona(B, min, max);
 
@@ -214,5 +217,5 @@ void Sorting::quickSort(vector<Review*> &B, int min, int max)
 
 void Sorting::quickSort(vector<Review *> &B) {
     resetCount();
-    quickSort(B, 0, B.size()-1);
+    quickSort(B, 0, (int)B.size()-1);
 }

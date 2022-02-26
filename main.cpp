@@ -70,7 +70,7 @@ double geraMetricasFuncao(vector<Review *> &reviews, Sorting &sorting, int n) {
 
     if (n == 0) {
         res += "quicksort, ";
-        //sorting.quickSort(reviews);
+        sorting.quickSort(reviews);
     } else if (n == 1) {
         res += "countingSort, ";
         sorting.countingSort(reviews);
@@ -413,7 +413,6 @@ void metricasArvoreB(string binary_input_file, string output_file, int n, int b)
     for (int i = 0; i < 3; i++){
         vector<Review*> reviews =  fileIo.importarAleatorios(binary_input_file, b);
 
-
         inicio = high_resolution_clock::now();
 
         for(int i=0; i<reviews.size(); i++){
@@ -587,7 +586,7 @@ void menu(string input_dir, string bin_file_path) {
             VPTree vpTree = VPTree();
 
             if (modo == 1) {
-                metricasArvoreVP(bin_file_path, "saida.txt", 100, 100);
+                metricasArvoreVP(bin_file_path, "saida.txt", 1000000, 100);
                 cout << "\nArquivo de saida gerado.";
             } else if (modo == 2) {
                 int n;
@@ -620,7 +619,7 @@ void menu(string input_dir, string bin_file_path) {
             cout << "\n";
 
             if (modo == 1) {
-                metricasArvoreB(bin_file_path, "saida.txt", 100, 100);
+                metricasArvoreB(bin_file_path, "saida.txt", 1000000, 100);
                 cout << "\nArquivo de saida gerado.\n";
             } else if (modo == 2) {
                 int ordem;
