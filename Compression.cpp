@@ -185,14 +185,21 @@ string Compression::readCompressedText(string codedString){
 string Compression::readBinaryString(string bin){
     string result;
     int numCompletar = ((bin.size()/8)+1)*8 - bin.size();
+    //cout << "Bin Size: " <<bin.size() <<endl;
     string padding(numCompletar, '0');
+    //cout << padding <<endl;
     string sizeHeader = intToBinaryString(bin.size());
-    string paddedString = sizeHeader + bin + padding;
+   // cout << "3" <<endl;
+    string paddedString=sizeHeader + bin + padding;
+   // cout << "4" <<endl;
+
     // cout << "padded string: "<< paddedString<<endl;
 
     for(int i= 0; i<paddedString.size(); i+=8){
         result+= readBinaryStringToChar(paddedString.substr(i, 8));
     }
+   // cout << "5" <<endl;
+
     return result;
 }
 

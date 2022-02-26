@@ -29,7 +29,7 @@ public:
 
     static int getMediaComparison(){
 
-        int soma;
+        int soma=0;
 
         for(int i = 0; i < metricasComparison.size(); i++){
             soma += metricasComparison[i];
@@ -40,7 +40,7 @@ public:
 
     static double getMediaTime(){
 
-        double soma;
+        double soma=0;
 
         for(int i = 0; i < metricasTime.size(); i++){
             soma += metricasTime[i];

@@ -5,6 +5,7 @@
 #include "FreqTree.h"
 #include <vector>
 #include <iostream>
+#include "Metricas.h"
 
 
 FreqTree::FreqTree(char raizInicial){
@@ -27,9 +28,11 @@ string FreqTree::decodificar(string bin){
     }
 
     for(int i=0;i<bin.size();i++){
+        //incrementa comparações +2
+        Metricas::incrementComparisonCount(2);
         if(bin[i]=='0'){
             next = next->getEsq();
-        }if(bin[i]=='1'){
+        }else if(bin[i]=='1'){
             next = next->getDir();
         }
 
@@ -47,6 +50,9 @@ string FreqTree::decodificar(string bin){
 
 void FreqTree::unir(FreqNode* raiz){
     FreqNode* novaRaiz = new FreqNode('\0', raiz->getFreq() + this->raiz->getFreq());
+    //incrementa comparações +1
+    Metricas::incrementComparisonCount(1);
+
     if(raiz->getFreq() >= this->raiz->getFreq()){
         novaRaiz->setDir(raiz);
         novaRaiz->setEsq(this->raiz);
@@ -68,7 +74,8 @@ void FreqTree::setRaiz(FreqNode *raiz) {
 
 void auxGeraTabela(FreqNode* node, string cod, vector<pair<char, string>> &v){
 
-
+    //incrementa comparações +1
+    Metricas::incrementComparisonCount(1);
     if(node->getInfo()!='\0'){
         pair<char, string> p(node->getInfo(), cod);
         v.push_back(p);
@@ -89,10 +96,10 @@ vector<pair<char, string>> FreqTree::gerarTabela() {
     }
 
 
-    for(int i=0; i<v.size(); i++){
+    /*for(int i=0; i<v.size(); i++){
       cout << "("<< v[i].first <<", "<<v[i].second << "), ";
     }
-   cout << endl;
+   cout << endl;*/
 
     return v;
 }
